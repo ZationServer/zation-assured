@@ -1,2 +1,2 @@
 # zation-assured
-Test framework to test zation server
+Library For Testing Zation Servers

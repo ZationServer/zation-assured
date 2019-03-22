@@ -1,0 +1,51 @@
+{
+  "name": "zation-assured",
+  "version": "0.0.2",
+  "license": "MIT",
+  "description": "Library For Testing Zation Servers",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "build": "gulp compile",
+    "test": "nyc --reporter=html mocha -- ./test/**/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZationServer/zation-assured.git"
+  },
+  "author": {
+    "name": "Luca Scarignella",
+    "email": "lucacode1@gmail.com",
+    "url": "https://luca.scaringella.de"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "keywords": [
+    "esay",
+    "application",
+    "websocket",
+    "http",
+    "fast",
+    "client",
+    "realtime",
+    "cluster",
+    "scalable",
+    "secure",
+    "big",
+    "tools",
+    "testing",
+    "intergrationTests"
+  ],
+  "dependencies": {
+    "uuid": "^3.2.1",
+    "path": "0.12.7",
+    "zation-client": "^0.5.8"
+  },
+  "devDependencies": {
+    "gulp": "4.0.0",
+    "gulp-typescript": "5.0.0",
+    "typescript": "3.3.3"
+  }
+}
