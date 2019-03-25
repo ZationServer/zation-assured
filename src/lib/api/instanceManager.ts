@@ -27,11 +27,17 @@ export class InstanceManager {
 
     private constructor() {
 
+    }
 
+    async startTestServer()
+    {
 
     }
 
+    async stopTestServer()
+    {
 
+    }
 
 }
 

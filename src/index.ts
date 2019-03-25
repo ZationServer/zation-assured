@@ -8,15 +8,16 @@ GitHub: LucaCode
 import {create,load,save} from "zation-client";
 import {when} from "./lib/api/when";
 import {getInstanceManager as InstanceManager} from "./lib/api/instanceManager";
+import {testArea} from "./lib/api/testArea";
 
 export {
     create,
     load,
     save,
     when,
-    InstanceManager
+    InstanceManager,
+    testArea
 }
-
 
 
 

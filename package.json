@@ -41,7 +41,10 @@
   "dependencies": {
     "uuid": "^3.2.1",
     "path": "0.12.7",
-    "zation-client": "^0.5.8"
+    "zation-client": "^0.6.4",
+    "mocha": "^6.0.2",
+    "@types/mocha": "^5.2.6",
+    "chai": "4.2.0"
   },
   "devDependencies": {
     "gulp": "4.0.0",
