@@ -5,14 +5,13 @@ GitHub: LucaCode
  */
 
 import {Logger} from "../helper/console/logger";
-import {TestServerManager} from "./testServerManager";
 
 type Func = () => Promise<void> | void;
 
 export const beforeTest = (beforeTest: Func) => {
     firstInit();
     before(async function() {
-        this.timeout(5000);
+        this.timeout(10000);
         await beforeTest();
     });
 };
@@ -46,29 +45,10 @@ export const describeTest = (title: string, area: Func) => {
     });
 };
 
-export const useTestServer = (use : boolean) => {
-    testServer = use;
-};
-
-let testServer = false;
 let firstCall = true;
 const firstInit = () => {
     if (firstCall) {
         firstCall = false;
         Logger.logBusy('Run Tests');
-        if (testServer) {
-            before(async function () {
-                this.timeout(20000);
-                Logger.logBusy('Starting Test server');
-                await TestServerManager.getInstance().startTestServer();
-                Logger.logInfo('Test server started');
-                console.log();
-            });
-
-            after(async () => {
-                await TestServerManager.getInstance().stopTestServer();
-                Logger.logInfo('Test server stopped');
-            });
-        }
     }
 };
