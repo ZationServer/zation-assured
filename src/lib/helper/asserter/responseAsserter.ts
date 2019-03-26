@@ -10,6 +10,7 @@ import {Test}                  from "../data/test";
 import {WhenBuilder}           from "../../api/when";
 import {Logger}                from "../console/logger";
 import {AnyAsserter}           from "./anyAsserter";
+import {TaskErrorFilterBuilder} from "../error/taskErrorFilterBuilder";
 const assert                 = require('assert');
 
 export class ResponseAsserter {
@@ -131,10 +132,22 @@ export class ResponseAsserter {
     hasErrorCount(count : number,...errorFilter : ErrorFilter[]) : ResponseAsserter {
         this.req.onResponse((res) => {
             assert(ResponseAsserter._filterErrors(res,errorFilter).length === count,
-                `Response should have ${count} errors.${errorFilter.length === 0 ? '' : ` With filter: ${errorFilter}`}`
+                `Response should have ${count} errors.${errorFilter.length === 0 ? '' : ` With filter: ${JSON.stringify(errorFilter)}`}`
                 + this._respInfo(res));
         });
         return this;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert that the response has count of specific errors
+     * with filter builder.
+     * @param count
+     * count of errors
+     */
+    buildHasErrorCount(count : number) : TaskErrorFilterBuilder<ResponseAsserter> {
+        return new TaskErrorFilterBuilder(this,count);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -147,7 +160,7 @@ export class ResponseAsserter {
     hasError(...errorFilter : ErrorFilter[]) : ResponseAsserter {
         this.req.onResponse((res) => {
             assert(ResponseAsserter._filterErrors(res,errorFilter).length > 0,
-                `Response should have an error.${errorFilter.length === 0 ? '' : ` With filter: ${errorFilter}`}`
+                `Response should have an error.${errorFilter.length === 0 ? '' : ` With filter: ${JSON.stringify(errorFilter)}`}`
                 + this._respInfo(res));
         });
         return this;
@@ -156,11 +169,11 @@ export class ResponseAsserter {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the response has an specific error.
+     * Assert that the response has an specific error
+     * with filter builder.
      */
-    buildHasError() : ResponseAsserter {
-
-        return this;
+    buildHasError() : TaskErrorFilterBuilder<ResponseAsserter> {
+        return new TaskErrorFilterBuilder(this);
     }
 
     private static _filterErrors(res : Response,filter : ErrorFilter[]) : TaskError[] {
