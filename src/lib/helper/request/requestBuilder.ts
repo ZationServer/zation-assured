@@ -32,7 +32,7 @@ export class RequestBuilder extends AbstractRequestBuilder<RequestBuilder,Reques
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the controller name from the request.
+     * Set the controller name of the request.
      * @param controllerName
      * @default ''
      */
@@ -44,7 +44,7 @@ export class RequestBuilder extends AbstractRequestBuilder<RequestBuilder,Reques
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set is systemController from the request.
+     * Set is systemController of the request.
      * @default false
      * @param isSystemController
      */
@@ -56,7 +56,7 @@ export class RequestBuilder extends AbstractRequestBuilder<RequestBuilder,Reques
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the data from the request.
+     * Set the data of the request.
      * @param data
      * @default {}
      */
