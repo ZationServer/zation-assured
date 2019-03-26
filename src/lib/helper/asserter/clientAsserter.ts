@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 const assert                 = require('assert');
 
-export class ClientAssured {
+export class ClientAsserter {
 
 
 

@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {AbstractRequestHelper, ProtocolType, Zation as ZationClient} from "zation-client";
 import {Test}                  from "../data/test";
-import {ResponseAssured} from "../assured/responseAssured";
+import {ResponseAsserter} from "../asserter/responseAsserter";
 
 export abstract class AbstractRequestBuilder<T,RT> {
 
@@ -67,8 +67,8 @@ export abstract class AbstractRequestBuilder<T,RT> {
      * @description
      * Start the assert that part
      */
-    assertThat() : ResponseAssured {
-        return new ResponseAssured(this.abReq,this.test,this.client);
+    assertThat() : ResponseAsserter {
+        return new ResponseAsserter(this.abReq,this.test,this.client);
     }
 
     // noinspection JSUnusedGlobalSymbols
