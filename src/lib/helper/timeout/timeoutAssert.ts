@@ -14,23 +14,33 @@ export class TimeoutAssert {
     private timeoutSet;
     private res;
 
+    private readonly _onSuccess : (() => void)[] = [];
+
     private resolved : boolean = false;
+    private success : boolean = true;
 
     constructor(msg : string,time : number) {
         this.msg =  msg;
         this.time = time;
     }
 
+    onSuccess(func : () => void) : void {
+        this._onSuccess.push(func);
+    }
+
     async set() : Promise<void> {
         this.resolved = false;
+        this.success = true;
         return new Promise<void>((r) => {
             this.res = r;
             if(this.time === 0){
+                this.success = false;
                 assert.fail(this.msg);
                 this.resolve();
             }
             else {
                 this.timeoutSet = setTimeout(() => {
+                    this.success = false;
                     assert.fail(this.msg);
                     this.resolve();
                 },this.time);
@@ -45,6 +55,9 @@ export class TimeoutAssert {
             }
             if(typeof this.res === 'function'){
                 this.res();
+            }
+            if(this.success){
+                this._onSuccess.forEach((f) => {f();});
             }
         }
         else{

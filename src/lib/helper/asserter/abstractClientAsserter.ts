@@ -9,6 +9,8 @@ const assert                  = require('assert');
 import {AuthenticationNeededError, Zation as ZationClient} from 'zation-client';
 import ObjectAsserter           from "./objectAsserter";
 import {TimeoutAssert}          from "../timeout/timeoutAssert";
+import {ChannelPubAsserter} from "./channelPubAsserter";
+import {ChannelEventAsserter} from "./channelEventAsserter";
 
 export abstract class AbstractClientAsserter<T> {
 
@@ -241,5 +243,237 @@ export abstract class AbstractClientAsserter<T> {
            });
         });
         return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * With this function, you can do extra things in the test.
+     * Subscribe a channel, publish to a channel...
+     */
+    do(func : () => void | Promise<void>) : T {
+        this._test.test(async () => {
+            await func();
+        },true);
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert get publish in any channel.
+     */
+    getPubAnyCh() : ChannelPubAsserter<T> {
+        return new ChannelPubAsserter<T>(
+            async (client,event,reaction) => {
+            client.channelReact().oncePubAnyCh(event,reaction);
+        }, this.clients,'Any channel',this._test,this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert get publish in user channel.
+     */
+    getPubUserCh() : ChannelPubAsserter<T> {
+        return new ChannelPubAsserter<T>(
+            async (client,event,reaction) => {
+                client.channelReact().oncePubUserCh(event,reaction);
+            }, this.clients,'User channel',this._test,this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert get publish in auth user group channel.
+     */
+    getPubAuthUserGroupCh() : ChannelPubAsserter<T> {
+        return new ChannelPubAsserter<T>(
+            async (client,event,reaction) => {
+                client.channelReact().oncePubAuthUserGroupCh(event,reaction);
+            }, this.clients,'AuthUserGroup channel',this._test,this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert get publish in default user group channel.
+     */
+    getPubDefaultUserGroupCh() : ChannelPubAsserter<T> {
+        return new ChannelPubAsserter<T>(
+            async (client,event,reaction) => {
+                client.channelReact().oncePubDefaultUserGroupCh(event,reaction);
+            }, this.clients,'DefaultUserGroup channel',this._test,this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert get publish in all channel.
+     */
+    getPubAllCh() : ChannelPubAsserter<T> {
+        return new ChannelPubAsserter<T>(
+            async (client,event,reaction) => {
+                client.channelReact().oncePubAllCh(event,reaction);
+            }, this.clients,'All channel',this._test,this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert get publish in custom channel.
+     * @param chName
+     * You can also assert for multiple channel names by giving an channel name array.
+     * Or to all channel names if you pass as parameter null.
+     */
+    getPubCustomCh(chName : string | string[] | null) : ChannelPubAsserter<T> {
+        return new ChannelPubAsserter<T>(
+            async (client,event,reaction) => {
+                client.channelReact().oncePubCustomCh(chName,event,reaction);
+            }, this.clients,
+            AbstractClientAsserter._buildCustomChName(chName)
+            ,this._test,this.self());
+    }
+
+    private static _buildCustomChName(chName : string | string[] | null) : string {
+        return (chName === null ? 'All Custom channels' : ('Custom channels with name: '+chName))
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert get publish in custom id channel.
+     * @param chName
+     * You can also assert for multiple channel names by giving an channel name array.
+     * Or to all channel names if you pass as parameter null.
+     * @param chId
+     * You can also assert for multiple channel ids by giving an channel id array.
+     * Or to all channel ids if you pass as parameter null.
+     */
+    getPubCustomIdCh(chName: string | string[] | null,chId: string | string[] | null) : ChannelPubAsserter<T> {
+        return new ChannelPubAsserter<T>(
+            async (client,event,reaction) => {
+                client.channelReact().oncePubCustomIdCh(chName,chId,event,reaction);
+            }, this.clients,
+            AbstractClientAsserter._buildCustomIdChName(chName,chId)
+            ,this._test,this.self());
+    }
+
+    private static _buildCustomIdChName(chName: string | string[] | null,chId: string | string[] | null) : string {
+        return (
+            'CustomId channels with ' +
+            (chName === null ? 'all channel names' : ('channel names: '+chName)) +
+                ' and ' +
+            (chId === null ? 'all ids' : ('ids: '+chId))
+        );
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert get publish in panel out channel.
+     */
+    getPubPanelOutCh() : ChannelPubAsserter<T> {
+        return new ChannelPubAsserter<T>(
+            async (client,event,reaction) => {
+                client.channelReact().oncePubPanelOutCh(event,reaction);
+            }, this.clients,'PanelOut channel',this._test,this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert get kickOut in any channel.
+     */
+    getKickOutAnyCh() : ChannelEventAsserter<T> {
+        return new ChannelEventAsserter<T>(
+            async (client,reaction) => {
+                client.channelReact().onceKickOutAnyCh(reaction);
+            }, this.clients,'Any channel','KickOut',this._test,this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert get kickOut in user channel.
+     */
+    getKickOutUserCh() : ChannelEventAsserter<T> {
+        return new ChannelEventAsserter<T>(
+            async (client,reaction) => {
+                client.channelReact().onceKickOutUserCh(reaction);
+            }, this.clients,'User channel','KickOut',this._test,this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert get kickOut in auth user group channel.
+     */
+    getKickOutAuthUserGroupCh() : ChannelEventAsserter<T> {
+        return new ChannelEventAsserter<T>(
+            async (client,reaction) => {
+                client.channelReact().onceKickOutAuthUserGroupCh(reaction);
+            }, this.clients,'AuthUserGroup channel','KickOut',this._test,this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert get kickOut in default user group channel.
+     */
+    getKickOutDefaultUserGroupCh() : ChannelEventAsserter<T> {
+        return new ChannelEventAsserter<T>(
+            async (client,reaction) => {
+                client.channelReact().onceKickOutDefaultUserGroupCh(reaction);
+            }, this.clients,'DefaultUserGroup channel','KickOut',this._test,this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert get kickOut in all channel.
+     */
+    getKickOutAllCh() : ChannelEventAsserter<T> {
+        return new ChannelEventAsserter<T>(
+            async (client,reaction) => {
+                client.channelReact().onceKickOutAllCh(reaction);
+            }, this.clients,'All channel','KickOut',this._test,this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert get kickOut in custom channel.
+     * @param chName
+     * You can also assert for multiple channel names by giving an channel name array.
+     * Or to all channel names if you pass as parameter null.
+     */
+    getKickOutCustomCh(chName : string | string[] | null) : ChannelEventAsserter<T> {
+        return new ChannelEventAsserter<T>(
+            async (client,reaction) => {
+                client.channelReact().onceKickOutCustomCh(chName,reaction);
+            }, this.clients,
+            AbstractClientAsserter._buildCustomChName(chName)
+            ,'KickOut',this._test,this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert get kickOut in custom id channel.
+     * @param chName
+     * You can also assert for multiple channel names by giving an channel name array.
+     * Or to all channel names if you pass as parameter null.
+     * @param chId
+     * You can also assert for multiple channel ids by giving an channel id array.
+     * Or to all channel ids if you pass as parameter null.
+     */
+    getKickOutCustomIdCh(chName : string | string[] | null,chId: string | string[] | null) : ChannelEventAsserter<T> {
+        return new ChannelEventAsserter<T>(
+            async (client,reaction) => {
+                client.channelReact().onceKickOutCustomIdCh(chName,chId,reaction);
+            }, this.clients,
+            AbstractClientAsserter._buildCustomIdChName(chName,chId)
+            ,'KickOut',this._test,this.self());
     }
 }

@@ -8,7 +8,7 @@ GitHub: LucaCode
 import ObjectAsserter          from "./objectAsserter";
 const cAssert                = require('chai').assert;
 
-type AddTest = (test : (any : any) => void) => void;
+type AddTest = (test : (any : any,eStr ?: string) => void) => void;
 
 export class AnyAsserter<T> {
 
@@ -29,9 +29,9 @@ export class AnyAsserter<T> {
      * @param type
      */
     typeOf(type : string) : AnyAsserter<T> {
-        this.addTest((any) => {
+        this.addTest((any,eStr = '') => {
             // noinspection TypeScriptValidateJSTypes
-            cAssert.typeOf(any,type,`${this.name} should from type ${type}`);
+            cAssert.typeOf(any,type,`${this.name+eStr} should from type ${type}`);
         });
         return this;
     }
@@ -43,9 +43,9 @@ export class AnyAsserter<T> {
      * @param any
      */
     equal(any : any) : AnyAsserter<T> {
-        this.addTest((inAny) => {
+        this.addTest((inAny,eStr = '') => {
             // noinspection TypeScriptValidateJSTypes
-            cAssert.equal(inAny,any,`${this.name} should equal with ${any}`);
+            cAssert.equal(inAny,any,`${this.name+eStr} should equal with ${any}`);
         });
         return this;
     }
@@ -64,8 +64,8 @@ export class AnyAsserter<T> {
             this.typeOf('object');
         }
         return new ObjectAsserter(this,this.name,(test) => {
-            this.addTest((any) => {
-                if(typeof any === 'object'){test(any);}
+            this.addTest((any,eStr = '') => {
+                if(typeof any === 'object'){test(any,eStr);}
             });
         });
     }
@@ -80,8 +80,8 @@ export class AnyAsserter<T> {
      * -name the name of this assertion.
      */
     assert(assert : (any : any,name : string) => void | Promise<void>) : AnyAsserter<T> {
-        this.addTest(async (inAny) => {
-            await assert(inAny,this.name);
+        this.addTest(async (inAny,eStr = '') => {
+            await assert(inAny,this.name+eStr);
         });
         return this;
     }

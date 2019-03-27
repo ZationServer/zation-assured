@@ -207,9 +207,23 @@ export class ResponseAsserter {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * With this function, you can do extra things in the test.
+     * Subscribe a channel, publish to a channel...
+     */
+    do(func : () => void | Promise<void>) : ResponseAsserter {
+        this._test.test(async () => {
+            await func();
+        },true);
+        return this;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * Start with a new request and link them to one test.
      */
     and() : WhenBuilder {
+        this._test.newSubTest();
         return new WhenBuilder(this._client,this._test);
     }
 

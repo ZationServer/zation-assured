@@ -16,14 +16,14 @@ export const when = (client : ZationClient,testDescription ?: string) : WhenBuil
 
 export class WhenBuilder {
 
-    private readonly client : ZationClient;
-    private readonly test : Test;
+    private readonly _client : ZationClient;
+    private readonly _test : Test;
 
     private static counter : number = 0;
 
     constructor(client : ZationClient,test : Test) {
-        this.client = client;
-        this.test = test;
+        this._client = client;
+        this._test = test;
         WhenBuilder.counter++;
     }
 
@@ -53,7 +53,7 @@ export class WhenBuilder {
      */
     request(controllerName : string = '',data : object = {}) : RequestBuilder {
         return new RequestBuilder
-        (this.client.request(controllerName,data),this.test,this.client);
+        (this._client.request(controllerName,data),this._test,this._client);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -74,7 +74,7 @@ export class WhenBuilder {
      */
     authRequest(authData : object = {}, protocolType : ProtocolType = ProtocolType.WebSocket) : AuthRequestBuilder {
         return new AuthRequestBuilder
-        (this.client.authRequest(authData,protocolType),this.test,this.client);
+        (this._client.authRequest(authData,protocolType),this._test,this._client);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -97,7 +97,19 @@ export class WhenBuilder {
      */
     validationRequest(controllerName : string = '',...checks : ValidationCheck[]) : ValidationRequestBuilder {
         return new ValidationRequestBuilder
-        (this.client.validationRequest(controllerName,...checks),this.test,this.client);
+        (this._client.validationRequest(controllerName,...checks),this._test,this._client);
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * With this function, you can do extra things before the test.
+     * Subscribe a channel, publish to a channel...
+     */
+    do(func : () => void | Promise<void>) : WhenBuilder {
+        this._test.beforeTest(async () => {
+            await func();
+        },true);
+        return this;
+    }
 }
