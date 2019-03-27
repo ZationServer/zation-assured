@@ -11,18 +11,27 @@ import {WhenBuilder}           from "../../api/when";
 import {Logger}                from "../console/logger";
 import {AnyAsserter}           from "./anyAsserter";
 import {TaskErrorFilterBuilder} from "../error/taskErrorFilterBuilder";
+import {ClientAsserter} from "./clientAsserter";
 const assert                 = require('assert');
 
 export class ResponseAsserter {
 
     private req : AbstractRequestHelper<any>;
     private readonly _test : Test;
-    private readonly client : ZationClient;
+    private readonly _client : ZationClient;
+    private autoConnectedClient : boolean = false;
 
     constructor(req : AbstractRequestHelper<any>,test : Test,client : ZationClient) {
         this.req = req;
         this._test = test;
-        this.client = client;
+        this._client = client;
+
+        this._test.test(async () => {
+            if(!this._client.isConnected() && this.autoConnectedClient) {
+                await this._client.connect();
+            }
+            await this.req.send(false);
+        },true);
     }
 
     // noinspection JSMethodCanBeStatic
@@ -185,11 +194,12 @@ export class ResponseAsserter {
      * @description
      * With this function you can create custom assertions for a response.
      * @param assert
-     * The assert function.
+     * The assert function with params:
+     * -res The response
      */
-    assert(assert : (resp : Response) => void) : ResponseAsserter {
-        this.req.onResponse((res) => {
-            assert(res);
+    assert(assert : (resp : Response) => void | Promise<void>) : ResponseAsserter {
+        this.req.onResponse(async (res) => {
+            await assert(res);
         });
         return this;
     }
@@ -200,7 +210,7 @@ export class ResponseAsserter {
      * Start with a new request and link them to one test.
      */
     and() : WhenBuilder {
-        return new WhenBuilder(this.client,this._test);
+        return new WhenBuilder(this._client,this._test);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -212,14 +222,16 @@ export class ResponseAsserter {
      * if the client is not connected to the server.
      */
     test(autoConnect : boolean = false) : void {
-        this._test.test(async () => {
-            if(!this.client.isConnected() && autoConnect) {
-                await this.client.connect();
-            }
-            await this.req.send(false);
-        });
-
+        this.autoConnectedClient = autoConnect;
         this._test.execute();
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert zation clients after request.
+     */
+    client(...client : ZationClient[]) : ClientAsserter<ResponseAsserter> {
+        return new ClientAsserter<ResponseAsserter>(client,this._test,this);
+    }
 }

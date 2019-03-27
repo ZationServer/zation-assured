@@ -79,9 +79,9 @@ export class AnyAsserter<T> {
      * -any the input
      * -name the name of this assertion.
      */
-    assert(assert : (any : any,name : string) => void) : AnyAsserter<T> {
-        this.addTest((inAny) => {
-            assert(inAny,this.name);
+    assert(assert : (any : any,name : string) => void | Promise<void>) : AnyAsserter<T> {
+        this.addTest(async (inAny) => {
+            await assert(inAny,this.name);
         });
         return this;
     }

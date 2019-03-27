@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 const cAssert                = require('chai').assert;
 
-type AddTest = (test : (obj : any) => void) => void;
+type AddTest = (test : (obj : any,eStr ?: string) => void) => void;
 
 export default class ObjectAsserter<T> {
 
@@ -27,8 +27,8 @@ export default class ObjectAsserter<T> {
      * @param keys
      */
     containsAllKeys(...keys : string[]) : ObjectAsserter<T> {
-        this.addTest((obj) => {
-            cAssert.containsAllKeys(obj,keys,`${this.name} should contains ${keys} as keys.`);
+        this.addTest((obj,eStr = '') => {
+            cAssert.containsAllKeys(obj,keys,`${this.name+eStr} should contains ${keys} as keys.`);
         });
         return this;
     }
@@ -40,8 +40,8 @@ export default class ObjectAsserter<T> {
      * @param keys
      */
     hasAnyKeys(...keys : string[]) : ObjectAsserter<T> {
-        this.addTest((obj) => {
-            cAssert.hasAnyKeys(obj,keys,`${this.name} should contains at least one of these keys: ${keys}.`);
+        this.addTest((obj,eStr = '') => {
+            cAssert.hasAnyKeys(obj,keys,`${this.name+eStr} should contains at least one of these keys: ${keys}.`);
         });
         return this;
     }
@@ -53,9 +53,9 @@ export default class ObjectAsserter<T> {
      * @param obj
      */
     deepEqual(obj : any) : ObjectAsserter<T> {
-        this.addTest((inObj) => {
+        this.addTest((inObj,eStr = '') => {
             // noinspection TypeScriptValidateJSTypes
-            cAssert.deepEqual(inObj,obj,`${this.name} should deep equal with ${obj}`);
+            cAssert.deepEqual(inObj,obj,`${this.name+eStr} should deep equal with ${obj}`);
         });
         return this;
     }
@@ -70,10 +70,26 @@ export default class ObjectAsserter<T> {
      * ownInclude({id : 10});
      * @param obj
      */
-    ownInclude(obj : any) : ObjectAsserter<T>{
-        this.addTest((inObj) => {
+    ownInclude(obj : any) : ObjectAsserter<T> {
+        this.addTest((inObj,eStr = '') => {
             // noinspection TypeScriptValidateJSTypes
-            cAssert.ownInclude(inObj,obj,`${this.name} should own include ${obj}`);
+            cAssert.ownInclude(inObj,obj,`${this.name+eStr} should own include ${obj}`);
+        });
+        return this;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * With this function you can create custom assertions for object.
+     * @param assert
+     * function with params
+     * -obj the input
+     * -name the name of this assertion.
+     */
+    assert(assert : (obj : any,name : string) => void | Promise<void>) : ObjectAsserter<T> {
+        this.addTest(async (inObj,eStr = '') => {
+            await assert(inObj,(this.name+eStr));
         });
         return this;
     }

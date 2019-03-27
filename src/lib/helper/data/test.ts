@@ -6,42 +6,38 @@ GitHub: LucaCode
 
 
 type Action = () => Promise<void> | void;
+type TestAction = {action : Action, wait : boolean};
 
 export class Test {
-    private _beforeTest : Action[] = [];
-    private _test : Action[] = [];
-    private _afterTest : Action[] = [];
+    private _test : TestAction[] = [];
     private readonly _testDescription : string;
 
     constructor(testDescription : string) {
         this._testDescription = testDescription;
     }
 
-    private async executeList(list : Action[]) {
-        let promises : (Promise<void> | void)[] = [];
-        list.forEach((f) => {
-            promises.push(f());
-        });
-        await Promise.all(promises);
-    }
-
-    beforeTest(action : Action) : void {
-        this._beforeTest.push(action);
-    }
-
-    test(action : Action) : void {
-        this._test.push(action);
-    }
-
-    afterTest(action : Action) : void {
-        this._afterTest.push(action);
+    test(action : Action,waitForTask : boolean = false) : void {
+        this._test.push({action : action,wait : waitForTask});
     }
 
     execute() {
         it(this._testDescription, async () => {
-            await this.executeList(this._beforeTest);
-            await this.executeList(this._test);
-            await this.executeList(this._afterTest);
+            let tmpPromises : (Promise<void> | void )[] = [];
+            for(let i = 0; i < this._test.length; i++) {
+                if(this._test[i].wait){
+                    if(tmpPromises.length>0){
+                        await Promise.all(tmpPromises);
+                        tmpPromises = [];
+                    }
+                    await this._test[i].action();
+                }
+                else {
+                    tmpPromises.push(this._test[i].action());
+                }
+            }
+            if(tmpPromises.length>0){
+                await Promise.all(tmpPromises);
+            }
         });
     }
 }
