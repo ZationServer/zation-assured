@@ -5,6 +5,8 @@ GitHub: LucaCode
  */
 
 import {Logger} from "../helper/console/logger";
+import {fail} from "assert";
+const assert  = require('assert');
 
 type Func = () => Promise<void> | void;
 
@@ -43,6 +45,19 @@ export const describeTest = (title: string, area: Func) => {
     describe(title, async () => {
         await area();
     });
+};
+
+export const itTest = (title: string, area: Func) => {
+    firstInit();
+    it(title, async () => {
+        await area();
+    });
+};
+
+export const failTest = (msg: string, actual ?: any, expected ?: any) => {
+    if(actual !== undefined || expected !== undefined)
+    {assert.fail(actual,expected,msg);}
+    else {assert.fail(msg);}
 };
 
 let firstCall = true;

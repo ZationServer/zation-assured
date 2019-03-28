@@ -14,7 +14,9 @@ import {
     afterTest as after,
     afterEachTest as afterEach,
     beforeEachTest as beforeEach,
-    describeTest as describe
+    describeTest as describe,
+    itTest as it,
+    failTest as fail
 }
     from "./lib/api/testHelper";
 
@@ -28,7 +30,9 @@ export {
     before,
     after,
     beforeEach,
-    afterEach
+    afterEach,
+    it,
+    fail
 };
 
 
