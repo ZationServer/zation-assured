@@ -10,6 +10,7 @@ export class TimeoutAssert {
 
     private readonly msg;
     private readonly time;
+    private readonly invert : boolean;
 
     private timeoutSet;
     private res;
@@ -17,9 +18,10 @@ export class TimeoutAssert {
     private resolved : boolean = false;
     private success : boolean = true;
 
-    constructor(msg : string,time : number) {
+    constructor(msg : string,time : number,invert : boolean = false) {
         this.msg =  msg;
         this.time = time;
+        this.invert = invert;
     }
 
     async set() : Promise<void> {
@@ -28,15 +30,21 @@ export class TimeoutAssert {
         return new Promise<void>((r) => {
             this.res = r;
             if(this.time === 0){
-                this.success = false;
-                assert.fail(this.msg);
-                this.resolve();
+                //success resolved in (invert = true) otherwise fail
+                this.success = this.invert;
+                if(!this.invert) {
+                    assert.fail(this.msg);
+                }
+                this.resolve(true);
             }
             else {
                 this.timeoutSet = setTimeout(() => {
-                    this.success = false;
-                    assert.fail(this.msg);
-                    this.resolve();
+                    //success resolved in (invert = true) otherwise fail
+                    this.success = this.invert;
+                    if(!this.invert){
+                        assert.fail(this.msg);
+                    }
+                    this.resolve(true);
                 },this.time);
             }
         });
@@ -46,7 +54,7 @@ export class TimeoutAssert {
         return this.success;
     }
 
-    resolve() {
+    resolve(internalCall : boolean = false) {
         if(!this.resolved){
             if(this.timeoutSet) {
                 clearTimeout(this.timeoutSet);
@@ -54,8 +62,10 @@ export class TimeoutAssert {
             if(typeof this.res === 'function'){
                 this.res();
             }
-        }
-        else{
+            //ups in invert mode that means it is resolved before timeout (from outside).
+            if(!internalCall && this.invert){
+                assert.fail(this.msg);
+            }
             this.resolved = true;
         }
     }

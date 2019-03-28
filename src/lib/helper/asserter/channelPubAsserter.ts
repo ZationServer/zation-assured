@@ -8,6 +8,7 @@ import {Test}                   from "../data/test";
 import {TimeoutAssert}          from "../timeout/timeoutAssert";
 import {Zation as ZationClient} from 'zation-client';
 import {AnyAsserter}            from "./anyAsserter";
+const assert                  = require('assert');
 
 type AddReaction = (client : ZationClient,event : string | string[] | null,reaction : (data : any) =>
     Promise<void>) => void;
@@ -24,6 +25,7 @@ export class ChannelPubAsserter<T> {
 
     private _timeout : number = 0;
     private _event : string | string[] | null = null;
+    private _not : boolean = false;
 
     constructor(addReaction : AddReaction,clients : ZationClient[],chName : string,test : Test, source : T) {
         this._addOnceReaction = addReaction;
@@ -49,6 +51,18 @@ export class ChannelPubAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * With this function, you set that the client should not get a publish.
+     * @default
+     * The default value is false.
+     */
+    not() : ChannelPubAsserter<T> {
+        this._not = true;
+        return this;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * With this function, you can filter for a specific event.
      * @param event
      * You can also filter multiple events by giving an event array.
@@ -65,6 +79,7 @@ export class ChannelPubAsserter<T> {
     /**
      * @description
      * Assert the published data.
+     * Notice that the pub data will not checked in (get not) mode.
      */
     assertPubData() : AnyAsserter<ChannelPubAsserter<T>> {
         return new AnyAsserter<ChannelPubAsserter<T>>(this,'',(test) => {
@@ -97,21 +112,26 @@ export class ChannelPubAsserter<T> {
                     }
                 });
             });
+            const failMsg = `Client: ${i} should get ${this._not ? 'not' : ''} a publish in the channel: ${this._chName} ${
+                this._event === null ? ' with all events' : ('with the event: ' + this._event)}.`;
+
             this._test.test(async () => {
                 if(!getPub){
-                    const toa = new TimeoutAssert
-                    (`Client: ${i} should get a publish in the channel: ${this._chName} ${
-                        this._event === null ? ' with all events' : ('with the event: ' + this._event)}.`
-                        ,this._timeout);
+                    const toa = new TimeoutAssert(failMsg,this._timeout,this._not);
 
                     resolve = () => {toa.resolve();};
                     await toa.set();
-                    if(toa.isSuccess()){
+                    if(!this._not && toa.isSuccess()){
                         this._checkPubData(pubData,i);
                     }
                 }
                 else{
-                    this._checkPubData(pubData,i);
+                    if(!this._not) {
+                        this._checkPubData(pubData,i);
+                    }
+                    else {
+                        assert.fail(failMsg);
+                    }
                 }
             });
         });
