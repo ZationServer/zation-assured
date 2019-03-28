@@ -5,9 +5,9 @@ GitHub: LucaCode
  */
 
 //Api Classes
-import {create,load,save}                      from "zation-client";
-import {when}                                  from "./lib/api/when";
-import {client}                                from "./lib/api/client";
+import {create,load,save,Options as ClientOptions} from "zation-client";
+import {when}                                      from "./lib/api/when";
+import {client}                                    from "./lib/api/client";
 
 import {
     beforeTest as before,
@@ -22,6 +22,7 @@ import {
 
 export {
     create,
+    ClientOptions,
     load,
     save,
     when,
