@@ -515,7 +515,7 @@ export abstract class AbstractClientAsserter<T> {
     hasSubUserCh(timeout : number = 0) : T {
         this._test.test(async () => {
             await this._forEachClient(async (c,i) => {
-                if(c.isSubUserCh()) {return;}
+                if(c.hasSubUserCh()) {return;}
                 const toa = new TimeoutAssert(`Client: ${i} should be subscribed the user channel.`,timeout);
                 c.channelReact().onceSubUserCh(toa.resolve);
                 await toa.set();
@@ -534,7 +534,7 @@ export abstract class AbstractClientAsserter<T> {
     hasSubAuthUserGroupCh(timeout : number = 0) : T {
         this._test.test(async () => {
             await this._forEachClient(async (c,i) => {
-                if(c.isSubAuthUserGroupCh()) {return;}
+                if(c.hasSubAuthUserGroupCh()) {return;}
                 const toa = new TimeoutAssert(`Client: ${i} should be subscribed the auth user group channel.`,timeout);
                 c.channelReact().onceSubAuthUserGroupCh(toa.resolve);
                 await toa.set();
@@ -553,7 +553,7 @@ export abstract class AbstractClientAsserter<T> {
     hasSubDefaultUserGroupCh(timeout : number = 0) : T {
         this._test.test(async () => {
             await this._forEachClient(async (c,i) => {
-                if(c.isSubDefaultUserGroupCh()) {return;}
+                if(c.hasSubDefaultUserGroupCh()) {return;}
                 const toa = new TimeoutAssert(`Client: ${i} should be subscribed the default user group channel.`,timeout);
                 c.channelReact().onceSubDefaultUserGroupCh(toa.resolve);
                 await toa.set();
@@ -572,7 +572,7 @@ export abstract class AbstractClientAsserter<T> {
     hasSubAllCh(timeout : number = 0) : T {
         this._test.test(async () => {
             await this._forEachClient(async (c,i) => {
-                if(c.isSubAllCh()) {return;}
+                if(c.hasSubAllCh()) {return;}
                 const toa = new TimeoutAssert(`Client: ${i} should be subscribed the all channel.`,timeout);
                 c.channelReact().onceSubAllCh(toa.resolve);
                 await toa.set();
@@ -593,7 +593,7 @@ export abstract class AbstractClientAsserter<T> {
     hasSubCustomCh(chName : string,timeout : number = 0) : T {
         this._test.test(async () => {
             await this._forEachClient(async (c,i) => {
-                if(c.isSubCustomCh(chName)) {return;}
+                if(c.hasSubCustomCh(chName)) {return;}
                 const toa = new TimeoutAssert(`Client: ${i} should be subscribed the ${chName} custom channel.`,timeout);
                 c.channelReact().onceSubCustomCh(chName,toa.resolve);
                 await toa.set();
@@ -616,7 +616,7 @@ export abstract class AbstractClientAsserter<T> {
     hasSubCustomIdCh(chName : string,chId : string,timeout : number = 0) : T {
         this._test.test(async () => {
             await this._forEachClient(async (c,i) => {
-                if(c.isSubCustomIdCh(chName,chId)) {return;}
+                if(c.hasSubCustomIdCh(chName,chId)) {return;}
                 const toa = new TimeoutAssert
                 (`Client: ${i} should be subscribed the ${chName} custom id channel with id: ${chId}.`,timeout);
                 c.channelReact().onceSubCustomIdCh(chName,chId,toa.resolve);
@@ -636,7 +636,7 @@ export abstract class AbstractClientAsserter<T> {
     hasSubPanelOutCh(timeout : number = 0) : T {
         this._test.test(async () => {
             await this._forEachClient(async (c,i) => {
-                if(c.isSubPanelOutCh()) {return;}
+                if(c.hasSubPanelOutCh()) {return;}
                 const toa = new TimeoutAssert(`Client: ${i} should be subscribed the panel out channel.`,timeout);
                 c.channelReact().onceSubPanelOutCh(toa.resolve);
                 await toa.set();
