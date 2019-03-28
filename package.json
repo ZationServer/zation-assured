@@ -1,6 +1,6 @@
 {
   "name": "zation-assured",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "license": "MIT",
   "description": "Library For Testing Zation Servers",
   "main": "dist/index.js",
