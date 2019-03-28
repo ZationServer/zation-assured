@@ -515,7 +515,8 @@ export abstract class AbstractClientAsserter<T> {
     hasSubUserCh(timeout : number = 0) : T {
         this._test.test(async () => {
             await this._forEachClient(async (c,i) => {
-                if(c.hasSubUserCh()) {return;}
+                try{if(c.hasSubUserCh()) {return;}}
+                catch (e) {}
                 const toa = new TimeoutAssert(`Client: ${i} should be subscribed the user channel.`,timeout);
                 c.channelReact().onceSubUserCh(() => {toa.resolve()});
                 await toa.set();
@@ -534,7 +535,8 @@ export abstract class AbstractClientAsserter<T> {
     hasSubAuthUserGroupCh(timeout : number = 0) : T {
         this._test.test(async () => {
             await this._forEachClient(async (c,i) => {
-                if(c.hasSubAuthUserGroupCh()) {return;}
+                try {if(c.hasSubAuthUserGroupCh()) {return;}}
+                catch (e) {}
                 const toa = new TimeoutAssert(`Client: ${i} should be subscribed the auth user group channel.`,timeout);
                 c.channelReact().onceSubAuthUserGroupCh(() => {toa.resolve()});
                 await toa.set();
