@@ -1,6 +1,6 @@
 {
   "name": "zation-assured",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "description": "Library For Testing Zation Servers",
   "main": "dist/index.js",
@@ -40,7 +40,7 @@
   ],
   "dependencies": {
     "path": "0.12.7",
-    "zation-client": "^0.7.1",
+    "zation-client": "^0.7.2",
     "mocha": "^6.0.2",
     "@types/mocha": "^5.2.6",
     "chai": "4.2.0"
