@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="02ef85ba-751d-4880-8129-2d0bc50c559c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/asserter/channelPubAsserter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/asserter/channelPubAsserter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/timeout/timeoutAssert.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/timeout/timeoutAssert.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/helper/asserter/channelEventAsserter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/asserter/channelEventAsserter.ts" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -16,11 +15,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/timeout/timeoutAssert.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="462">
-              <caret line="47" column="29" lean-forward="true" selection-start-line="47" selection-start-column="29" selection-end-line="47" selection-end-column="29" />
+            <state relative-caret-position="-217">
+              <caret line="22" column="25" lean-forward="true" selection-start-line="22" selection-start-column="25" selection-end-line="22" selection-end-column="25" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -31,8 +30,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/asserter/channelPubAsserter.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="293">
-              <caret line="119" column="40" selection-start-line="119" selection-start-column="40" selection-end-line="119" selection-end-column="40" />
+            <state relative-caret-position="150">
+              <caret line="10" selection-start-line="10" selection-end-line="10" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="e#81#133#0" expanded="true" />
@@ -94,7 +93,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/api/testHelper.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="885">
+            <state relative-caret-position="578">
               <caret line="59" column="28" selection-start-line="59" selection-start-column="28" selection-end-line="59" selection-end-column="28" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
@@ -108,7 +107,7 @@
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="38">
-              <caret line="21" column="12" lean-forward="true" selection-start-line="21" selection-start-column="12" selection-end-line="21" selection-end-column="12" />
+              <caret line="21" column="12" selection-start-line="21" selection-start-column="12" selection-end-line="21" selection-end-column="12" />
             </state>
           </provider>
         </entry>
@@ -117,7 +116,7 @@
         <entry file="file://$PROJECT_DIR$/src/index.ts">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="180">
-              <caret line="12" column="25" lean-forward="true" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
+              <caret line="12" column="25" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -125,11 +124,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/asserter/channelEventAsserter.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1125">
-              <caret line="75" column="1" selection-start-line="75" selection-start-column="1" selection-end-line="75" selection-end-column="1" />
+            <state relative-caret-position="398">
+              <caret line="83" column="59" lean-forward="true" selection-start-line="83" selection-start-column="59" selection-end-line="83" selection-end-column="59" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="e#81#133#0" expanded="true" />
@@ -189,7 +188,6 @@
         <option value="$PROJECT_DIR$/src/lib/helper/data/test.ts" />
         <option value="$PROJECT_DIR$/src/lib/api/when.ts" />
         <option value="$PROJECT_DIR$/src/lib/api/testHelper.ts" />
-        <option value="$PROJECT_DIR$/src/lib/helper/asserter/channelEventAsserter.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/asserter/objectAsserter.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/asserter/responseAsserter.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/asserter/anyAsserter.ts" />
@@ -198,6 +196,7 @@
         <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/src/lib/helper/asserter/channelPubAsserter.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/timeout/timeoutAssert.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/asserter/channelEventAsserter.ts" />
       </list>
     </option>
   </component>
@@ -305,12 +304,12 @@
       <workItem from="1553740778657" duration="168000" />
       <workItem from="1553769660484" duration="6567000" />
       <workItem from="1553784729272" duration="122000" />
-      <workItem from="1553788973705" duration="1289000" />
+      <workItem from="1553788973705" duration="1544000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="86632000" />
+    <option name="totallyTimeSpent" value="86887000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="6" />
@@ -541,13 +540,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/api/testHelper.ts">
+    <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="885">
-          <caret line="59" column="28" selection-start-line="59" selection-start-column="28" selection-end-line="59" selection-end-column="28" />
+        <state relative-caret-position="38">
+          <caret line="21" column="12" selection-start-line="21" selection-start-column="12" selection-end-line="21" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/timeout/timeoutAssert.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-217">
+          <caret line="22" column="25" lean-forward="true" selection-start-line="22" selection-start-column="25" selection-end-line="22" selection-end-column="25" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <element signature="e#81#129#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -555,28 +560,21 @@
     <entry file="file://$PROJECT_DIR$/src/index.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
-          <caret line="12" column="25" lean-forward="true" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
+          <caret line="12" column="25" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/asserter/channelEventAsserter.ts">
+    <entry file="file://$PROJECT_DIR$/src/lib/api/testHelper.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1125">
-          <caret line="75" column="1" selection-start-line="75" selection-start-column="1" selection-end-line="75" selection-end-column="1" />
+        <state relative-caret-position="578">
+          <caret line="59" column="28" selection-start-line="59" selection-start-column="28" selection-end-line="59" selection-end-column="28" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <element signature="e#81#133#0" expanded="true" />
+            <element signature="e#81#129#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="21" column="12" lean-forward="true" selection-start-line="21" selection-start-column="12" selection-end-line="21" selection-end-column="12" />
         </state>
       </provider>
     </entry>
@@ -593,8 +591,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/helper/asserter/channelPubAsserter.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="293">
-          <caret line="119" column="40" selection-start-line="119" selection-start-column="40" selection-end-line="119" selection-end-column="40" />
+        <state relative-caret-position="150">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="e#81#133#0" expanded="true" />
@@ -602,12 +600,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/timeout/timeoutAssert.ts">
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/asserter/channelEventAsserter.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="47" column="29" lean-forward="true" selection-start-line="47" selection-start-column="29" selection-end-line="47" selection-end-column="29" />
+        <state relative-caret-position="398">
+          <caret line="83" column="59" lean-forward="true" selection-start-line="83" selection-start-column="59" selection-end-line="83" selection-end-column="59" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
+            <element signature="e#81#133#0" expanded="true" />
           </folding>
         </state>
       </provider>

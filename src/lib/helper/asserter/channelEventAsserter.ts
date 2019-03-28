@@ -7,6 +7,7 @@ GitHub: LucaCode
 import {Test}                   from "../data/test";
 import {TimeoutAssert}          from "../timeout/timeoutAssert";
 import {Zation as ZationClient} from 'zation-client';
+const assert                  = require('assert');
 
 type AddReaction = (client : ZationClient,reaction : () =>
     Promise<void>) => void;
@@ -21,6 +22,7 @@ export class ChannelEventAsserter<T> {
     protected readonly _eventName : string;
 
     private _timeout : number = 0;
+    private _not : boolean = false;
 
     constructor(addReaction : AddReaction,clients : ZationClient[],chName : string,eventName : string,test : Test, source : T) {
         this._addOnceReaction = addReaction;
@@ -47,12 +49,25 @@ export class ChannelEventAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * With this function, you can assert that the event should not be triggered.
+     * @default
+     * The default value is false.
+     */
+    not() : ChannelEventAsserter<T> {
+        this._not = true;
+        return this;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * End the channel event asserter.
      */
     end() : T {
         this._clients.forEach((c,i) => {
             let eventFired = false;
             let resolve;
+
             this._test.beforeTest(() => {
                 this._addOnceReaction(c,async () => {
                     eventFired = true;
@@ -61,13 +76,17 @@ export class ChannelEventAsserter<T> {
                     }
                 });
             });
+            const failMsg =
+                `Client: ${i} should ${this._not ? 'not' : ''} trigger the ${this._eventName} event in the channel: ${this._chName}.`;
+
             this._test.test(async () => {
                 if(!eventFired){
-                    const toa = new TimeoutAssert
-                    (`Client: ${i} should trigger the ${this._eventName} event in the channel: ${this._chName}.`
-                        ,this._timeout);
+                    const toa = new TimeoutAssert(failMsg,this._timeout,this._not);
                     resolve = () => {toa.resolve();};
                     await toa.set();
+                }
+                else if(this._not){
+                    assert.fail(failMsg);
                 }
             });
         });
