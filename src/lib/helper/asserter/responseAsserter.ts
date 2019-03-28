@@ -57,7 +57,7 @@ export class ResponseAsserter {
      * @description
      * Assert that the response is not successful.
      */
-    notSuccessful() : ResponseAsserter {
+    isNotSuccessful() : ResponseAsserter {
         this.req.onResponse((res) => {
             assert(!res.isSuccessful(),'Response should be not successful.' + this._respInfo(res));
         });
