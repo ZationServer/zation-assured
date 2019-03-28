@@ -399,7 +399,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert get kickOut in any channel.
+     * Assert is kicked out from any channel.
      */
     getKickOutAnyCh() : ChannelEventAsserter<T> {
         return new ChannelEventAsserter<T>(
@@ -411,7 +411,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert get kickOut in user channel.
+     * Assert is kicked out from user channel.
      */
     getKickOutUserCh() : ChannelEventAsserter<T> {
         return new ChannelEventAsserter<T>(
@@ -423,7 +423,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert get kickOut in auth user group channel.
+     * Assert is kicked out from auth user group channel.
      */
     getKickOutAuthUserGroupCh() : ChannelEventAsserter<T> {
         return new ChannelEventAsserter<T>(
@@ -435,7 +435,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert get kickOut in default user group channel.
+     * Assert is kicked out from default user group channel.
      */
     getKickOutDefaultUserGroupCh() : ChannelEventAsserter<T> {
         return new ChannelEventAsserter<T>(
@@ -447,7 +447,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert get kickOut in all channel.
+     * Assert is kicked out from all channel.
      */
     getKickOutAllCh() : ChannelEventAsserter<T> {
         return new ChannelEventAsserter<T>(
@@ -459,7 +459,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert get kickOut in custom channel.
+     * Assert is kicked out from custom channel.
      * @param chName
      * You can also assert for multiple channel names by giving an channel name array.
      * Or to all channel names if you pass as parameter null.
@@ -476,7 +476,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert get kickOut in custom id channel.
+     * Assert is kicked out from custom id channel.
      * @param chName
      * You can also assert for multiple channel names by giving an channel name array.
      * Or to all channel names if you pass as parameter null.
@@ -491,5 +491,157 @@ export abstract class AbstractClientAsserter<T> {
             }, this.clients,
             AbstractClientAsserter._buildCustomIdChName(chName,chId)
             ,'KickOut',this._test,this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert is kicked out from panel out channel.
+     */
+    getKickOutPanelOutCh() : ChannelEventAsserter<T> {
+        return new ChannelEventAsserter<T>(
+            async (client,reaction) => {
+                client.channelReact().onceKickOutPanelOutCh(reaction);
+            }, this.clients,'PanelOut channel','KickOut',this._test,this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert that the client has subscribed the user channel.
+     * @param timeout
+     * With this parameter, you can set a time limit in that the assertion must be successful.
+     */
+    hasSubUserCh(timeout : number = 0) : T {
+        this._test.test(async () => {
+            await this._forEachClient(async (c,i) => {
+                if(c.isSubUserCh()) {return;}
+                const toa = new TimeoutAssert(`Client: ${i} should be subscribed the user channel.`,timeout);
+                c.channelReact().onceSubUserCh(toa.resolve);
+                await toa.set();
+            });
+        });
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert that the client has subscribed the auth user group channel.
+     * @param timeout
+     * With this parameter, you can set a time limit in that the assertion must be successful.
+     */
+    hasSubAuthUserGroupCh(timeout : number = 0) : T {
+        this._test.test(async () => {
+            await this._forEachClient(async (c,i) => {
+                if(c.isSubAuthUserGroupCh()) {return;}
+                const toa = new TimeoutAssert(`Client: ${i} should be subscribed the auth user group channel.`,timeout);
+                c.channelReact().onceSubAuthUserGroupCh(toa.resolve);
+                await toa.set();
+            });
+        });
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert that the client has subscribed the default user group channel.
+     * @param timeout
+     * With this parameter, you can set a time limit in that the assertion must be successful.
+     */
+    hasSubDefaultUserGroupCh(timeout : number = 0) : T {
+        this._test.test(async () => {
+            await this._forEachClient(async (c,i) => {
+                if(c.isSubDefaultUserGroupCh()) {return;}
+                const toa = new TimeoutAssert(`Client: ${i} should be subscribed the default user group channel.`,timeout);
+                c.channelReact().onceSubDefaultUserGroupCh(toa.resolve);
+                await toa.set();
+            });
+        });
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert that the client has subscribed the all channel.
+     * @param timeout
+     * With this parameter, you can set a time limit in that the assertion must be successful.
+     */
+    hasSubAllCh(timeout : number = 0) : T {
+        this._test.test(async () => {
+            await this._forEachClient(async (c,i) => {
+                if(c.isSubAllCh()) {return;}
+                const toa = new TimeoutAssert(`Client: ${i} should be subscribed the all channel.`,timeout);
+                c.channelReact().onceSubAllCh(toa.resolve);
+                await toa.set();
+            });
+        });
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert that the client has subscribed an specific custom channel.
+     * @param chName
+     * The custom channel name.
+     * @param timeout
+     * With this parameter, you can set a time limit in that the assertion must be successful.
+     */
+    hasSubCustomCh(chName : string,timeout : number = 0) : T {
+        this._test.test(async () => {
+            await this._forEachClient(async (c,i) => {
+                if(c.isSubCustomCh(chName)) {return;}
+                const toa = new TimeoutAssert(`Client: ${i} should be subscribed the ${chName} custom channel.`,timeout);
+                c.channelReact().onceSubCustomCh(chName,toa.resolve);
+                await toa.set();
+            });
+        });
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert that the client has subscribed an specific custom id channel.
+     * @param chName
+     * The custom id channel name.
+     * @param chId
+     * The custom id channel id.
+     * @param timeout
+     * With this parameter, you can set a time limit in that the assertion must be successful.
+     */
+    hasSubCustomIdCh(chName : string,chId : string,timeout : number = 0) : T {
+        this._test.test(async () => {
+            await this._forEachClient(async (c,i) => {
+                if(c.isSubCustomIdCh(chName,chId)) {return;}
+                const toa = new TimeoutAssert
+                (`Client: ${i} should be subscribed the ${chName} custom id channel with id: ${chId}.`,timeout);
+                c.channelReact().onceSubCustomIdCh(chName,chId,toa.resolve);
+                await toa.set();
+            });
+        });
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert that the client has subscribed the panel out channel.
+     * @param timeout
+     * With this parameter, you can set a time limit in that the assertion must be successful.
+     */
+    hasSubPanelOutCh(timeout : number = 0) : T {
+        this._test.test(async () => {
+            await this._forEachClient(async (c,i) => {
+                if(c.isSubPanelOutCh()) {return;}
+                const toa = new TimeoutAssert(`Client: ${i} should be subscribed the panel out channel.`,timeout);
+                c.channelReact().onceSubPanelOutCh(toa.resolve);
+                await toa.set();
+            });
+        });
+        return this.self();
     }
 }
