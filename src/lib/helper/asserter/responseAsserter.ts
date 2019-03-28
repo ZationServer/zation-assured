@@ -11,8 +11,9 @@ import {WhenBuilder}           from "../../api/when";
 import {Logger}                from "../console/logger";
 import {AnyAsserter}           from "./anyAsserter";
 import {TaskErrorFilterBuilder} from "../error/taskErrorFilterBuilder";
-import {ClientAsserter} from "./clientAsserter";
-const assert                 = require('assert');
+import {ClientAsserter}         from "./clientAsserter";
+const assert                   = require('assert');
+const cAssert                  = require('chai').assert;
 
 export class ResponseAsserter {
 
@@ -71,7 +72,7 @@ export class ResponseAsserter {
      */
     hasStatusCode(statusCode : number) : ResponseAsserter {
         this.req.onResponse((res) => {
-            assert(res.getStatusCode() === statusCode,`Response should have status code: ${statusCode}.`
+            cAssert.strictEqual(res.getStatusCode(),statusCode,`Response should have status code: ${statusCode}.`
                 + this._respInfo(res));
         });
         return this;

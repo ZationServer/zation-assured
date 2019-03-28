@@ -40,12 +40,28 @@ export class AnyAsserter<T> {
     /**
      * @description
      * Assert that any is equal with...
+     * Is using the == operator to check.
      * @param any
      */
     equal(any : any) : AnyAsserter<T> {
         this.addTest((inAny,eStr = '') => {
             // noinspection TypeScriptValidateJSTypes
             cAssert.equal(inAny,any,`${this.name+eStr} should equal with ${any}`);
+        });
+        return this;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert that any is strict equal with...
+     * Is using the === operator to check.
+     * @param any
+     */
+    strictEqual(any : any) : AnyAsserter<T> {
+        this.addTest((inAny,eStr = '') => {
+            // noinspection TypeScriptValidateJSTypes
+            cAssert.strictEqual(inAny,any,`${this.name+eStr} should strict equal with ${any}`);
         });
         return this;
     }
