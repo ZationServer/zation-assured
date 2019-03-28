@@ -262,6 +262,8 @@ export abstract class AbstractClientAsserter<T> {
     /**
      * @description
      * Assert get publish in any channel.
+     * Don't forget to check before assert a publish
+     * that the client has subscribed this channel.
      */
     getPubAnyCh() : ChannelPubAsserter<T> {
         return new ChannelPubAsserter<T>(
@@ -274,6 +276,8 @@ export abstract class AbstractClientAsserter<T> {
     /**
      * @description
      * Assert get publish in user channel.
+     * Don't forget to check before assert a publish
+     * that the client has subscribed this channel.
      */
     getPubUserCh() : ChannelPubAsserter<T> {
         return new ChannelPubAsserter<T>(
@@ -286,6 +290,8 @@ export abstract class AbstractClientAsserter<T> {
     /**
      * @description
      * Assert get publish in auth user group channel.
+     * Don't forget to check before assert a publish
+     * that the client has subscribed this channel.
      */
     getPubAuthUserGroupCh() : ChannelPubAsserter<T> {
         return new ChannelPubAsserter<T>(
@@ -298,6 +304,8 @@ export abstract class AbstractClientAsserter<T> {
     /**
      * @description
      * Assert get publish in default user group channel.
+     * Don't forget to check before assert a publish
+     * that the client has subscribed this channel.
      */
     getPubDefaultUserGroupCh() : ChannelPubAsserter<T> {
         return new ChannelPubAsserter<T>(
@@ -310,6 +318,8 @@ export abstract class AbstractClientAsserter<T> {
     /**
      * @description
      * Assert get publish in all channel.
+     * Don't forget to check before assert a publish
+     * that the client has subscribed this channel.
      */
     getPubAllCh() : ChannelPubAsserter<T> {
         return new ChannelPubAsserter<T>(
@@ -322,6 +332,8 @@ export abstract class AbstractClientAsserter<T> {
     /**
      * @description
      * Assert get publish in custom channel.
+     * Don't forget to check before assert a publish
+     * that the client has subscribed this channel.
      * @param chName
      * You can also assert for multiple channel names by giving an channel name array.
      * Or to all channel names if you pass as parameter null.
@@ -343,6 +355,8 @@ export abstract class AbstractClientAsserter<T> {
     /**
      * @description
      * Assert get publish in custom id channel.
+     * Don't forget to check before assert a publish
+     * that the client has subscribed this channel.
      * @param chName
      * You can also assert for multiple channel names by giving an channel name array.
      * Or to all channel names if you pass as parameter null.
@@ -372,6 +386,8 @@ export abstract class AbstractClientAsserter<T> {
     /**
      * @description
      * Assert get publish in panel out channel.
+     * Don't forget to check before assert a publish
+     * that the client has subscribed this channel.
      */
     getPubPanelOutCh() : ChannelPubAsserter<T> {
         return new ChannelPubAsserter<T>(
