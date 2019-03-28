@@ -66,7 +66,7 @@ export class ChannelEventAsserter<T> {
                     const toa = new TimeoutAssert
                     (`Client: ${i} should trigger the ${this._eventName} event in the channel: ${this._chName}.`
                         ,this._timeout);
-                    resolve = toa.resolve;
+                    resolve = () => {toa.resolve();};
                     await toa.set();
                 }
             });

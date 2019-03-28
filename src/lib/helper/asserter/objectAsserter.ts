@@ -55,7 +55,7 @@ export default class ObjectAsserter<T> {
     deepEqual(obj : any) : ObjectAsserter<T> {
         this.addTest((inObj,eStr = '') => {
             // noinspection TypeScriptValidateJSTypes
-            cAssert.deepEqual(inObj,obj,`${this.name+eStr} should deep equal with ${obj}`);
+            cAssert.deepEqual(inObj,obj,`${this.name+eStr} should deep equal with ${JSON.stringify(obj)}`);
         });
         return this;
     }
@@ -73,7 +73,7 @@ export default class ObjectAsserter<T> {
     ownInclude(obj : any) : ObjectAsserter<T> {
         this.addTest((inObj,eStr = '') => {
             // noinspection TypeScriptValidateJSTypes
-            cAssert.ownInclude(inObj,obj,`${this.name+eStr} should own include ${obj}`);
+            cAssert.ownInclude(inObj,obj,`${this.name+eStr} should own include ${JSON.stringify(obj)}`);
         });
         return this;
     }

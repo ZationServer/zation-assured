@@ -14,18 +14,12 @@ export class TimeoutAssert {
     private timeoutSet;
     private res;
 
-    private readonly _onSuccess : (() => void)[] = [];
-
     private resolved : boolean = false;
     private success : boolean = true;
 
     constructor(msg : string,time : number) {
         this.msg =  msg;
         this.time = time;
-    }
-
-    onSuccess(func : () => void) : void {
-        this._onSuccess.push(func);
     }
 
     async set() : Promise<void> {
@@ -48,6 +42,10 @@ export class TimeoutAssert {
         });
     }
 
+    isSuccess() : boolean {
+        return this.success;
+    }
+
     resolve() {
         if(!this.resolved){
             if(this.timeoutSet) {
@@ -55,9 +53,6 @@ export class TimeoutAssert {
             }
             if(typeof this.res === 'function'){
                 this.res();
-            }
-            if(this.success){
-                this._onSuccess.forEach((f) => {f();});
             }
         }
         else{

@@ -104,11 +104,11 @@ export class ChannelPubAsserter<T> {
                         this._event === null ? ' with all events' : ('with the event: ' + this._event)}.`
                         ,this._timeout);
 
-                    resolve = toa.resolve;
-                    toa.onSuccess(() => {
-                        this._checkPubData(pubData,i);
-                    });
+                    resolve = () => {toa.resolve();};
                     await toa.set();
+                    if(toa.isSuccess()){
+                        this._checkPubData(pubData,i);
+                    }
                 }
                 else{
                     this._checkPubData(pubData,i);
