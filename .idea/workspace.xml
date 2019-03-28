@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="02ef85ba-751d-4880-8129-2d0bc50c559c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/asserter/anyAsserter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/asserter/anyAsserter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/asserter/responseAsserter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/asserter/responseAsserter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/helper/asserter/abstractClientAsserter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/asserter/abstractClientAsserter.ts" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -57,7 +57,7 @@
         <entry file="file://$PROJECT_DIR$/src/lib/helper/asserter/anyAsserter.ts">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="392">
-              <caret line="53" column="41" lean-forward="true" selection-start-line="53" selection-start-column="41" selection-end-line="53" selection-end-column="41" />
+              <caret line="53" column="41" selection-start-line="53" selection-start-column="41" selection-end-line="53" selection-end-column="41" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -68,8 +68,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/asserter/abstractClientAsserter.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3269">
-              <caret line="7" selection-start-line="7" selection-end-line="7" />
+            <state relative-caret-position="371">
+              <caret line="525" column="5" selection-start-line="525" selection-start-column="5" selection-end-line="525" selection-end-column="5" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="e#185#265#0" expanded="true" />
@@ -78,26 +78,14 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/asserter/responseAsserter.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="422">
+            <state relative-caret-position="375">
               <caret line="80" column="40" selection-start-line="80" selection-start-column="40" selection-end-line="80" selection-end-column="40" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="e#81#214#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/data/test.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1010">
-              <caret line="81" column="26" selection-start-line="81" selection-start-column="26" selection-end-line="81" selection-end-column="26" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -112,6 +100,15 @@
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="e#81#129#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/package.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="528">
+              <caret line="42" column="28" selection-start-line="42" selection-start-column="28" selection-end-line="42" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -191,8 +188,6 @@
         <option value="$PROJECT_DIR$/src/lib/helper/asserter/clientAsserter.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/data/test.ts" />
         <option value="$PROJECT_DIR$/src/lib/api/when.ts" />
-        <option value="$PROJECT_DIR$/package.json" />
-        <option value="$PROJECT_DIR$/src/lib/helper/asserter/abstractClientAsserter.ts" />
         <option value="$PROJECT_DIR$/src/lib/api/testHelper.ts" />
         <option value="$PROJECT_DIR$/src/index.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/asserter/channelEventAsserter.ts" />
@@ -201,6 +196,8 @@
         <option value="$PROJECT_DIR$/src/lib/helper/asserter/channelPubAsserter.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/asserter/responseAsserter.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/asserter/anyAsserter.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/asserter/abstractClientAsserter.ts" />
+        <option value="$PROJECT_DIR$/package.json" />
       </list>
     </option>
   </component>
@@ -322,12 +319,12 @@
       <workItem from="1552583673188" duration="76113000" />
       <workItem from="1553731480238" duration="199000" />
       <workItem from="1553740778657" duration="168000" />
-      <workItem from="1553769660484" duration="2886000" />
+      <workItem from="1553769660484" duration="4224000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="81540000" />
+    <option name="totallyTimeSpent" value="82878000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="6" />
@@ -517,13 +514,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="42" column="28" selection-start-line="42" selection-start-column="28" selection-end-line="42" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/helper/data/test.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1010">
@@ -551,17 +541,6 @@
           <caret line="20" column="23" selection-start-line="20" selection-start-column="23" selection-end-line="20" selection-end-column="23" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/asserter/abstractClientAsserter.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3269">
-          <caret line="7" selection-start-line="7" selection-end-line="7" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="e#185#265#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -611,7 +590,7 @@
     <entry file="file://$PROJECT_DIR$/src/lib/helper/asserter/anyAsserter.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="392">
-          <caret line="53" column="41" lean-forward="true" selection-start-line="53" selection-start-column="41" selection-end-line="53" selection-end-column="41" />
+          <caret line="53" column="41" selection-start-line="53" selection-start-column="41" selection-end-line="53" selection-end-column="41" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -620,12 +599,30 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/helper/asserter/responseAsserter.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="422">
+        <state relative-caret-position="375">
           <caret line="80" column="40" selection-start-line="80" selection-start-column="40" selection-end-line="80" selection-end-column="40" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="e#81#214#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/asserter/abstractClientAsserter.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="371">
+          <caret line="525" column="5" selection-start-line="525" selection-start-column="5" selection-end-line="525" selection-end-column="5" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#185#265#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="528">
+          <caret line="42" column="28" selection-start-line="42" selection-start-column="28" selection-end-line="42" selection-end-column="28" />
         </state>
       </provider>
     </entry>
