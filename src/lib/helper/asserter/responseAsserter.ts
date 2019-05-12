@@ -12,6 +12,7 @@ import {Logger}                from "../console/logger";
 import {AnyAsserter}           from "./anyAsserter";
 import {TaskErrorFilterBuilder} from "../error/taskErrorFilterBuilder";
 import {ClientAsserter}         from "./clientAsserter";
+import DoUtils                  from "../do/doUtils";
 const assert                   = require('assert');
 const cAssert                  = require('chai').assert;
 
@@ -210,11 +211,25 @@ export class ResponseAsserter {
      * @description
      * With this function, you can do extra things in the test.
      * Subscribe a channel, publish to a channel...
+     * @param func
      */
     do(func : () => void | Promise<void>) : ResponseAsserter {
-        this._test.test(async () => {
-            await func();
-        },true);
+        DoUtils.do(this._test,func);
+        return this;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * With this function, you can do extra things in the test
+     * and assert that it should throw an error or a specific error.
+     * Subscribe a channel, publish to a channel...
+     * @param func
+     * @param failMsg
+     * @param errors
+     */
+    doShouldThrow(func : () => void | Promise<void>,failMsg : string,...errors : any[]) : ResponseAsserter {
+        DoUtils.doShouldThrow(this._test,func,failMsg,...errors);
         return this;
     }
 

@@ -9,8 +9,9 @@ const assert                  = require('assert');
 import {AuthenticationNeededError, Zation as ZationClient} from 'zation-client';
 import ObjectAsserter           from "./objectAsserter";
 import {TimeoutAssert}          from "../timeout/timeoutAssert";
-import {ChannelPubAsserter} from "./channelPubAsserter";
-import {ChannelEventAsserter} from "./channelEventAsserter";
+import {ChannelPubAsserter}     from "./channelPubAsserter";
+import {ChannelEventAsserter}   from "./channelEventAsserter";
+import DoUtils                  from "../do/doUtils";
 
 export abstract class AbstractClientAsserter<T> {
 
@@ -250,11 +251,25 @@ export abstract class AbstractClientAsserter<T> {
      * @description
      * With this function, you can do extra things in the test.
      * Subscribe a channel, publish to a channel...
+     * @param func
      */
     do(func : () => void | Promise<void>) : T {
-        this._test.test(async () => {
-            await func();
-        },true);
+        DoUtils.do(this._test,func);
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * With this function, you can do extra things in the test
+     * and assert that it should throw an error or a specific error.
+     * Subscribe a channel, publish to a channel...
+     * @param func
+     * @param failMsg
+     * @param errors
+     */
+    doShouldThrow(func : () => void | Promise<void>,failMsg : string,...errors : any[]) : T {
+        DoUtils.doShouldThrow(this._test,func,failMsg,...errors);
         return this.self();
     }
 
