@@ -4,13 +4,13 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {AbstractRequestHelper, Zation as ZationClient, Response, ErrorFilter, ErrorFilterEngine, TaskError}
+import {AbstractRequestBuilder as NativeAbstractRequestBuilder, Zation as ZationClient, Response, ErrorFilter, ErrorFilterEngine, BackError}
     from "zation-client";
 import {Test}                  from "../data/test";
 import {WhenBuilder}           from "../../api/when";
 import {Logger}                from "../console/logger";
 import {AnyAsserter}           from "./anyAsserter";
-import {TaskErrorFilterBuilder} from "../error/taskErrorFilterBuilder";
+import {BackErrorFilterBuilder} from "../error/backErrorFilterBuilder";
 import {ClientAsserter}         from "./clientAsserter";
 import DoUtils                  from "../do/doUtils";
 const assert                   = require('assert');
@@ -18,12 +18,12 @@ const cAssert                  = require('chai').assert;
 
 export class ResponseAsserter {
 
-    private req : AbstractRequestHelper<any>;
+    private req : NativeAbstractRequestBuilder<any>;
     private readonly _test : Test;
     private readonly _client : ZationClient;
     private autoConnectedClient : boolean = false;
 
-    constructor(req : AbstractRequestHelper<any>,test : Test,client : ZationClient) {
+    constructor(req : NativeAbstractRequestBuilder<any>, test : Test, client : ZationClient) {
         this.req = req;
         this._test = test;
         this._client = client;
@@ -157,8 +157,8 @@ export class ResponseAsserter {
      * @param count
      * count of errors
      */
-    buildHasErrorCount(count : number) : TaskErrorFilterBuilder<ResponseAsserter> {
-        return new TaskErrorFilterBuilder(this,count);
+    buildHasErrorCount(count : number) : BackErrorFilterBuilder<ResponseAsserter> {
+        return new BackErrorFilterBuilder(this,count);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -183,11 +183,11 @@ export class ResponseAsserter {
      * Assert that the response has an specific error
      * with filter builder.
      */
-    buildHasError() : TaskErrorFilterBuilder<ResponseAsserter> {
-        return new TaskErrorFilterBuilder(this);
+    buildHasError() : BackErrorFilterBuilder<ResponseAsserter> {
+        return new BackErrorFilterBuilder(this);
     }
 
-    private static _filterErrors(res : Response,filter : ErrorFilter[]) : TaskError[] {
+    private static _filterErrors(res : Response,filter : ErrorFilter[]) : BackError[] {
         return ErrorFilterEngine.filterErrors(res.getErrors(false),filter);
     }
 

@@ -9,7 +9,7 @@ import {AbstractErrorFilterBuilder} from "zation-client";
 // noinspection TypeScriptPreferShortImport
 import {ResponseAsserter}           from "./../asserter/responseAsserter";
 
-export class TaskErrorFilterBuilder<T extends ResponseAsserter> extends AbstractErrorFilterBuilder<TaskErrorFilterBuilder<T>>
+export class BackErrorFilterBuilder<T extends ResponseAsserter> extends AbstractErrorFilterBuilder<BackErrorFilterBuilder<T>>
 {
     private readonly respAsserter  : T;
     private readonly count : number | undefined;
@@ -37,7 +37,7 @@ export class TaskErrorFilterBuilder<T extends ResponseAsserter> extends Abstract
         return this.respAsserter;
     }
 
-    protected self() : TaskErrorFilterBuilder<T> {
+    protected self() : BackErrorFilterBuilder<T> {
         return this;
     }
 

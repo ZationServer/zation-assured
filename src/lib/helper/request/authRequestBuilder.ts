@@ -5,14 +5,14 @@ GitHub: LucaCode
  */
 
 import {AbstractRequestBuilder} from "./abstractRequestBuilder";
-import {AuthRequestHelper, Zation as ZationClient} from "zation-client";
+import {AuthRequestBuilder as NativeAuthRequestBuilder, Zation as ZationClient} from "zation-client";
 import {Test} from "../data/test";
 
-export class AuthRequestBuilder extends AbstractRequestBuilder<AuthRequestBuilder,AuthRequestHelper>
+export class AuthRequestBuilder extends AbstractRequestBuilder<AuthRequestBuilder,NativeAuthRequestBuilder>
 {
-    private req : AuthRequestHelper;
+    private req : NativeAuthRequestBuilder;
 
-    constructor(req : AuthRequestHelper,test : Test,client : ZationClient) {
+    constructor(req : NativeAuthRequestBuilder, test : Test, client : ZationClient) {
         super(test,client,req);
         this.req = req;
     }

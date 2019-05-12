@@ -4,15 +4,15 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {RequestHelper, Zation as ZationClient} from "zation-client";
+import {RequestBuilder as NativeRequestBuilder, Zation as ZationClient} from "zation-client";
 import {AbstractRequestBuilder}               from "./abstractRequestBuilder";
 import {Test}                                 from "../data/test";
 
-export class RequestBuilder extends AbstractRequestBuilder<RequestBuilder,RequestHelper> {
+export class RequestBuilder extends AbstractRequestBuilder<RequestBuilder,NativeRequestBuilder> {
 
-    private req : RequestHelper;
+    private req : NativeRequestBuilder;
 
-    constructor(req : RequestHelper,test : Test,client : ZationClient) {
+    constructor(req : NativeRequestBuilder, test : Test, client : ZationClient) {
         super(test,client,req);
         this.req = req;
     }

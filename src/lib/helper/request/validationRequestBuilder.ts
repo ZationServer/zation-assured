@@ -5,14 +5,14 @@ GitHub: LucaCode
  */
 
 import {AbstractRequestBuilder} from "./abstractRequestBuilder";
-import {ValidationCheck, ValidationRequestHelper, Zation as ZationClient} from "zation-client";
+import {ValidationCheck, ValidationRequestBuilder as NativeValidationRequestBuilder, Zation as ZationClient} from "zation-client";
 import {Test} from "../data/test";
 
-export class ValidationRequestBuilder extends AbstractRequestBuilder<ValidationRequestBuilder,ValidationRequestHelper>
+export class ValidationRequestBuilder extends AbstractRequestBuilder<ValidationRequestBuilder,NativeValidationRequestBuilder>
 {
-    private req : ValidationRequestHelper;
+    private req : NativeValidationRequestBuilder;
 
-    constructor(req : ValidationRequestHelper,test : Test,client : ZationClient) {
+    constructor(req : NativeValidationRequestBuilder, test : Test, client : ZationClient) {
         super(test,client,req);
         this.req = req;
     }
