@@ -48,12 +48,12 @@ export class WhenBuilder {
      * .controller('sendMessage')
      * .data({msg : 'hallo'})
      * ....
-     * @param controllerName
+     * @param controllerId
      * @param data
      */
-    request(controllerName : string = '',data : object = {}) : RequestBuilder {
+    request(controllerId : string = '',data : object = {}) : RequestBuilder {
         return new RequestBuilder
-        (this._client.request(controllerName,data),this._test,this._client);
+        (this._client.request(controllerId,data),this._test,this._client);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -92,12 +92,12 @@ export class WhenBuilder {
      * .controller('sendMessage')
      * .check('msg','hallo')
      * ....
-     * @param controllerName
+     * @param controllerId
      * @param checks
      */
-    validationRequest(controllerName : string = '',...checks : ValidationCheck[]) : ValidationRequestBuilder {
+    validationRequest(controllerId : string = '',...checks : ValidationCheck[]) : ValidationRequestBuilder {
         return new ValidationRequestBuilder
-        (this._client.validationRequest(controllerName,...checks),this._test,this._client);
+        (this._client.validationRequest(controllerId,...checks),this._test,this._client);
     }
 
     // noinspection JSUnusedGlobalSymbols
