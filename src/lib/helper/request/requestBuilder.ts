@@ -32,12 +32,12 @@ export class RequestBuilder extends AbstractRequestBuilder<RequestBuilder,Native
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the controller id of the request.
-     * @param controllerId
+     * Set the controller of the request.
+     * @param controller
      * @default ''
      */
-    controller(controllerId : string) : RequestBuilder {
-        this.req.controller(controllerId);
+    controller(controller : string) : RequestBuilder {
+        this.req.controller(controller);
         return this;
     }
 

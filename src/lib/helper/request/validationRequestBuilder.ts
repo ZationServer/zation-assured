@@ -20,12 +20,12 @@ export class ValidationRequestBuilder extends AbstractRequestBuilder<ValidationR
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the controller id of the request.
-     * @param controllerId
+     * Set the controller of the request.
+     * @param controller
      * @default ''
      */
-    controller(controllerId : string) : ValidationRequestBuilder {
-        this.req.controller(controllerId);
+    controller(controller : string) : ValidationRequestBuilder {
+        this.req.controller(controller);
         return this;
     }
 

@@ -38,7 +38,7 @@ export class WhenBuilder {
      * Where you can easy build an request.
      * The default values are:
      * Protocol: WebSocket
-     * ControllerName: ''
+     * Controller: ''
      * Data: {}
      * SystemController: false
      * UseAuth: true
@@ -48,12 +48,12 @@ export class WhenBuilder {
      * .controller('sendMessage')
      * .data({msg : 'hallo'})
      * ....
-     * @param controllerId
+     * @param controller
      * @param data
      */
-    request(controllerId : string = '',data : object = {}) : RequestBuilder {
+    request(controller : string = '',data : object = {}) : RequestBuilder {
         return new RequestBuilder
-        (this._client.request(controllerId,data),this._test,this._client);
+        (this._client.request(controller,data),this._test,this._client);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -85,19 +85,19 @@ export class WhenBuilder {
      * This is useful for validate individual controller parameters.
      * The default values are:
      * Protocol: WebSocket
-     * ControllerName: ''
+     * Controller: ''
      * Checks: []
      * @example
      * when(client1).validationRequest()
      * .controller('sendMessage')
      * .check('msg','hallo')
      * ....
-     * @param controllerId
+     * @param controller
      * @param checks
      */
-    validationRequest(controllerId : string = '',...checks : ValidationCheck[]) : ValidationRequestBuilder {
+    validationRequest(controller : string = '',...checks : ValidationCheck[]) : ValidationRequestBuilder {
         return new ValidationRequestBuilder
-        (this._client.validationRequest(controllerId,...checks),this._test,this._client);
+        (this._client.validationRequest(controller,...checks),this._test,this._client);
     }
 
     // noinspection JSUnusedGlobalSymbols
