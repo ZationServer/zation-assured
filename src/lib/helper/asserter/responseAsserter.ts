@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {AbstractRequestBuilder as NativeAbstractRequestBuilder, Zation as ZationClient, Response, ErrorFilter, ErrorFilterEngine, BackError}
+import {AbstractRequestBuilder as NativeAbstractRequestBuilder, Zation as ZationClient, Response, ErrorFilter, ErrorFilterEngine, BackError, TimeoutError, ConnectionNeededError}
     from "zation-client";
 import {Test}                  from "../data/test";
 import {WhenBuilder}           from "../../api/when";
@@ -23,22 +23,74 @@ export class ResponseAsserter {
     private readonly _client : ZationClient;
     private autoConnectedClient : boolean = false;
 
+    private _shouldThrowTimeoutError : boolean = false;
+    private _shouldThrowConnectionNeededError : boolean = false;
+
     constructor(req : NativeAbstractRequestBuilder<any>, test : Test, client : ZationClient) {
         this.req = req;
         this._test = test;
         this._client = client;
 
+        this._createTest();
+    }
+
+    private _createTest(){
         this._test.test(async () => {
             if(!this._client.isConnected() && this.autoConnectedClient) {
                 await this._client.connect();
             }
-            await this.req.send(false);
+            try{
+                await this.req.send(false);
+                if(this._shouldThrowTimeoutError){
+                    assert.fail('Send should throw a timeout error.');
+                }
+                if(this._shouldThrowConnectionNeededError){
+                    assert.fail('Send should throw a connection needed error.');
+                }
+            }
+            catch (e) {
+                if(e instanceof TimeoutError){
+                    if(!this._shouldThrowTimeoutError){
+                        assert.fail('Send should not throw a timeout error.');
+                    }
+                }
+                else if(e instanceof ConnectionNeededError){
+                    if(!this._shouldThrowConnectionNeededError){
+                        assert.fail('Send should not throw a connection needed error.');
+                    }
+                }
+                else {
+                    throw e;
+                }
+            }
         },true);
     }
 
     // noinspection JSMethodCanBeStatic
     private _respInfo(res : Response) {
         return '\n   ' + res.toString();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert that send the request should throw a timeout error.
+     * @param value
+     */
+    throwsTimeoutError(value : boolean = true) : ResponseAsserter {
+        this._shouldThrowTimeoutError = value;
+        return this;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert that send the request should throw a connection needed error.
+     * @param value
+     */
+    throwsConnectionNeededError(value : boolean = true) : ResponseAsserter {
+        this._shouldThrowConnectionNeededError = value;
+        return this;
     }
 
     // noinspection JSUnusedGlobalSymbols
