@@ -13,6 +13,7 @@ export default class DoUtils {
     /**
      * @description
      * With this function, you can do extra things in the test.
+     * It asserts that the do-function will not throw an error.
      * Subscribe a channel, publish to a channel...
      */
     static do(test : Test,func : () => void | Promise<void>) : void {
