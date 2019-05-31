@@ -35,7 +35,7 @@ export default class DoUtils {
                 assert.fail(failMsg);
             }
             catch (e) {
-                let found = false;
+                let found = errors.length === 0;
                 for(let i = 0; i < errors.length; i++){
                     if(e instanceof errors[i]){
                         found = true;
