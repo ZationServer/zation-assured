@@ -31,11 +31,12 @@ export default class DoUtils {
      */
     static doShouldThrow(test : Test,func : () => void | Promise<void>,failMsg : string,...errors : any[]) : void{
         test.test(async () => {
+            let throws = false;
             try {
                 await func();
-                assert.fail(failMsg);
             }
             catch (e) {
+                throws = true;
                 let found = errors.length === 0;
                 for(let i = 0; i < errors.length; i++){
                     if(e instanceof errors[i]){
@@ -46,6 +47,9 @@ export default class DoUtils {
                 if(!found){
                     assert.fail(failMsg);
                 }
+            }
+            if(!throws){
+                assert.fail(failMsg);
             }
         },true);
     }
