@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {Test}                   from "../data/test";
 const assert                  = require('assert');
-import {AuthenticationNeededError, Zation as ZationClient} from 'zation-client';
+import {AuthenticationRequiredError, Zation as ZationClient} from 'zation-client';
 import ObjectAsserter           from "./objectAsserter";
 import {TimeoutAssert}          from "../timeout/timeoutAssert";
 import {ChannelPubAsserter}     from "./channelPubAsserter";
@@ -166,7 +166,7 @@ export abstract class AbstractClientAsserter<T> {
                     assert.equal(currentTokenId,tokenId,`Client: ${i} should have the tokenId: ${tokenId}`);
                 }
                 catch (e) {
-                    if(e instanceof AuthenticationNeededError) {
+                    if(e instanceof AuthenticationRequiredError) {
                         assert.fail(`Client: ${i} can not access the token for assert token id.`);
                     }
                     else {
@@ -191,7 +191,7 @@ export abstract class AbstractClientAsserter<T> {
                     assert.equal(currentAccess,access,`Client: ${i} should ${access ? '' : 'not'} have panel access`);
                 }
                 catch (e) {
-                    if(e instanceof AuthenticationNeededError) {
+                    if(e instanceof AuthenticationRequiredError) {
                         assert.fail(`Client: ${i} can not access the token for assert panel access.`);
                     }
                     else {
@@ -216,7 +216,7 @@ export abstract class AbstractClientAsserter<T> {
                         test(c.getTokenVariable(),` ${i}  Token: `);
                     }
                     catch (e) {
-                        if(e instanceof AuthenticationNeededError){
+                        if(e instanceof AuthenticationRequiredError){
                             assert.fail(`Client: ${i} can not access the token for assert token variables.`);
                         }
                         else {

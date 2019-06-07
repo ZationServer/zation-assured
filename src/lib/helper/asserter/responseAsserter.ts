@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {AbstractRequestBuilder as NativeAbstractRequestBuilder, Zation as ZationClient, Response, ErrorFilter, ErrorFilterEngine, BackError, TimeoutError, ConnectionNeededError}
+import {AbstractRequestBuilder as NativeAbstractRequestBuilder, Zation as ZationClient, Response, ErrorFilter, ErrorFilterEngine, BackError, TimeoutError, ConnectionRequiredError}
     from "zation-client";
 import {Test}                  from "../data/test";
 import {WhenBuilder}           from "../../api/when";
@@ -24,7 +24,7 @@ export class ResponseAsserter {
     private autoConnectedClient : boolean = false;
 
     private _shouldThrowTimeoutError : boolean = false;
-    private _shouldThrowConnectionNeededError : boolean = false;
+    private _shouldThrowConnectionRequiredError : boolean = false;
 
     constructor(req : NativeAbstractRequestBuilder<any>, test : Test, client : ZationClient) {
         this.req = req;
@@ -44,8 +44,8 @@ export class ResponseAsserter {
                 if(this._shouldThrowTimeoutError){
                     assert.fail('Send should throw a timeout error.');
                 }
-                if(this._shouldThrowConnectionNeededError){
-                    assert.fail('Send should throw a connection needed error.');
+                if(this._shouldThrowConnectionRequiredError){
+                    assert.fail('Send should throw a connection required error.');
                 }
             }
             catch (e) {
@@ -54,9 +54,9 @@ export class ResponseAsserter {
                         assert.fail('Send should not throw a timeout error.');
                     }
                 }
-                else if(e instanceof ConnectionNeededError){
-                    if(!this._shouldThrowConnectionNeededError){
-                        assert.fail('Send should not throw a connection needed error.');
+                else if(e instanceof ConnectionRequiredError){
+                    if(!this._shouldThrowConnectionRequiredError){
+                        assert.fail('Send should not throw a connection required error.');
                     }
                 }
                 else {
@@ -85,11 +85,11 @@ export class ResponseAsserter {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that send the request should throw a connection needed error.
+     * Assert that send the request should throw a connection required error.
      * @param value
      */
-    throwsConnectionNeededError(value : boolean = true) : ResponseAsserter {
-        this._shouldThrowConnectionNeededError = value;
+    throwsConnectionRequiredError(value : boolean = true) : ResponseAsserter {
+        this._shouldThrowConnectionRequiredError = value;
         return this;
     }
 
