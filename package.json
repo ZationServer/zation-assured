@@ -41,7 +41,7 @@
   "dependencies": {
     "path": "0.12.7",
     "zation-client": "^0.8.6",
-    "mocha": "^6.0.2",
+    "mocha": "^6.1.4",
     "@types/mocha": "^5.2.6",
     "chai": "4.2.0"
   },
