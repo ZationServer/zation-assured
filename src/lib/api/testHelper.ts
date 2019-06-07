@@ -5,7 +5,6 @@ GitHub: LucaCode
  */
 
 import {Logger} from "../helper/console/logger";
-import {fail} from "assert";
 const assert  = require('assert');
 
 type Func = () => Promise<void> | void;
