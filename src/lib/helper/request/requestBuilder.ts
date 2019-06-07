@@ -58,9 +58,9 @@ export class RequestBuilder extends AbstractRequestBuilder<RequestBuilder,Native
      * @description
      * Set the data of the request.
      * @param data
-     * @default {}
+     * @default undefined (equals to {} on server param based input).
      */
-    data(data : object | any[]) : RequestBuilder {
+    data(data : any) : RequestBuilder {
         this.req.data(data);
         return this;
     }

@@ -22,9 +22,9 @@ export class AuthRequestBuilder extends AbstractRequestBuilder<AuthRequestBuilde
      * @description
      * Set the authData of the request.
      * @param data
-     * @default {}
+     * @default undefined (equals to {} on server param based input).
      */
-    authData(data : object | any[]) : AuthRequestBuilder {
+    authData(data : any) : AuthRequestBuilder {
         this.req.authData(data);
         return this;
     }
