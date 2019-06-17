@@ -15,10 +15,23 @@ export default class DoUtils {
      * With this function, you can do extra things in the test.
      * It asserts that the do-function will not throw an error.
      * Subscribe a channel, publish to a channel...
+     * @param test
+     * @param func
+     * @param failMsg if not provided it throws the specific error.
      */
-    static do(test : Test,func : () => void | Promise<void>) : void {
+    static do(test : Test,func : () => void | Promise<void>,failMsg ?: string) : void {
         test.test(async () => {
-            await func();
+            try {
+                await func();
+            }
+            catch (e) {
+                if(failMsg !== undefined){
+                    assert.fail(failMsg);
+                }
+                else {
+                    throw e;
+                }
+            }
         },true);
     }
 
@@ -28,6 +41,10 @@ export default class DoUtils {
      * With this function, you can do extra things in the test
      * and assert that it should throw an error or a specific error.
      * Subscribe a channel, publish to a channel...
+     * @param test
+     * @param func
+     * @param failMsg
+     * @param errors
      */
     static doShouldThrow(test : Test,func : () => void | Promise<void>,failMsg : string,...errors : any[]) : void{
         test.test(async () => {

@@ -264,9 +264,10 @@ export class ResponseAsserter {
      * With this function, you can do extra things in the test.
      * Subscribe a channel, publish to a channel...
      * @param func
+     * @param failMsg if not provided it throws the specific error.
      */
-    do(func : () => void | Promise<void>) : ResponseAsserter {
-        DoUtils.do(this._test,func);
+    do(func : () => void | Promise<void>,failMsg ?: string) : ResponseAsserter {
+        DoUtils.do(this._test,func,failMsg);
         return this;
     }
 
