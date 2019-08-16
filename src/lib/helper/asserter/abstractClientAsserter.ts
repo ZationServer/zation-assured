@@ -350,51 +350,28 @@ export abstract class AbstractClientAsserter<T> {
      * Assert get publish in custom channel.
      * Don't forget to check before assert a publish
      * that the client has subscribed this channel.
-     * @param chName
+     * @param name
      * You can also assert for multiple channel names by giving an channel name array.
-     * Or to all channel names if you pass as parameter null.
-     */
-    getPubCustomCh(chName : string | string[] | null) : ChannelPubAsserter<T> {
-        return new ChannelPubAsserter<T>(
-            async (client,event,reaction) => {
-                client.channelReact().oncePubCustomCh(chName,event,reaction);
-            }, this.clients,
-            AbstractClientAsserter._buildCustomChName(chName)
-            ,this._test,this.self());
-    }
-
-    private static _buildCustomChName(chName : string | string[] | null) : string {
-        return (chName === null ? 'All Custom channels' : ('Custom channels with name: '+chName))
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Assert get publish in custom id channel.
-     * Don't forget to check before assert a publish
-     * that the client has subscribed this channel.
-     * @param chName
-     * You can also assert for multiple channel names by giving an channel name array.
-     * Or to all channel names if you pass as parameter null.
-     * @param chId
+     * Or to all channel names by providing no specific name.
+     * @param id
      * You can also assert for multiple channel ids by giving an channel id array.
-     * Or to all channel ids if you pass as parameter null.
+     * Or to all channel ids by providing no specific id.
      */
-    getPubCustomIdCh(chName: string | string[] | null,chId: string | string[] | null) : ChannelPubAsserter<T> {
+    getPubCustomCh({ name, id } : {name ?: string | string[], id ?: string | string[]}) : ChannelPubAsserter<T> {
         return new ChannelPubAsserter<T>(
             async (client,event,reaction) => {
-                client.channelReact().oncePubCustomIdCh(chName,chId,event,reaction);
+                client.channelReact().oncePubCustomCh({name,id},event,reaction);
             }, this.clients,
-            AbstractClientAsserter._buildCustomIdChName(chName,chId)
+            AbstractClientAsserter._buildCustomChName(name,id)
             ,this._test,this.self());
     }
 
-    private static _buildCustomIdChName(chName: string | string[] | null,chId: string | string[] | null) : string {
+    private static _buildCustomChName(name: string | string[] | undefined,id: string | string[] | undefined) : string {
         return (
-            'CustomId channels with ' +
-            (chName === null ? 'all channel names' : ('channel names: '+chName)) +
+            'Custom channels with ' +
+            (name === undefined ? 'all channel names' : ('channel names: '+name)) +
                 ' and ' +
-            (chId === null ? 'all ids' : ('ids: '+chId))
+            (id === undefined ? 'all ids' : ('ids: '+id))
         );
     }
 
@@ -475,37 +452,20 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert is kicked out from custom channel.
-     * @param chName
-     * You can also assert for multiple channel names by giving an channel name array.
-     * Or to all channel names if you pass as parameter null.
-     */
-    getKickOutCustomCh(chName : string | string[] | null) : ChannelEventAsserter<T> {
-        return new ChannelEventAsserter<T>(
-            async (client,reaction) => {
-                client.channelReact().onceKickOutCustomCh(chName,reaction);
-            }, this.clients,
-            AbstractClientAsserter._buildCustomChName(chName)
-            ,'KickOut',this._test,this.self());
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
      * Assert is kicked out from custom id channel.
-     * @param chName
+     * param name
      * You can also assert for multiple channel names by giving an channel name array.
-     * Or to all channel names if you pass as parameter null.
-     * @param chId
+     * Or to all channel names by providing no specific name.
+     * @param id
      * You can also assert for multiple channel ids by giving an channel id array.
-     * Or to all channel ids if you pass as parameter null.
+     * Or to all channel ids by providing no specific id.
      */
-    getKickOutCustomIdCh(chName : string | string[] | null,chId: string | string[] | null) : ChannelEventAsserter<T> {
+    getKickOutCustomIdCh({ name, id } : {name ?: string | string[], id ?: string | string[]}) : ChannelEventAsserter<T> {
         return new ChannelEventAsserter<T>(
             async (client,reaction) => {
-                client.channelReact().onceKickOutCustomIdCh(chName,chId,reaction);
+                client.channelReact().onceKickOutCustomCh({name,id},reaction);
             }, this.clients,
-            AbstractClientAsserter._buildCustomIdChName(chName,chId)
+            AbstractClientAsserter._buildCustomChName(name,id)
             ,'KickOut',this._test,this.self());
     }
 
@@ -603,41 +563,21 @@ export abstract class AbstractClientAsserter<T> {
     /**
      * @description
      * Assert that the client has subscribed an specific custom channel.
-     * @param chName
+     * @param name
      * The custom channel name.
+     * @param id
+     * The custom channel id.
      * @param timeout
      * With this parameter, you can set a time limit in that the assertion must be successful.
      */
-    hasSubCustomCh(chName : string,timeout : number = 0) : T {
+    hasSubCustomIdCh(name ?: string,id? : string,timeout : number = 0) : T {
+        const isId = typeof id === 'string';
         this._test.test(async () => {
             await this._forEachClient(async (c,i) => {
-                if(c.hasSubCustomCh(chName)) {return;}
-                const toa = new TimeoutAssert(`Client: ${i} should be subscribed the ${chName} custom channel.`,timeout);
-                c.channelReact().onceSubCustomCh(chName,() => {toa.resolve()});
-                await toa.set();
-            });
-        });
-        return this.self();
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Assert that the client has subscribed an specific custom id channel.
-     * @param chName
-     * The custom id channel name.
-     * @param chId
-     * The custom id channel id.
-     * @param timeout
-     * With this parameter, you can set a time limit in that the assertion must be successful.
-     */
-    hasSubCustomIdCh(chName : string,chId : string,timeout : number = 0) : T {
-        this._test.test(async () => {
-            await this._forEachClient(async (c,i) => {
-                if(c.hasSubCustomIdCh(chName,chId)) {return;}
+                if(c.hasSubCustomCh(name,id)) {return;}
                 const toa = new TimeoutAssert
-                (`Client: ${i} should be subscribed the ${chName} custom id channel with id: ${chId}.`,timeout);
-                c.channelReact().onceSubCustomIdCh(chName,chId,() => {toa.resolve()});
+                (`Client: ${i} should be subscribed the ${name} custom channel${isId ? ` with id: ${id}.` : '.'}`,timeout);
+                c.channelReact().onceSubCustomCh({name,id},() => {toa.resolve()});
                 await toa.set();
             });
         });
