@@ -12,6 +12,7 @@ import {TimeoutAssert}          from "../timeout/timeoutAssert";
 import {ChannelPubAsserter}     from "./channelPubAsserter";
 import {ChannelEventAsserter}   from "./channelEventAsserter";
 import DoUtils                  from "../do/doUtils";
+import {EventAsserter, Responder} from "./eventAsserter";
 
 export abstract class AbstractClientAsserter<T> {
 
@@ -601,5 +602,16 @@ export abstract class AbstractClientAsserter<T> {
             });
         });
         return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert that the client should receive an emit-event from the server.
+     * It uses the custom zation event namespace
+     * (so you cannot have name conflicts with internal event names).
+     */
+    receiveEvent(event : string,responder ?: Responder) : EventAsserter<T> {
+        return new EventAsserter<T>(this.clients,event,this._test,this.self(),responder);
     }
 }
