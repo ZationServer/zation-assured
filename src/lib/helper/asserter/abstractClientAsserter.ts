@@ -452,15 +452,15 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert is kicked out from custom id channel.
-     * param name
+     * Assert is kicked out from custom channel.
+     * @param name
      * You can also assert for multiple channel names by giving an channel name array.
      * Or to all channel names by providing no specific name.
      * @param id
      * You can also assert for multiple channel ids by giving an channel id array.
      * Or to all channel ids by providing no specific id.
      */
-    getKickOutCustomIdCh({ name, id } : {name ?: string | string[], id ?: string | string[]}) : ChannelEventAsserter<T> {
+    getKickOutCustomCh({ name, id } : {name ?: string | string[], id ?: string | string[]}) : ChannelEventAsserter<T> {
         return new ChannelEventAsserter<T>(
             async (client,reaction) => {
                 client.channelReact().onceKickOutCustomCh({name,id},reaction);
@@ -570,7 +570,7 @@ export abstract class AbstractClientAsserter<T> {
      * @param timeout
      * With this parameter, you can set a time limit in that the assertion must be successful.
      */
-    hasSubCustomIdCh(name ?: string,id? : string,timeout : number = 0) : T {
+    hasSubCustomCh(name ?: string,id? : string,timeout : number = 0) : T {
         const isId = typeof id === 'string';
         this._test.test(async () => {
             await this._forEachClient(async (c,i) => {
