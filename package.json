@@ -1,6 +1,6 @@
 {
   "name": "zation-assured",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "license": "MIT",
   "description": "Library For Testing Zation Servers",
   "main": "dist/index.js",
@@ -39,11 +39,12 @@
     "intergrationTests"
   ],
   "dependencies": {
-    "path": "0.12.7",
-    "zation-client": "^0.9.4",
-    "mocha": "^6.1.4",
     "@types/mocha": "^5.2.6",
-    "chai": "4.2.0"
+    "@types/node": "^12.7.2",
+    "chai": "4.2.0",
+    "mocha": "^6.1.4",
+    "path": "0.12.7",
+    "zation-client": "^0.9.4"
   },
   "devDependencies": {
     "gulp": "4.0.0",
