@@ -188,7 +188,7 @@ export abstract class AbstractClientAsserter<T> {
         this._test.test(async () => {
             await this._forEachClient(async (c,i) => {
                 try {
-                    const currentAccess = c.getTokenPanelAccess();
+                    const currentAccess = c.hasPanelAccess();
                     assert.equal(currentAccess,access,`Client: ${i} should ${access ? '' : 'not'} have panel access`);
                 }
                 catch (e) {
