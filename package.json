@@ -44,7 +44,7 @@
     "chai": "4.2.0",
     "mocha": "^6.1.4",
     "path": "0.12.7",
-    "zation-client": "1.0.1"
+    "zation-client": "1.0.2"
   },
   "devDependencies": {
     "gulp": "4.0.0",
