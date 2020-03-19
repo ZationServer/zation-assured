@@ -44,11 +44,11 @@
     "chai": "4.2.0",
     "mocha": "^6.1.4",
     "path": "0.12.7",
-    "zation-client": "1.1.0"
+    "zation-client": "1.1.2"
   },
   "devDependencies": {
     "gulp": "4.0.0",
     "gulp-typescript": "5.0.1",
-    "typescript": "^3.5.2"
+    "typescript": "^3.8.3"
   }
 }
