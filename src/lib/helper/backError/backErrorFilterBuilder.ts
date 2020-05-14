@@ -5,11 +5,11 @@ GitHub: LucaCode
  */
 
 
-import {AbstractErrorFilterBuilder} from "zation-client";
+import {AbstractBackErrorFilterBuilder} from "zation-client";
 // noinspection TypeScriptPreferShortImport
 import {ResponseAsserter}           from "./../asserter/responseAsserter";
 
-export class BackErrorFilterBuilder<T extends ResponseAsserter> extends AbstractErrorFilterBuilder<BackErrorFilterBuilder<T>>
+export class BackErrorFilterBuilder<T extends ResponseAsserter> extends AbstractBackErrorFilterBuilder<BackErrorFilterBuilder<T>>
 {
     private readonly respAsserter  : T;
     private readonly count : number | undefined;

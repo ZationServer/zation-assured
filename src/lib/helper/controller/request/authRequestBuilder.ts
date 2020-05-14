@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {AbstractRequestBuilder} from "./abstractRequestBuilder";
 import {AuthRequestBuilder as NativeAuthRequestBuilder, Zation as ZationClient} from "zation-client";
-import {Test} from "../data/test";
+import {Test} from "../../data/test";
 
 export class AuthRequestBuilder extends AbstractRequestBuilder<AuthRequestBuilder,NativeAuthRequestBuilder>
 {
@@ -26,21 +26,6 @@ export class AuthRequestBuilder extends AbstractRequestBuilder<AuthRequestBuilde
      */
     authData(data : any) : AuthRequestBuilder {
         this.req.authData(data);
-        return this;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Attach http content to http request.
-     * Can be used for attaching files.
-     * The attached http content will only used by post requests.
-     * @param key
-     * @param data
-     * @default []
-     */
-    attachHttpContent(key : string,data : string | Blob) : AuthRequestBuilder {
-        this.req.attachHttpContent(key,data);
         return this;
     }
 

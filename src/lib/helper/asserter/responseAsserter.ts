@@ -4,17 +4,25 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {AbstractRequestBuilder as NativeAbstractRequestBuilder, Zation as ZationClient, Response, ErrorFilter, ErrorFilterEngine, BackError, TimeoutError, ConnectionRequiredError}
+import {
+    AbstractRequestBuilder as NativeAbstractRequestBuilder,
+    Zation as ZationClient,
+    Response,
+    ErrorFilterEngine,
+    BackError,
+    TimeoutError,
+    ConnectionRequiredError,
+    BackErrorFilter
+}
     from "zation-client";
 import {Test}                  from "../data/test";
 import {WhenBuilder}           from "../../api/when";
 import {Logger}                from "../console/logger";
 import {AnyAsserter}           from "./anyAsserter";
-import {BackErrorFilterBuilder} from "../error/backErrorFilterBuilder";
+import {BackErrorFilterBuilder} from "../backError/backErrorFilterBuilder";
 import {ClientAsserter}         from "./clientAsserter";
 import DoUtils                  from "../do/doUtils";
 const assert                   = require('assert');
-const cAssert                  = require('chai').assert;
 
 export class ResponseAsserter {
 
@@ -120,34 +128,6 @@ export class ResponseAsserter {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the response has specific status code.
-     * @param statusCode
-     */
-    hasStatusCode(statusCode : number) : ResponseAsserter {
-        this.req.onResponse((res) => {
-            cAssert.strictEqual(res.getStatusCode(),statusCode,`Response should have status code: ${statusCode}.`
-                + this._respInfo(res));
-        });
-        return this;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Assert that the response has a new token.
-     * This assertion only makes sense in http requests.
-     */
-    hasNewToken() : ResponseAsserter {
-        this.req.onResponse((res) => {
-            assert(res.hasNewToken(),`Response should have a new token.`
-                + this._respInfo(res));
-        });
-        return this;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
      * Assert that the response has a result.
      */
     hasResult() : ResponseAsserter {
@@ -189,13 +169,13 @@ export class ResponseAsserter {
      * Assert that the response has a specific count of errors.
      * @param count
      * count of errors
-     * @param errorFilter
+     * @param filter
      * Filter to filter for specific errors.
      */
-    hasErrorCount(count : number,...errorFilter : ErrorFilter[]) : ResponseAsserter {
+    hasErrorCount(count : number,...filter : BackErrorFilter[]) : ResponseAsserter {
         this.req.onResponse((res) => {
-            assert(ResponseAsserter._filterErrors(res,errorFilter).length === count,
-                `Response should have ${count} errors.${errorFilter.length === 0 ? '' : ` With filter: ${JSON.stringify(errorFilter)}`}`
+            assert(ResponseAsserter._filterErrors(res,filter).length === count,
+                `Response should have ${count} back errors.${filter.length === 0 ? '' : ` With filter: ${JSON.stringify(filter)}`}`
                 + this._respInfo(res));
         });
         return this;
@@ -217,13 +197,13 @@ export class ResponseAsserter {
     /**
      * @description
      * Assert that the response has an error.
-     * @param errorFilter
+     * @param filter
      * Filter to filter for specific errors.
      */
-    hasError(...errorFilter : ErrorFilter[]) : ResponseAsserter {
+    hasError(...filter : BackErrorFilter[]) : ResponseAsserter {
         this.req.onResponse((res) => {
-            assert(ResponseAsserter._filterErrors(res,errorFilter).length > 0,
-                `Response should have an error.${errorFilter.length === 0 ? '' : ` With filter: ${JSON.stringify(errorFilter)}`}`
+            assert(ResponseAsserter._filterErrors(res,filter).length > 0,
+                `Response should have an error.${filter.length === 0 ? '' : ` With filter: ${JSON.stringify(filter)}`}`
                 + this._respInfo(res));
         });
         return this;
@@ -239,7 +219,7 @@ export class ResponseAsserter {
         return new BackErrorFilterBuilder(this);
     }
 
-    private static _filterErrors(res : Response,filter : ErrorFilter[]) : BackError[] {
+    private static _filterErrors(res : Response,filter : BackErrorFilter[]) : BackError[] {
         return ErrorFilterEngine.filterErrors(res.getErrors(false),filter);
     }
 
