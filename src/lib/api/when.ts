@@ -48,7 +48,7 @@ export class WhenBuilder {
      * @param data
      */
     request(controller: string | SpecialController, data: any = undefined): StandardRequestBuilder {
-        return new StandardRequestBuilder(this._client.request(controller),this._test,this._client);
+        return new StandardRequestBuilder(this._client.request(controller,data),this._test,this._client);
     }
 
     // noinspection JSUnusedGlobalSymbols
