@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ValidationCheckPair, Zation as ZationClient} from 'zation-client';
+import {ValidationCheckPair, ZationClient} from 'zation-client';
 import {Test}                     from "../helper/data/test";
 import {AuthRequestBuilder}       from "../helper/controller/request/authRequestBuilder";
 import {ValidationCheckRequestBuilder} from "../helper/controller/request/validationCheckRequestBuilder";

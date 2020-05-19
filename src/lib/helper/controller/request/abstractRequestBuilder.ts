@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {AbstractRequestBuilder as NativeAbstractRequestBuilder, Zation as ZationClient} from "zation-client";
+import {AbstractRequestBuilder as NativeAbstractRequestBuilder, ZationClient} from "zation-client";
 import {Test}                  from "../../data/test";
 import {ResponseAsserter}      from "../../asserter/responseAsserter";
 import {ConnectTimeoutOption}  from "zation-client/dist/lib/main/utils/connectionUtils";

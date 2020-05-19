@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import {AbstractRequestBuilder} from "./abstractRequestBuilder";
-import {ValidationCheckPair, ValidationCheckRequestBuilder as NativeValidationCheckRequestBuilder, Zation as ZationClient} from "zation-client";
+import {ValidationCheckPair, ValidationCheckRequestBuilder as NativeValidationCheckRequestBuilder, ZationClient} from "zation-client";
 import {Test} from "../../data/test";
 
 export class ValidationCheckRequestBuilder extends AbstractRequestBuilder<ValidationCheckRequestBuilder,NativeValidationCheckRequestBuilder>

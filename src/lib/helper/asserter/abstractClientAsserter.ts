@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {Test}                   from "../data/test";
 const assert                  = require('assert');
-import {AuthenticationRequiredError, Zation as ZationClient} from 'zation-client';
+import {AuthenticationRequiredError, ZationClient} from 'zation-client';
 import ObjectAsserter           from "./objectAsserter";
 import {TimeoutAssert}          from "../timeout/timeoutAssert";
 import DoUtils                  from "../do/doUtils";

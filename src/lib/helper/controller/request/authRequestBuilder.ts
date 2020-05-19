@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import {AbstractRequestBuilder} from "./abstractRequestBuilder";
-import {AuthRequestBuilder as NativeAuthRequestBuilder, Zation as ZationClient} from "zation-client";
+import {AuthRequestBuilder as NativeAuthRequestBuilder, ZationClient} from "zation-client";
 import {Test} from "../../data/test";
 
 export class AuthRequestBuilder extends AbstractRequestBuilder<AuthRequestBuilder,NativeAuthRequestBuilder>

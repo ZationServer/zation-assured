@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 //Api Classes
-import {Options as ClientOptions,ZationClient,create}     from "zation-client";
+import {ZationClientOptions as ClientOptions,ZationClient,create}     from "zation-client";
 import {when}                                             from "./lib/api/when";
 import {client}                                           from "./lib/api/client";
 

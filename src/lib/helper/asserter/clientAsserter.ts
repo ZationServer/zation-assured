@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Zation as ZationClient} from 'zation-client';
+import {ZationClient}           from 'zation-client';
 import {AbstractClientAsserter} from "./abstractClientAsserter";
-import {Test} from "../data/test";
+import {Test}                   from "../data/test";
 
 export class ClientAsserter<T> extends AbstractClientAsserter<ClientAsserter<T>>
 {
