@@ -118,8 +118,8 @@ export abstract class AbstractClientAsserter<T> {
     hasUserId(userId ?: number | string) : T {
         this._test.test(async () => {
             await this._forEachClient(async (c,i) => {
-                const currentId = c.getUserId();
-                if(userId){
+                const currentId = c.userId;
+                if(userId !== undefined){
                     assert.equal(currentId,userId,`Client: ${i} should have the userId: ${userId}`);
                 }
                 else if(currentId === undefined){
@@ -140,8 +140,8 @@ export abstract class AbstractClientAsserter<T> {
     hasAuthUserGroup(authUserGroup ?: string) : T {
         this._test.test(async () => {
             await this._forEachClient(async (c,i) => {
-                const currentGroup = c.getAuthUserGroup();
-                if(authUserGroup){
+                const currentGroup = c.authUserGroup;
+                if(authUserGroup !== undefined){
                     assert.equal(currentGroup,authUserGroup,`Client: ${i} should have the authUserGroup: ${authUserGroup}`);
                 }
                 else if(currentGroup === undefined){
@@ -161,7 +161,7 @@ export abstract class AbstractClientAsserter<T> {
         this._test.test(async () => {
             await this._forEachClient(async (c,i) => {
                 try {
-                    const currentTokenId = c.getTokenId();
+                    const currentTokenId = c.tokenId;
                     assert.equal(currentTokenId,tokenId,`Client: ${i} should have the tokenId: ${tokenId}`);
                 }
                 catch (e) {
@@ -205,18 +205,18 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert the token variables of the client.
+     * Assert the token payload of the client.
      */
-    assertTokenVariables() : ObjectAsserter<T> {
+    assertTokenPayload() : ObjectAsserter<T> {
         return new ObjectAsserter<T>(this.self(),'Client:',(test) => {
             this._test.test(async () => {
                 await this._forEachClient(async (c,i) => {
                     try {
-                        test(c.getTokenVariable(),` ${i}  Token: `);
+                        test(c.getTokenPayload(),` ${i}  Token: `);
                     }
                     catch (e) {
                         if(e instanceof AuthenticationRequiredError){
-                            assert.fail(`Client: ${i} can not access the token for assert token variables.`);
+                            assert.fail(`Client: ${i} can not access the token for assert token payload.`);
                         }
                         else {
                             throw e;
