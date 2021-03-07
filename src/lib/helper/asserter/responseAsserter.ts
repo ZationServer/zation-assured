@@ -196,27 +196,28 @@ export class ResponseAsserter {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * Assert that the response has an specific error
+     * with filter builder.
+     */
+    hasError() : BackErrorFilterBuilder<ResponseAsserter>
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * Assert that the response has an error.
      * @param filter
      * Filter to filter for specific errors.
      */
-    hasError(...filter : BackErrorFilter[]) : ResponseAsserter {
-        this.req.onResponse((res) => {
-            assert(ResponseAsserter._filterErrors(res,filter).length > 0,
-                `Response should have an error.${filter.length === 0 ? '' : ` With filter: ${JSON.stringify(filter)}`}`
-                + this._respInfo(res));
-        });
-        return this;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Assert that the response has an specific error
-     * with filter builder.
-     */
-    buildHasError() : BackErrorFilterBuilder<ResponseAsserter> {
-        return new BackErrorFilterBuilder(this);
+    hasError(...filter: BackErrorFilter[]): ResponseAsserter
+    hasError(...filter: BackErrorFilter[]): ResponseAsserter | BackErrorFilterBuilder<ResponseAsserter> {
+        if(filter.length > 0) {
+            this.req.onResponse((res) => {
+                assert(ResponseAsserter._filterErrors(res,filter).length > 0,
+                    `Response should have an error.${filter.length === 0 ? '' : ` With filter: ${JSON.stringify(filter)}`}`
+                    + this._respInfo(res));
+            });
+            return this;
+        }
+        else return new BackErrorFilterBuilder(this);
     }
 
     private static _filterErrors(res : Response,filter : BackErrorFilter[]) : BackError[] {
