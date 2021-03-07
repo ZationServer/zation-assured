@@ -19,6 +19,7 @@ import {
     failTest as fail
 }
     from "./lib/api/testHelper";
+import assert      = require('assert');
 import {ClientUtils} from "./lib/helper/utils/clientUtils";
 const forEachClient = ClientUtils.forEachClient;
 
@@ -36,7 +37,8 @@ export {
     it,
     fail,
     ZationClient,
-    forEachClient
+    forEachClient,
+    assert
 };
 
 
