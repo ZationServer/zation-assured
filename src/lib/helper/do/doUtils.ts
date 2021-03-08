@@ -4,8 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Test}                   from "../data/test";
-const assert                  = require('assert');
+import {Test} from "../data/test";
+
+const assert = require('assert');
 
 export default class DoUtils {
 
@@ -19,20 +20,18 @@ export default class DoUtils {
      * @param func
      * @param failMsg if not provided it throws the specific error.
      */
-    static do(test : Test,func : () => void | Promise<void>,failMsg ?: string) : void {
+    static do(test: Test, func: () => void | Promise<void>, failMsg ?: string): void {
         test.test(async () => {
             try {
                 await func();
-            }
-            catch (e) {
-                if(failMsg !== undefined){
+            } catch (e) {
+                if (failMsg !== undefined) {
                     assert.fail(failMsg);
-                }
-                else {
+                } else {
                     throw e;
                 }
             }
-        },true);
+        }, true);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -46,29 +45,28 @@ export default class DoUtils {
      * @param failMsg
      * @param errors
      */
-    static doShouldThrow(test : Test,func : () => void | Promise<void>,failMsg : string,...errors : any[]) : void{
+    static doShouldThrow(test: Test, func: () => void | Promise<void>, failMsg: string, ...errors: any[]): void {
         test.test(async () => {
             let throws = false;
             try {
                 await func();
-            }
-            catch (e) {
+            } catch (e) {
                 throws = true;
                 let found = errors.length === 0;
-                for(let i = 0; i < errors.length; i++){
-                    if(e instanceof errors[i]){
+                for (let i = 0; i < errors.length; i++) {
+                    if (e instanceof errors[i]) {
                         found = true;
                         break;
                     }
                 }
-                if(!found){
+                if (!found) {
                     assert.fail(failMsg);
                 }
             }
-            if(!throws){
+            if (!throws) {
                 assert.fail(failMsg);
             }
-        },true);
+        }, true);
     }
 }
 

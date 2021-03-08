@@ -5,17 +5,17 @@ GitHub: LucaCode
  */
 
 import {AbstractRequestBuilder as NativeAbstractRequestBuilder, ZationClient} from "zation-client";
-import {Test}                  from "../../data/test";
-import {ResponseAsserter}      from "../../asserter/responseAsserter";
-import {ConnectTimeoutOption}  from "zation-client/dist/lib/main/utils/connectionUtils";
+import {Test} from "../../data/test";
+import {ResponseAsserter} from "../../asserter/responseAsserter";
+import {ConnectTimeoutOption} from "zation-client/dist/lib/main/utils/connectionUtils";
 
-export abstract class AbstractRequestBuilder<T,RT> {
+export abstract class AbstractRequestBuilder<T, RT> {
 
-    private readonly test : Test;
-    private readonly client : ZationClient;
-    private readonly abReq : NativeAbstractRequestBuilder<any>;
+    private readonly test: Test;
+    private readonly client: ZationClient;
+    private readonly abReq: NativeAbstractRequestBuilder<any>;
 
-    protected constructor(test : Test, client : ZationClient,req : NativeAbstractRequestBuilder<any>) {
+    protected constructor(test: Test, client: ZationClient, req: NativeAbstractRequestBuilder<any>) {
         this.test = test;
         this.client = client;
         this.abReq = req;
@@ -28,7 +28,7 @@ export abstract class AbstractRequestBuilder<T,RT> {
      * @param apiLevel.
      * @default undefined.
      */
-    apiLevel(apiLevel : number | undefined) : T {
+    apiLevel(apiLevel: number | undefined): T {
         this.abReq.apiLevel(apiLevel);
         return this.self();
     }
@@ -42,7 +42,7 @@ export abstract class AbstractRequestBuilder<T,RT> {
      * or it can be a number that indicates the milliseconds.
      * @param timeout
      */
-    responseTimeout(timeout : null | undefined | number) : T {
+    responseTimeout(timeout: null | undefined | number): T {
         this.abReq.responseTimeout(timeout);
         return this.self();
     }
@@ -71,10 +71,10 @@ export abstract class AbstractRequestBuilder<T,RT> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Start the assert that part
+     * Start the assertions.
      */
-    assertThat() : ResponseAsserter {
-        return new ResponseAsserter(this.abReq,this.test,this.client);
+    assertThat(): ResponseAsserter {
+        return new ResponseAsserter(this.abReq, this.test, this.client);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -83,7 +83,7 @@ export abstract class AbstractRequestBuilder<T,RT> {
      * Returns self.
      * For fluent programing with inheritance.
      */
-    protected abstract self() : T;
+    protected abstract self(): T;
 }
 
 

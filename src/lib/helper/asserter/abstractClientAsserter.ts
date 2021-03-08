@@ -4,30 +4,31 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Test}                   from "../data/test";
-const assert                  = require('assert');
+import {Test} from "../data/test";
+
+const assert = require('assert');
 import {AuthenticationRequiredError, ZationClient} from 'zation-client';
-import ObjectAsserter           from "./objectAsserter";
-import {TimeoutAssert}          from "../timeout/timeoutAssert";
-import DoUtils                  from "../do/doUtils";
+import ObjectAsserter from "./objectAsserter";
+import {TimeoutAssert} from "../timeout/timeoutAssert";
+import DoUtils from "../do/doUtils";
 import {EventAsserter, Responder} from "./eventAsserter";
 
 export abstract class AbstractClientAsserter<T> {
 
-    protected _test : Test;
-    protected clients : ZationClient[];
+    protected _test: Test;
+    protected clients: ZationClient[];
 
-    protected abstract self() : T;
+    protected abstract self(): T;
 
-    protected constructor(clients : ZationClient[], test : Test) {
+    protected constructor(clients: ZationClient[], test: Test) {
         this._test = test;
         this.clients = clients;
     }
 
-    protected async _forEachClient(func : (client : ZationClient,i : number) => Promise<void>) {
-        let promises : Promise<void>[] = [];
-        this.clients.forEach((c,i) => {
-            promises.push(func(c,i));
+    protected async _forEachClient(func: (client: ZationClient, i: number) => Promise<void>) {
+        let promises: Promise<void>[] = [];
+        this.clients.forEach((c, i) => {
+            promises.push(func(c, i));
         });
         await Promise.all(promises);
     }
@@ -39,12 +40,16 @@ export abstract class AbstractClientAsserter<T> {
      * @param timeout
      * With this parameter, you can set a time limit in that the assertion must be successful.
      */
-    isConnected(timeout : number = 0) : T {
+    isConnected(timeout: number = 0): T {
         this._test.test(async () => {
-            await this._forEachClient(async (c,i) => {
-                if(c.isConnected()) {return;}
-                const toa = new TimeoutAssert(`Client: ${i} should be connected.`,timeout);
-                c.eventReact().onceConnect(() => {toa.resolve()});
+            await this._forEachClient(async (c, i) => {
+                if (c.isConnected()) {
+                    return;
+                }
+                const toa = new TimeoutAssert(`Client: ${i} should be connected.`, timeout);
+                c.eventReact().onceConnect(() => {
+                    toa.resolve()
+                });
                 await toa.set();
             });
         });
@@ -58,12 +63,16 @@ export abstract class AbstractClientAsserter<T> {
      * @param timeout
      * With this parameter, you can set a time limit in that the assertion must be successful.
      */
-    isDisconnected(timeout : number = 0) : T {
+    isDisconnected(timeout: number = 0): T {
         this._test.test(async () => {
-            await this._forEachClient(async (c,i) => {
-                if(!c.isConnected()){return;}
-                const toa = new TimeoutAssert(`Client: ${i} should be disconnected.`,timeout);
-                c.eventReact().onceDisconnect(() => {toa.resolve()});
+            await this._forEachClient(async (c, i) => {
+                if (!c.isConnected()) {
+                    return;
+                }
+                const toa = new TimeoutAssert(`Client: ${i} should be disconnected.`, timeout);
+                c.eventReact().onceDisconnect(() => {
+                    toa.resolve()
+                });
                 await toa.set();
             });
         });
@@ -77,12 +86,16 @@ export abstract class AbstractClientAsserter<T> {
      * @param timeout
      * With this parameter, you can set a time limit in that the assertion must be successful.
      */
-    isAuthenticated(timeout : number = 0) : T {
+    isAuthenticated(timeout: number = 0): T {
         this._test.test(async () => {
-            await this._forEachClient(async (c,i) => {
-                if(c.isAuthenticated()){return;}
-                const toa = new TimeoutAssert(`Client: ${i} should be authenticated.`,timeout);
-                c.eventReact().onceAuthenticate(() => {toa.resolve()});
+            await this._forEachClient(async (c, i) => {
+                if (c.isAuthenticated()) {
+                    return;
+                }
+                const toa = new TimeoutAssert(`Client: ${i} should be authenticated.`, timeout);
+                c.eventReact().onceAuthenticate(() => {
+                    toa.resolve()
+                });
                 await toa.set();
             });
         });
@@ -96,12 +109,16 @@ export abstract class AbstractClientAsserter<T> {
      * @param timeout
      * With this parameter, you can set a time limit in that the assertion must be successful.
      */
-    isDeauthenticated(timeout : number = 0) : T {
+    isDeauthenticated(timeout: number = 0): T {
         this._test.test(async () => {
-            await this._forEachClient(async (c,i) => {
-                if(!c.isAuthenticated()){return;}
-                const toa = new TimeoutAssert(`Client: ${i} should be deauthenticated.`,timeout);
-                c.eventReact().onceDeauthenticate(() => {toa.resolve()});
+            await this._forEachClient(async (c, i) => {
+                if (!c.isAuthenticated()) {
+                    return;
+                }
+                const toa = new TimeoutAssert(`Client: ${i} should be deauthenticated.`, timeout);
+                c.eventReact().onceDeauthenticate(() => {
+                    toa.resolve()
+                });
                 await toa.set();
             });
         });
@@ -115,14 +132,13 @@ export abstract class AbstractClientAsserter<T> {
      * @param userId
      * If it is not given it will assert that the client has any user id.
      */
-    hasUserId(userId ?: number | string) : T {
+    hasUserId(userId ?: number | string): T {
         this._test.test(async () => {
-            await this._forEachClient(async (c,i) => {
+            await this._forEachClient(async (c, i) => {
                 const currentId = c.userId;
-                if(userId !== undefined){
-                    assert.equal(currentId,userId,`Client: ${i} should have the userId: ${userId}`);
-                }
-                else if(currentId === undefined){
+                if (userId !== undefined) {
+                    assert.equal(currentId, userId, `Client: ${i} should have the userId: ${userId}`);
+                } else if (currentId === undefined) {
                     assert.fail(`Client: ${i} should have any user id.`);
                 }
             });
@@ -137,14 +153,13 @@ export abstract class AbstractClientAsserter<T> {
      * @param authUserGroup
      * If it is not given it will assert that the client has any authUserGroup.
      */
-    hasAuthUserGroup(authUserGroup ?: string) : T {
+    hasAuthUserGroup(authUserGroup ?: string): T {
         this._test.test(async () => {
-            await this._forEachClient(async (c,i) => {
+            await this._forEachClient(async (c, i) => {
                 const currentGroup = c.authUserGroup;
-                if(authUserGroup !== undefined){
-                    assert.equal(currentGroup,authUserGroup,`Client: ${i} should have the authUserGroup: ${authUserGroup}`);
-                }
-                else if(currentGroup === undefined){
+                if (authUserGroup !== undefined) {
+                    assert.equal(currentGroup, authUserGroup, `Client: ${i} should have the authUserGroup: ${authUserGroup}`);
+                } else if (currentGroup === undefined) {
                     assert.fail(`Client: ${i} should have any authUserGroup.`);
                 }
             });
@@ -157,18 +172,16 @@ export abstract class AbstractClientAsserter<T> {
      * @description
      * Assert that the client has a specific token id.
      */
-    hasTokenId(tokenId : string) : T {
+    hasTokenId(tokenId: string): T {
         this._test.test(async () => {
-            await this._forEachClient(async (c,i) => {
+            await this._forEachClient(async (c, i) => {
                 try {
                     const currentTokenId = c.tokenId;
-                    assert.equal(currentTokenId,tokenId,`Client: ${i} should have the tokenId: ${tokenId}`);
-                }
-                catch (e) {
-                    if(e instanceof AuthenticationRequiredError) {
+                    assert.equal(currentTokenId, tokenId, `Client: ${i} should have the tokenId: ${tokenId}`);
+                } catch (e) {
+                    if (e instanceof AuthenticationRequiredError) {
                         assert.fail(`Client: ${i} can not access the token for assert token id.`);
-                    }
-                    else {
+                    } else {
                         throw e;
                     }
                 }
@@ -182,18 +195,16 @@ export abstract class AbstractClientAsserter<T> {
      * @description
      * Assert that the client has panel access.
      */
-    hasPanelAccess(access : boolean = true) : T {
+    hasPanelAccess(access: boolean = true): T {
         this._test.test(async () => {
-            await this._forEachClient(async (c,i) => {
+            await this._forEachClient(async (c, i) => {
                 try {
                     const currentAccess = c.hasPanelAccess();
-                    assert.equal(currentAccess,access,`Client: ${i} should ${access ? '' : 'not'} have panel access`);
-                }
-                catch (e) {
-                    if(e instanceof AuthenticationRequiredError) {
+                    assert.equal(currentAccess, access, `Client: ${i} should ${access ? '' : 'not'} have panel access`);
+                } catch (e) {
+                    if (e instanceof AuthenticationRequiredError) {
                         assert.fail(`Client: ${i} can not access the token for assert panel access.`);
-                    }
-                    else {
+                    } else {
                         throw e;
                     }
                 }
@@ -207,18 +218,16 @@ export abstract class AbstractClientAsserter<T> {
      * @description
      * Assert the token payload of the client.
      */
-    assertTokenPayload() : ObjectAsserter<T> {
-        return new ObjectAsserter<T>(this.self(),'Client:',(test) => {
+    assertTokenPayload(): ObjectAsserter<T> {
+        return new ObjectAsserter<T>(this.self(), 'Client:', (test) => {
             this._test.test(async () => {
-                await this._forEachClient(async (c,i) => {
+                await this._forEachClient(async (c, i) => {
                     try {
-                        test(c.getTokenPayload(),` ${i}  Token: `);
-                    }
-                    catch (e) {
-                        if(e instanceof AuthenticationRequiredError){
+                        test(c.getTokenPayload(), ` ${i}  Token: `);
+                    } catch (e) {
+                        if (e instanceof AuthenticationRequiredError) {
                             assert.fail(`Client: ${i} can not access the token for assert token payload.`);
-                        }
-                        else {
+                        } else {
                             throw e;
                         }
                     }
@@ -236,11 +245,11 @@ export abstract class AbstractClientAsserter<T> {
      * -client the client
      * -index the index of the client
      */
-    assert(assert : (client : ZationClient,index : number) => Promise<void> | void) : T {
+    assert(assert: (client: ZationClient, index: number) => Promise<void> | void): T {
         this._test.test(async () => {
-           await this._forEachClient(async (c,i) => {
-               await assert(c,i);
-           });
+            await this._forEachClient(async (c, i) => {
+                await assert(c, i);
+            });
         });
         return this.self();
     }
@@ -253,8 +262,8 @@ export abstract class AbstractClientAsserter<T> {
      * @param func
      * @param failMsg if not provided it throws the specific error.
      */
-    do(func : () => void | Promise<void>,failMsg ?: string) : T {
-        DoUtils.do(this._test,func,failMsg);
+    do(func: () => void | Promise<void>, failMsg ?: string): T {
+        DoUtils.do(this._test, func, failMsg);
         return this.self();
     }
 
@@ -268,8 +277,8 @@ export abstract class AbstractClientAsserter<T> {
      * @param failMsg
      * @param errors
      */
-    doShouldThrow(func : () => void | Promise<void>,failMsg : string,...errors : any[]) : T {
-        DoUtils.doShouldThrow(this._test,func,failMsg,...errors);
+    doShouldThrow(func: () => void | Promise<void>, failMsg: string, ...errors: any[]): T {
+        DoUtils.doShouldThrow(this._test, func, failMsg, ...errors);
         return this.self();
     }
 
@@ -280,7 +289,7 @@ export abstract class AbstractClientAsserter<T> {
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
      */
-    receiveEvent(event : string,responder ?: Responder) : EventAsserter<T> {
-        return new EventAsserter<T>(this.clients,event,this._test,this.self(),responder);
+    receiveEvent(event: string, responder ?: Responder): EventAsserter<T> {
+        return new EventAsserter<T>(this.clients, event, this._test, this.self(), responder);
     }
 }

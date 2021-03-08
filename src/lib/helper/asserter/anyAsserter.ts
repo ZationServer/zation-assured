@@ -5,18 +5,19 @@ GitHub: LucaCode
  */
 
 
-import ObjectAsserter          from "./objectAsserter";
-const cAssert                = require('chai').assert;
+import ObjectAsserter from "./objectAsserter";
 
-type AddTest = (test : (any : any,eStr ?: string) => void) => void;
+const cAssert = require('chai').assert;
+
+type AddTest = (test: (any: any, eStr ?: string) => void) => void;
 
 export class AnyAsserter<T> {
 
-    protected readonly self : T;
-    private readonly addTest : AddTest;
-    private readonly name : string;
+    protected readonly self: T;
+    private readonly addTest: AddTest;
+    private readonly name: string;
 
-    constructor(self : T,name : string,addTest : AddTest) {
+    constructor(self: T, name: string, addTest: AddTest) {
         this.self = self;
         this.addTest = addTest;
         this.name = name;
@@ -28,10 +29,10 @@ export class AnyAsserter<T> {
      * Assert that any is from a specific type.
      * @param type
      */
-    typeOf(type : string) : AnyAsserter<T> {
-        this.addTest((any,eStr = '') => {
+    typeOf(type: string): AnyAsserter<T> {
+        this.addTest((any, eStr = '') => {
             // noinspection TypeScriptValidateJSTypes
-            cAssert.typeOf(any,type,`${this.name+eStr} should from type ${type}`);
+            cAssert.typeOf(any, type, `${this.name + eStr} should from type ${type}`);
         });
         return this;
     }
@@ -43,10 +44,10 @@ export class AnyAsserter<T> {
      * Is using the == operator to check.
      * @param any
      */
-    equal(any : any) : AnyAsserter<T> {
-        this.addTest((inAny,eStr = '') => {
+    equal(any: any): AnyAsserter<T> {
+        this.addTest((inAny, eStr = '') => {
             // noinspection TypeScriptValidateJSTypes
-            cAssert.equal(inAny,any,`${this.name+eStr} should equal with ${any}`);
+            cAssert.equal(inAny, any, `${this.name + eStr} should equal with ${any}`);
         });
         return this;
     }
@@ -58,10 +59,10 @@ export class AnyAsserter<T> {
      * Is using the === operator to check.
      * @param any
      */
-    strictEqual(any : any) : AnyAsserter<T> {
-        this.addTest((inAny,eStr = '') => {
+    strictEqual(any: any): AnyAsserter<T> {
+        this.addTest((inAny, eStr = '') => {
             // noinspection TypeScriptValidateJSTypes
-            cAssert.strictEqual(inAny,any,`${this.name+eStr} should strict equal with ${any}`);
+            cAssert.strictEqual(inAny, any, `${this.name + eStr} should strict equal with ${any}`);
         });
         return this;
     }
@@ -75,13 +76,15 @@ export class AnyAsserter<T> {
      * Indicates if it should add a type of assertion for type object.
      * Default value is true.
      */
-    objectAssert(addTypeOfAssertion : boolean = true) : ObjectAsserter<AnyAsserter<T>> {
-        if(addTypeOfAssertion){
+    objectAssert(addTypeOfAssertion: boolean = true): ObjectAsserter<AnyAsserter<T>> {
+        if (addTypeOfAssertion) {
             this.typeOf('object');
         }
-        return new ObjectAsserter(this,this.name,(test) => {
-            this.addTest((any,eStr = '') => {
-                if(typeof any === 'object'){test(any,eStr);}
+        return new ObjectAsserter(this, this.name, (test) => {
+            this.addTest((any, eStr = '') => {
+                if (typeof any === 'object') {
+                    test(any, eStr);
+                }
             });
         });
     }
@@ -95,9 +98,9 @@ export class AnyAsserter<T> {
      * -any the input
      * -name the name of this assertion.
      */
-    assert(assert : (any : any,name : string) => void | Promise<void>) : AnyAsserter<T> {
-        this.addTest(async (inAny,eStr = '') => {
-            await assert(inAny,this.name+eStr);
+    assert(assert: (any: any, name: string) => void | Promise<void>): AnyAsserter<T> {
+        this.addTest(async (inAny, eStr = '') => {
+            await assert(inAny, this.name + eStr);
         });
         return this;
     }
@@ -107,7 +110,7 @@ export class AnyAsserter<T> {
      * @description
      * End the any asserter.
      */
-    end() : T {
+    end(): T {
         return this.self;
     }
 }

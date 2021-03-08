@@ -6,12 +6,12 @@ GitHub: LucaCode
 
 export class Logger {
 
-    static  logBusy(message : string) {
-        console.log('\x1b[33m%s\x1b[0m','   [BUSY]',message);
+    static logBusy(message: string) {
+        console.log('\x1b[33m%s\x1b[0m', '   [BUSY]', message);
     }
 
-    static  logInfo(message : string) {
-        console.log('\x1b[34m%s\x1b[0m','   [INFO]',message);
+    static logInfo(message: string) {
+        console.log('\x1b[34m%s\x1b[0m', '   [INFO]', message);
     }
 
 }

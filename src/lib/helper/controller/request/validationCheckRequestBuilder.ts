@@ -5,15 +5,18 @@ GitHub: LucaCode
  */
 
 import {AbstractRequestBuilder} from "./abstractRequestBuilder";
-import {ValidationCheckPair, ValidationCheckRequestBuilder as NativeValidationCheckRequestBuilder, ZationClient} from "zation-client";
+import {
+    ValidationCheckPair,
+    ValidationCheckRequestBuilder as NativeValidationCheckRequestBuilder,
+    ZationClient
+} from "zation-client";
 import {Test} from "../../data/test";
 
-export class ValidationCheckRequestBuilder extends AbstractRequestBuilder<ValidationCheckRequestBuilder,NativeValidationCheckRequestBuilder>
-{
-    private req : NativeValidationCheckRequestBuilder;
+export class ValidationCheckRequestBuilder extends AbstractRequestBuilder<ValidationCheckRequestBuilder, NativeValidationCheckRequestBuilder> {
+    private req: NativeValidationCheckRequestBuilder;
 
-    constructor(req : NativeValidationCheckRequestBuilder, test : Test, client : ZationClient) {
-        super(test,client,req);
+    constructor(req: NativeValidationCheckRequestBuilder, test: Test, client: ZationClient) {
+        super(test, client, req);
         this.req = req;
     }
 
@@ -23,7 +26,7 @@ export class ValidationCheckRequestBuilder extends AbstractRequestBuilder<Valida
      * Adds validation checks.
      * @param checks
      */
-    checks(...checks : ValidationCheckPair[]) : ValidationCheckRequestBuilder {
+    checks(...checks: ValidationCheckPair[]): ValidationCheckRequestBuilder {
         this.req.checks(...checks);
         return this;
     }
@@ -35,8 +38,8 @@ export class ValidationCheckRequestBuilder extends AbstractRequestBuilder<Valida
      * @param path
      * @param value
      */
-    check(path : string | string[],value : any) : ValidationCheckRequestBuilder {
-        this.req.check(path,value);
+    check(path: string | string[], value: any): ValidationCheckRequestBuilder {
+        this.req.check(path, value);
         return this;
     }
 

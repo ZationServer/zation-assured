@@ -5,31 +5,28 @@ GitHub: LucaCode
  */
 
 import {ValidationCheckPair, ZationClient} from 'zation-client';
-import {Test}                     from "../helper/data/test";
-import {AuthRequestBuilder}       from "../helper/controller/request/authRequestBuilder";
+import {Test} from "../helper/data/test";
+import {AuthRequestBuilder} from "../helper/controller/request/authRequestBuilder";
 import {ValidationCheckRequestBuilder} from "../helper/controller/request/validationCheckRequestBuilder";
-import {StandardRequestBuilder}   from "../helper/controller/request/standardRequestBuilder";
-import {SpecialController}        from "zation-client/dist/lib/main/controller/controllerDefinitions";
+import {StandardRequestBuilder} from "../helper/controller/request/standardRequestBuilder";
+import {SpecialController} from "zation-client/dist/lib/main/controller/controllerDefinitions";
 
-export const when = (client : ZationClient,testDescription ?: string) : WhenBuilder => {
-    return WhenBuilder.when(client,testDescription);
+export const when = (client: ZationClient, itTestDescription?: string): WhenBuilder => {
+    return WhenBuilder.when(client, itTestDescription);
 };
 
 export class WhenBuilder {
 
-    private readonly _client : ZationClient;
-    private readonly _test : Test;
+    private readonly _client: ZationClient;
+    private readonly _test: Test;
 
-    private static counter : number = 0;
-
-    constructor(client : ZationClient,test : Test) {
+    constructor(client: ZationClient, test: Test) {
         this._client = client;
         this._test = test;
-        WhenBuilder.counter++;
     }
 
-    static when(client : ZationClient,testDescription : string = `When test number: ${WhenBuilder.counter}`) : WhenBuilder {
-        return new WhenBuilder(client,new Test(testDescription));
+    static when(client: ZationClient, itTestDescription?: string): WhenBuilder {
+        return new WhenBuilder(client, new Test(itTestDescription));
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -48,7 +45,7 @@ export class WhenBuilder {
      * @param data
      */
     request(controller: string | SpecialController, data: any = undefined): StandardRequestBuilder {
-        return new StandardRequestBuilder(this._client.request(controller,data),this._test,this._client);
+        return new StandardRequestBuilder(this._client.request(controller, data), this._test, this._client);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -65,9 +62,9 @@ export class WhenBuilder {
      * ...
      * @param authData
      */
-    authRequest(authData : object = {}) : AuthRequestBuilder {
+    authRequest(authData: object = {}): AuthRequestBuilder {
         return new AuthRequestBuilder
-        (this._client.authRequest(authData),this._test,this._client);
+        (this._client.authRequest(authData), this._test, this._client);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -85,9 +82,9 @@ export class WhenBuilder {
      * @param controller
      * @param checks
      */
-    validationRequest(controller : string | SpecialController = '',...checks : ValidationCheckPair[]) : ValidationCheckRequestBuilder {
+    validationRequest(controller: string | SpecialController = '', ...checks: ValidationCheckPair[]): ValidationCheckRequestBuilder {
         return new ValidationCheckRequestBuilder
-        (this._client.validationRequest(controller,...checks),this._test,this._client);
+        (this._client.validationRequest(controller, ...checks), this._test, this._client);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -96,10 +93,10 @@ export class WhenBuilder {
      * With this function, you can do extra things before the test.
      * Subscribe a channel, publish to a channel...
      */
-    do(func : () => void | Promise<void>) : WhenBuilder {
+    do(func: () => void | Promise<void>): WhenBuilder {
         this._test.beforeTest(async () => {
             await func();
-        },true);
+        }, true);
         return this;
     }
 }

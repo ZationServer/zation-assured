@@ -5,15 +5,15 @@ GitHub: LucaCode
  */
 
 import {StandardRequestBuilder as NativeStandardRequestBuilder, ZationClient} from "zation-client";
-import {AbstractRequestBuilder}               from "./abstractRequestBuilder";
-import {Test}                                 from "../../data/test";
+import {AbstractRequestBuilder} from "./abstractRequestBuilder";
+import {Test} from "../../data/test";
 
-export class StandardRequestBuilder extends AbstractRequestBuilder<StandardRequestBuilder,NativeStandardRequestBuilder> {
+export class StandardRequestBuilder extends AbstractRequestBuilder<StandardRequestBuilder, NativeStandardRequestBuilder> {
 
-    private req : NativeStandardRequestBuilder;
+    private req: NativeStandardRequestBuilder;
 
-    constructor(req : NativeStandardRequestBuilder, test : Test, client : ZationClient) {
-        super(test,client,req);
+    constructor(req: NativeStandardRequestBuilder, test: Test, client: ZationClient) {
+        super(test, client, req);
         this.req = req;
     }
 
@@ -24,7 +24,7 @@ export class StandardRequestBuilder extends AbstractRequestBuilder<StandardReque
      * @param data
      * @default undefined (equals to {} on server param based input).
      */
-    data(data : any) : StandardRequestBuilder {
+    data(data: any): StandardRequestBuilder {
         this.req.data(data);
         return this;
     }

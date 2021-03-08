@@ -15,26 +15,27 @@ import {
     BackErrorFilter
 }
     from "zation-client";
-import {Test}                   from "../data/test";
-import {WhenBuilder}            from "../../api/when";
-import {Logger}                 from "../console/logger";
-import {AnyAsserter}            from "./anyAsserter";
+import {Test} from "../data/test";
+import {WhenBuilder} from "../../api/when";
+import {Logger} from "../console/logger";
+import {AnyAsserter} from "./anyAsserter";
 import {BackErrorFilterBuilder} from "../backError/backErrorFilterBuilder";
-import {ClientAsserter}         from "./clientAsserter";
-import DoUtils                  from "../do/doUtils";
-const assert                   = require('assert');
+import {ClientAsserter} from "./clientAsserter";
+import DoUtils from "../do/doUtils";
+
+const assert = require('assert');
 
 export class ResponseAsserter {
 
-    private req : NativeAbstractRequestBuilder<any>;
-    private readonly _test : Test;
-    private readonly _client : ZationClient;
-    private autoConnectedClient : boolean = false;
+    private req: NativeAbstractRequestBuilder<any>;
+    private readonly _test: Test;
+    private readonly _client: ZationClient;
+    private autoConnectedClient: boolean = false;
 
-    private _shouldThrowTimeoutError : boolean = false;
-    private _shouldThrowConnectionRequiredError : boolean = false;
+    private _shouldThrowTimeoutError: boolean = false;
+    private _shouldThrowConnectionRequiredError: boolean = false;
 
-    constructor(req : NativeAbstractRequestBuilder<any>, test : Test, client : ZationClient) {
+    constructor(req: NativeAbstractRequestBuilder<any>, test: Test, client: ZationClient) {
         this.req = req;
         this._test = test;
         this._client = client;
@@ -42,40 +43,37 @@ export class ResponseAsserter {
         this._createTest();
     }
 
-    private _createTest(){
+    private _createTest() {
         this._test.test(async () => {
-            if(!this._client.isConnected() && this.autoConnectedClient) {
+            if (!this._client.isConnected() && this.autoConnectedClient) {
                 await this._client.connect();
             }
-            try{
+            try {
                 await this.req.send(false);
-                if(this._shouldThrowTimeoutError){
+                if (this._shouldThrowTimeoutError) {
                     assert.fail('Send should throw a timeout error.');
                 }
-                if(this._shouldThrowConnectionRequiredError){
+                if (this._shouldThrowConnectionRequiredError) {
                     assert.fail('Send should throw a connection required error.');
                 }
-            }
-            catch (e) {
-                if(e instanceof TimeoutError){
-                    if(!this._shouldThrowTimeoutError){
+            } catch (e) {
+                if (e instanceof TimeoutError) {
+                    if (!this._shouldThrowTimeoutError) {
                         assert.fail('Send should not throw a timeout error.');
                     }
-                }
-                else if(e instanceof ConnectionRequiredError){
-                    if(!this._shouldThrowConnectionRequiredError){
+                } else if (e instanceof ConnectionRequiredError) {
+                    if (!this._shouldThrowConnectionRequiredError) {
                         assert.fail('Send should not throw a connection required error.');
                     }
-                }
-                else {
+                } else {
                     throw e;
                 }
             }
-        },true);
+        }, true);
     }
 
     // noinspection JSMethodCanBeStatic
-    private _respInfo(res : Response) {
+    private _respInfo(res: Response) {
         return '\n   ' + res.toString();
     }
 
@@ -85,7 +83,7 @@ export class ResponseAsserter {
      * Assert that send the request should throw a timeout error.
      * @param value
      */
-    throwsTimeoutError(value : boolean = true) : ResponseAsserter {
+    throwsTimeoutError(value: boolean = true): ResponseAsserter {
         this._shouldThrowTimeoutError = value;
         return this;
     }
@@ -96,7 +94,7 @@ export class ResponseAsserter {
      * Assert that send the request should throw a connection required error.
      * @param value
      */
-    throwsConnectionRequiredError(value : boolean = true) : ResponseAsserter {
+    throwsConnectionRequiredError(value: boolean = true): ResponseAsserter {
         this._shouldThrowConnectionRequiredError = value;
         return this;
     }
@@ -106,9 +104,9 @@ export class ResponseAsserter {
      * @description
      * Assert that the response is successful.
      */
-    isSuccessful() : ResponseAsserter {
+    isSuccessful(): ResponseAsserter {
         this.req.onResponse((res) => {
-            assert(res.isSuccessful(),'Response should be successful.'+ this._respInfo(res));
+            assert(res.isSuccessful(), 'Response should be successful.' + this._respInfo(res));
         });
         return this;
     }
@@ -118,9 +116,9 @@ export class ResponseAsserter {
      * @description
      * Assert that the response is not successful.
      */
-    isNotSuccessful() : ResponseAsserter {
+    isNotSuccessful(): ResponseAsserter {
         this.req.onResponse((res) => {
-            assert(!res.isSuccessful(),'Response should be not successful.' + this._respInfo(res));
+            assert(!res.isSuccessful(), 'Response should be not successful.' + this._respInfo(res));
         });
         return this;
     }
@@ -130,9 +128,9 @@ export class ResponseAsserter {
      * @description
      * Assert that the response has a result.
      */
-    hasResult() : ResponseAsserter {
+    hasResult(): ResponseAsserter {
         this.req.onResponse((res) => {
-            assert(res.hasResult(),`Response should have a result.`
+            assert(res.hasResult(), `Response should have a result.`
                 + this._respInfo(res));
         });
         return this;
@@ -143,8 +141,8 @@ export class ResponseAsserter {
      * @description
      * Assert the result of the response.
      */
-    assertResult() : AnyAsserter<ResponseAsserter> {
-        return new AnyAsserter<ResponseAsserter>(this,'Response Result',(test) => {
+    assertResult(): AnyAsserter<ResponseAsserter> {
+        return new AnyAsserter<ResponseAsserter>(this, 'Response Result', (test) => {
             this.req.onResponse((res) => {
                 test(res.getResult());
             });
@@ -156,7 +154,7 @@ export class ResponseAsserter {
      * @description
      * Print the complete response to the console.
      */
-    print() : ResponseAsserter {
+    print(): ResponseAsserter {
         this.req.onResponse((res) => {
             Logger.logInfo(res.toString());
         });
@@ -172,9 +170,9 @@ export class ResponseAsserter {
      * @param filter
      * Filter to filter for specific errors.
      */
-    hasErrorCount(count : number,...filter : BackErrorFilter[]) : ResponseAsserter {
+    hasErrorCount(count: number, ...filter: BackErrorFilter[]): ResponseAsserter {
         this.req.onResponse((res) => {
-            assert(ResponseAsserter._filterErrors(res,filter).length === count,
+            assert(ResponseAsserter._filterErrors(res, filter).length === count,
                 `Response should have ${count} back errors.${filter.length === 0 ? '' : ` With filter: ${JSON.stringify(filter)}`}`
                 + this._respInfo(res));
         });
@@ -189,8 +187,8 @@ export class ResponseAsserter {
      * @param count
      * count of errors
      */
-    buildHasErrorCount(count : number) : BackErrorFilterBuilder<ResponseAsserter> {
-        return new BackErrorFilterBuilder(this,count);
+    buildHasErrorCount(count: number): BackErrorFilterBuilder<ResponseAsserter> {
+        return new BackErrorFilterBuilder(this, count);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -199,7 +197,7 @@ export class ResponseAsserter {
      * Assert that the response has an specific error
      * with filter builder.
      */
-    hasError() : BackErrorFilterBuilder<ResponseAsserter>
+    hasError(): BackErrorFilterBuilder<ResponseAsserter>
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
@@ -209,19 +207,18 @@ export class ResponseAsserter {
      */
     hasError(...filter: BackErrorFilter[]): ResponseAsserter
     hasError(...filter: BackErrorFilter[]): ResponseAsserter | BackErrorFilterBuilder<ResponseAsserter> {
-        if(filter.length > 0) {
+        if (filter.length > 0) {
             this.req.onResponse((res) => {
-                assert(ResponseAsserter._filterErrors(res,filter).length > 0,
+                assert(ResponseAsserter._filterErrors(res, filter).length > 0,
                     `Response should have an error.${filter.length === 0 ? '' : ` With filter: ${JSON.stringify(filter)}`}`
                     + this._respInfo(res));
             });
             return this;
-        }
-        else return new BackErrorFilterBuilder(this);
+        } else return new BackErrorFilterBuilder(this);
     }
 
-    private static _filterErrors(res : Response,filter : BackErrorFilter[]) : BackError[] {
-        return ErrorFilterEngine.filterErrors(res.getErrors(false),filter);
+    private static _filterErrors(res: Response, filter: BackErrorFilter[]): BackError[] {
+        return ErrorFilterEngine.filterErrors(res.getErrors(false), filter);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -232,7 +229,7 @@ export class ResponseAsserter {
      * The assert function with params:
      * -res The response
      */
-    assert(assert : (resp : Response) => void | Promise<void>) : ResponseAsserter {
+    assert(assert: (resp: Response) => void | Promise<void>): ResponseAsserter {
         this.req.onResponse(async (res) => {
             await assert(res);
         });
@@ -247,8 +244,8 @@ export class ResponseAsserter {
      * @param func
      * @param failMsg if not provided it throws the specific error.
      */
-    do(func : () => void | Promise<void>,failMsg ?: string) : ResponseAsserter {
-        DoUtils.do(this._test,func,failMsg);
+    do(func: () => void | Promise<void>, failMsg ?: string): ResponseAsserter {
+        DoUtils.do(this._test, func, failMsg);
         return this;
     }
 
@@ -262,8 +259,8 @@ export class ResponseAsserter {
      * @param failMsg
      * @param errors
      */
-    doShouldThrow(func : () => void | Promise<void>,failMsg : string,...errors : any[]) : ResponseAsserter {
-        DoUtils.doShouldThrow(this._test,func,failMsg,...errors);
+    doShouldThrow(func: () => void | Promise<void>, failMsg: string, ...errors: any[]): ResponseAsserter {
+        DoUtils.doShouldThrow(this._test, func, failMsg, ...errors);
         return this;
     }
 
@@ -272,9 +269,9 @@ export class ResponseAsserter {
      * @description
      * Start with a new request and link them to one test.
      */
-    and() : WhenBuilder {
+    and(): WhenBuilder {
         this._test.newSubTest();
-        return new WhenBuilder(this._client,this._test);
+        return new WhenBuilder(this._client, this._test);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -285,9 +282,9 @@ export class ResponseAsserter {
      * Will auto connect the client
      * if the client is not connected to the server.
      */
-    test(autoConnect : boolean = false) : void {
+    async test(autoConnect: boolean = false): Promise<void> {
         this.autoConnectedClient = autoConnect;
-        this._test.execute();
+        return this._test.execute();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -295,7 +292,7 @@ export class ResponseAsserter {
      * @description
      * Assert zation clients after request.
      */
-    client(...client : ZationClient[]) : ClientAsserter<ResponseAsserter> {
-        return new ClientAsserter<ResponseAsserter>(client,this._test,this);
+    client(...client: ZationClient[]): ClientAsserter<ResponseAsserter> {
+        return new ClientAsserter<ResponseAsserter>(client, this._test, this);
     }
 }

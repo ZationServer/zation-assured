@@ -4,18 +4,17 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ZationClient}           from 'zation-client';
+import {ZationClient} from 'zation-client';
 import {AbstractClientAsserter} from "./abstractClientAsserter";
-import {Test}                   from "../data/test";
+import {Test} from "../data/test";
 
-export class StandaloneClientAsserter extends AbstractClientAsserter<StandaloneClientAsserter>
-{
-    private static counter : number = 0;
+export class StandaloneClientAsserter extends AbstractClientAsserter<StandaloneClientAsserter> {
+    private static counter: number = 0;
 
-    constructor(client : ZationClient | ZationClient[],testDescription : string = `When test number: ${StandaloneClientAsserter.counter}`) {
-        let clients : ZationClient[] = Array.isArray(client) ? client : [client];
+    constructor(client: ZationClient | ZationClient[], testDescription: string = `When test number: ${StandaloneClientAsserter.counter}`) {
+        let clients: ZationClient[] = Array.isArray(client) ? client : [client];
         StandaloneClientAsserter.counter++;
-        super(clients,new Test(testDescription));
+        super(clients, new Test(testDescription));
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -23,8 +22,8 @@ export class StandaloneClientAsserter extends AbstractClientAsserter<StandaloneC
      * @description
      * Run the test.
      */
-    test() : void {
-        this._test.execute();
+    async test(): Promise<void> {
+        return this._test.execute();
     }
 
     protected self(): StandaloneClientAsserter {
