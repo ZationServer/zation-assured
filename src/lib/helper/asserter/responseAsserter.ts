@@ -15,7 +15,7 @@ import {
     BackErrorFilter
 }
     from "zation-client";
-import {Test} from "../data/test";
+import {Test} from "../test/test";
 import {WhenBuilder} from "../../api/when";
 import {Logger} from "../console/logger";
 import {AnyAsserter} from "./anyAsserter";

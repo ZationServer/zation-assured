@@ -6,15 +6,13 @@ GitHub: LucaCode
 
 import {ZationClient} from 'zation-client';
 import {AbstractClientAsserter} from "./abstractClientAsserter";
-import {Test} from "../data/test";
+import {Test} from "../test/test";
 
 export class StandaloneClientAsserter extends AbstractClientAsserter<StandaloneClientAsserter> {
-    private static counter: number = 0;
 
-    constructor(client: ZationClient | ZationClient[], testDescription: string = `When test number: ${StandaloneClientAsserter.counter}`) {
+    constructor(client: ZationClient | ZationClient[], itTestDescription?: string) {
         let clients: ZationClient[] = Array.isArray(client) ? client : [client];
-        StandaloneClientAsserter.counter++;
-        super(clients, new Test(testDescription));
+        super(clients, new Test(itTestDescription));
     }
 
     // noinspection JSUnusedGlobalSymbols

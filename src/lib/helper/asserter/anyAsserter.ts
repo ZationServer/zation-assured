@@ -6,6 +6,7 @@ GitHub: LucaCode
 
 
 import ObjectAsserter from "./objectAsserter";
+import forint, {ForintQuery} from "forint";
 
 const cAssert = require('chai').assert;
 
@@ -87,6 +88,17 @@ export class AnyAsserter<T> {
                 }
             });
         });
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Asserts that any matches with a forint query.
+     */
+    matches(query: ForintQuery): AnyAsserter<T> {
+        this.addTest(async (inAny, eStr = '') => {
+            await cAssert(forint(query)(inAny), `${this.name + eStr} should match with the forint query.`);
+        });
+        return this;
     }
 
     // noinspection JSUnusedGlobalSymbols

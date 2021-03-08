@@ -4,6 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+import forint, {ForintQuery} from "forint";
 const cAssert = require('chai').assert;
 
 type AddTest = (test: (obj: any, eStr ?: string) => void) => void;
@@ -74,6 +75,17 @@ export default class ObjectAsserter<T> {
         this.addTest((inObj, eStr = '') => {
             // noinspection TypeScriptValidateJSTypes
             cAssert.ownInclude(inObj, obj, `${this.name + eStr} should own include ${JSON.stringify(obj)}`);
+        });
+        return this;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Asserts that object matches with a forint query.
+     */
+    matches(query: ForintQuery): ObjectAsserter<T> {
+        this.addTest(async (inObj, eStr = '') => {
+            await cAssert(forint(query)(inObj), `${this.name + eStr} should match with the forint query.`);
         });
         return this;
     }

@@ -10,7 +10,7 @@ import {
     ValidationCheckRequestBuilder as NativeValidationCheckRequestBuilder,
     ZationClient
 } from "zation-client";
-import {Test} from "../../data/test";
+import {Test} from "../../test/test";
 
 export class ValidationCheckRequestBuilder extends AbstractRequestBuilder<ValidationCheckRequestBuilder, NativeValidationCheckRequestBuilder> {
     private req: NativeValidationCheckRequestBuilder;

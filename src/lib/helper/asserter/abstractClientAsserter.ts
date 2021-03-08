@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Test} from "../data/test";
+import {Test} from "../test/test";
 
 const assert = require('assert');
 import {AuthenticationRequiredError, ZationClient} from 'zation-client';

@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {StandardRequestBuilder as NativeStandardRequestBuilder, ZationClient} from "zation-client";
 import {AbstractRequestBuilder} from "./abstractRequestBuilder";
-import {Test} from "../../data/test";
+import {Test} from "../../test/test";
 
 export class StandardRequestBuilder extends AbstractRequestBuilder<StandardRequestBuilder, NativeStandardRequestBuilder> {
 

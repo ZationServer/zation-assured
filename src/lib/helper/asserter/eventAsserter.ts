@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Test} from "../data/test";
+import {Test} from "../test/test";
 import {TimeoutAssert} from "../timeout/timeoutAssert";
 import {ZationClient} from 'zation-client';
 import {AnyAsserter} from "./anyAsserter";
