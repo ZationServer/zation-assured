@@ -296,6 +296,20 @@ export abstract class AbstractValueAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * Asserts that the value should have a specific length.
+     * @param length
+     */
+    lengthOf(length: number): T {
+        this.addTest((value, eStr = '') => {
+            cAssert.lengthOf(value, length,
+                `${this.name + eStr} should have a length of ${length}.`);
+        });
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * Lets you do a custom assertion with the value.
      * @param assert
      * @param message
