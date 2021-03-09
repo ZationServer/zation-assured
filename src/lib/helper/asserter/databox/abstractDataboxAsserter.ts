@@ -35,7 +35,7 @@ export abstract class AbstractDataboxAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the Databox is connected.
+     * Assert that the databox is connected.
      * @param timeout
      * With this parameter, you can set a time limit in that the assertion must be successful.
      */
@@ -56,7 +56,7 @@ export abstract class AbstractDataboxAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the Databox is disconnected.
+     * Assert that the databox is disconnected.
      * @param timeout
      * With this parameter, you can set a time limit in that the assertion must be successful.
      */
@@ -76,7 +76,7 @@ export abstract class AbstractDataboxAsserter<T> {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Assert the current data of the Databox.
+     * Assert the current data of the databox.
      */
     data(): AnyAsserter<T> {
         return new AnyAsserter<T>(this.self(), 'Databox', (test) => {
@@ -90,7 +90,7 @@ export abstract class AbstractDataboxAsserter<T> {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Assert the current member of the Databox.
+     * Assert the current member of the databox.
      */
     member(): AnyAsserter<T> {
         return new AnyAsserter<T>(this.self(), 'Databox', (test) => {
@@ -105,11 +105,11 @@ export abstract class AbstractDataboxAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * With this function you can create custom assertions for a Databox.
+     * With this function you can create custom assertions for a databox.
      * @param assert
      * The assert function with params:
-     * -databox the Databox
-     * -index the index of the Databox
+     * -databox the databox
+     * -index the index of the databox
      */
     assert(assert: (databox: Databox, index: number) => Promise<void> | void): T {
         this._test.test(async () => {
@@ -153,7 +153,7 @@ export abstract class AbstractDataboxAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the Databox should trigger an DataChange event.
+     * Assert that the databox should trigger an DataChange event.
      */
     dataChangeTriggers(): DataEventAsserter<T> {
         return new DataEventAsserter<T>(this.databoxes.map(d => {
@@ -168,7 +168,7 @@ export abstract class AbstractDataboxAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the Databox should trigger an DataTouch event.
+     * Assert that the databox should trigger an DataTouch event.
      */
     dataTouchTriggers(): DataEventAsserter<T> {
         return new DataEventAsserter<T>(this.databoxes.map(d => {

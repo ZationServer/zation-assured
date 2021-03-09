@@ -26,14 +26,14 @@ export const assert: {
      */
     client: (client: ZationClient | ZationClient[], itTestDescription?: string) => StandaloneClientAsserter,
     /**
-     * Start Databox assertions.
+     * Start databox assertions.
      * Notice that this method will not automatically connect the databoxes.
      * @param databox
      * @param itTestDescription
      */
     databox: (databox: Databox | Databox[], itTestDescription?: string) => StandaloneDataboxAsserter,
     /**
-     * Start Channel assertions.
+     * Start channel assertions.
      * Notice that this method will not automatically subscribe to the channels.
      * @param channel
      * @param itTestDescription

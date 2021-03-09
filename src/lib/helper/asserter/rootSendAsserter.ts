@@ -153,7 +153,7 @@ export abstract class RootSendAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert other Databoxes.
+     * Assert other databoxes.
      * Notice that this method will not automatically connect the databoxes.
      */
     otherDataboxes(...databoxes: Databox[]): DataboxAsserter<T> {
@@ -163,7 +163,7 @@ export abstract class RootSendAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert other Channels.
+     * Assert other channels.
      * Notice that this method will not automatically subscribe to the channels.
      */
     otherChannels(...channels: Channel[]): ChannelAsserter<T> {

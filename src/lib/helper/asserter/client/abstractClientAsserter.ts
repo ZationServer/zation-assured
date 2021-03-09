@@ -243,8 +243,8 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert Databox.
-     * Will automatically connect and disconnect the Databox.
+     * Assert databox.
+     * Will automatically connect and disconnect the databox.
      */
     databox(identifier: string, member?: any, options: DataboxOptions = {}): DataboxAsserter<T> {
         return new DataboxAsserter<T>(this.clients.map(client => {
@@ -263,8 +263,8 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert Channel.
-     * Will automatically subscribe and unsubscribe the Channel.
+     * Assert channel.
+     * Will automatically subscribe and unsubscribe the channel.
      */
     channel(identifier: string, member?: any): ChannelAsserter<T> {
         return new ChannelAsserter<T>(this.clients.map(client => {

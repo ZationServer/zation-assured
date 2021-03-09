@@ -76,7 +76,7 @@ export abstract class AbstractChannelAsserter<T> {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Assert the current member of the Channel.
+     * Assert the current member of the channel.
      */
     member(): AnyAsserter<T> {
         return new AnyAsserter<T>(this.self(), 'Channel', (test) => {
@@ -91,11 +91,11 @@ export abstract class AbstractChannelAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * With this function you can create custom assertions for a Channel.
+     * With this function you can create custom assertions for a channel.
      * @param assert
      * The assert function with params:
-     * -channel the Channel
-     * -index the index of the Channel
+     * -channel the channel
+     * -index the index of the channel
      */
     assert(assert: (channel: Channel, index: number) => Promise<void> | void): T {
         this._test.test(async () => {
