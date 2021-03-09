@@ -101,17 +101,4 @@ export class WhenBuilder {
         return new PackageBuilder
         (this._client.transmit(receiver,data), this._test, this._client);
     }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * With this function, you can do extra things before the test.
-     * Subscribe a channel, publish to a channel...
-     */
-    do(func: () => void | Promise<void>): WhenBuilder {
-        this._test.beforeTest(async () => {
-            await func();
-        }, true);
-        return this;
-    }
 }

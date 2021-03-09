@@ -26,7 +26,7 @@ export default class ActionUtils {
             } catch (e) {
                 assert.fail(failMsg !== undefined ? failMsg : e);
             }
-        }, true);
+        });
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -56,7 +56,7 @@ export default class ActionUtils {
                 }
                 if (!found) assert.fail(message);
             }
-        }, true);
+        });
     }
 }
 

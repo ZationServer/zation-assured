@@ -9,7 +9,7 @@ import {Test} from "../../test/test";
 const assert = require('assert');
 import {AuthenticationRequiredError, DataboxOptions, ZationClient} from 'zation-client';
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
-import ActionUtils from "../../do/actionUtils";
+import ActionUtils from "../../utils/actionUtils";
 import {DataEventAsserter} from "../event/dataEventAsserter";
 import {DataboxAsserter} from "../databox/databoxAsserter";
 import {ChannelAsserter} from "../channel/channelAsserter";
@@ -245,17 +245,19 @@ export abstract class AbstractClientAsserter<T> {
      * Will automatically connect and disconnect the databox.
      */
     databox(identifier: string, member?: any, options: DataboxOptions = {}): DataboxAsserter<T> {
-        return new DataboxAsserter<T>(this.clients.map(client => {
+        const databoxes = this.clients.map(client => {
             const db = client.databox(identifier,options);
             this._test.test(async () => {
                 try {await db.connect(member);}
                 catch (err) {assert.fail("Cannot connect the databox. Error -> " + err.stack);}
-            },true)
+            });
             this._test.afterTest(async () => {
                 await db.disconnect();
             });
             return db;
-        }), this._test, this.self());
+        });
+        this._test.pushSyncWait();
+        return new DataboxAsserter<T>(databoxes, this._test, this.self());
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -265,17 +267,19 @@ export abstract class AbstractClientAsserter<T> {
      * Will automatically subscribe and unsubscribe the channel.
      */
     channel(identifier: string, member?: any): ChannelAsserter<T> {
-        return new ChannelAsserter<T>(this.clients.map(client => {
-            const ch = client.channel(identifier);
+        const channels = this.clients.map(client => {
+            const channel = client.channel(identifier);
             this._test.test(async () => {
-                try {await ch.subscribe(member);}
+                try {await channel.subscribe(member);}
                 catch (err) {assert.fail("Cannot subscribe to the channel. Error -> " + err.stack);}
-            },true)
-            this._test.afterTest(async () => {
-                await ch.unsubscribe();
             });
-            return ch;
-        }), this._test, this.self());
+            this._test.afterTest(() => {
+                channel.unsubscribe();
+            });
+            return channel;
+        });
+        this._test.pushSyncWait();
+        return new ChannelAsserter<T>(channels, this._test, this.self());
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -290,6 +294,7 @@ export abstract class AbstractClientAsserter<T> {
         this.clients.forEach((client,index) => {
             ActionUtils.action(this._test, () => action(client,index), message);
         })
+        this._test.pushSyncWait();
         return this.self();
     }
 
@@ -308,7 +313,8 @@ export abstract class AbstractClientAsserter<T> {
                       message: string, ...validErrorClasses: any[]): T {
         this.clients.forEach((client,index) => {
             ActionUtils.actionShouldThrow(this._test, () => action(client,index), message, ...validErrorClasses);
-        })
+        });
+        this._test.pushSyncWait();
         return this.self();
     }
 

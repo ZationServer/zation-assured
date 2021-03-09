@@ -8,7 +8,7 @@ import {Channel, ConnectionRequiredError, Databox, TimeoutError, ZationClient,} 
 import {Test} from "../test/test";
 import {WhenBuilder} from "../../api/when";
 import {ClientAsserter} from "./client/clientAsserter";
-import ActionUtils from "../do/actionUtils";
+import ActionUtils from "../utils/actionUtils";
 import {DataboxAsserter} from "./databox/databoxAsserter";
 import {ChannelAsserter} from "./channel/channelAsserter";
 const assert = require('assert');
@@ -56,7 +56,8 @@ export abstract class RootSendAsserter<T> {
                     }
                 } else throw e;
             }
-        }, true);
+        });
+        this._test.pushSyncWait();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -91,6 +92,7 @@ export abstract class RootSendAsserter<T> {
      */
     action(action: (client: ZationClient) => void | Promise<void>, message?: string): T {
         ActionUtils.action(this._test, () => action(this._client), message);
+        this._test.pushSyncWait();
         return this.self();
     }
 
@@ -108,6 +110,7 @@ export abstract class RootSendAsserter<T> {
     actionShouldThrow(action: (client: ZationClient) => void | Promise<void>,
                       message: string, ...validErrorClasses: any[]): T {
         ActionUtils.actionShouldThrow(this._test, () => action(this._client), message, ...validErrorClasses);
+        this._test.pushSyncWait();
         return this.self();
     }
 

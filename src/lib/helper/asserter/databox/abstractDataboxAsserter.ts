@@ -5,13 +5,13 @@ GitHub: LucaCode
  */
 
 import {Test} from "../../test/test";
-
 import {Databox} from 'zation-client';
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
-import ActionUtils from "../../do/actionUtils";
+import ActionUtils from "../../utils/actionUtils";
 import {DataEventAsserter} from "../event/dataEventAsserter";
 import {ValueAsserter} from "../value/valueAsserter";
 import {CodeDataEventAsserter} from "../event/codeDataEventAsserter";
+import {assert as cAssert} from 'chai';
 
 export abstract class AbstractDataboxAsserter<T> {
 
@@ -105,6 +105,27 @@ export abstract class AbstractDataboxAsserter<T> {
 
     // noinspection JSUnusedGlobalSymbols
     /**
+     * Fetches data multiple times on each databox.
+     */
+    fetch(times: number = 1, fetchData?: any): T {
+        this._test.test(async () => {
+            await Promise.all(this.databoxes.map(async (databox,number) => {
+                const promises: Promise<void>[] = [];
+                for(let i = 1; i <= times; i++) {
+                    promises.push((async () => {
+                        try {await databox.fetch(fetchData);}
+                        catch (err) {cAssert.fail(`Databox ${number} fetch ${i} failed. Error -> ` + err.stack)}
+                    })());
+                }
+                await Promise.all(promises);
+            }));
+        })
+        this._test.pushSyncWait();
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
      * @description
      * This function lets you do extra actions on each databox and asserts that no error is thrown.
      * When an error throws, it lets the test fail with the provided message or the concrete error.
@@ -115,6 +136,7 @@ export abstract class AbstractDataboxAsserter<T> {
         this.databoxes.forEach((databox,index) => {
             ActionUtils.action(this._test, () => action(databox,index), message);
         })
+        this._test.pushSyncWait();
         return this.self();
     }
 
@@ -133,7 +155,8 @@ export abstract class AbstractDataboxAsserter<T> {
                       message: string, ...validErrorClasses: any[]): T {
         this.databoxes.forEach((databox,index) => {
             ActionUtils.actionShouldThrow(this._test, () => action(databox,index), message, ...validErrorClasses);
-        })
+        });
+        this._test.pushSyncWait();
         return this.self();
     }
 

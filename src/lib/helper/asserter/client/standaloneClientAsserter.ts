@@ -7,11 +7,28 @@ GitHub: LucaCode
 import {ZationClient} from 'zation-client';
 import {AbstractClientAsserter} from "./abstractClientAsserter";
 import {Test} from "../../test/test";
+import {assert as cAssert} from 'chai';
 
 export class StandaloneClientAsserter extends AbstractClientAsserter<StandaloneClientAsserter> {
 
     constructor(client: ZationClient | ZationClient[], itTestDescription?: string) {
         super(Array.isArray(client) ? client : [client], new Test(itTestDescription));
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Will connect all clients.
+     */
+    connect(): StandaloneClientAsserter {
+        this._test.test(async () => {
+            await Promise.all(this.clients.map(async (client, index) => {
+                try {await client.connect();}
+                catch (err) {cAssert.fail(`Cannot connect the client ${index}. Error -> ` + err.stack);}
+            }));
+        })
+        this._test.pushSyncWait();
+        return this;
     }
 
     // noinspection JSUnusedGlobalSymbols

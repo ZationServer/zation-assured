@@ -8,7 +8,7 @@ import {Test} from "../../test/test";
 
 import {Channel} from 'zation-client';
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
-import ActionUtils from "../../do/actionUtils";
+import ActionUtils from "../../utils/actionUtils";
 import {DataEventAsserter} from "../event/dataEventAsserter";
 import {ValueAsserter} from "../value/valueAsserter";
 import {CodeDataEventAsserter} from "../event/codeDataEventAsserter";
@@ -101,6 +101,7 @@ export abstract class AbstractChannelAsserter<T> {
         this.channels.forEach((channel,index) => {
             ActionUtils.action(this._test, () => action(channel,index), message);
         })
+        this._test.pushSyncWait();
         return this.self();
     }
 
@@ -118,7 +119,8 @@ export abstract class AbstractChannelAsserter<T> {
     actionShouldThrow(action: (channel: Channel, index: number) => void | Promise<void>, message: string, ...validErrorClasses: any[]): T {
         this.channels.forEach((channel,index) => {
             ActionUtils.actionShouldThrow(this._test, () => action(channel,index), message, ...validErrorClasses);
-        })
+        });
+        this._test.pushSyncWait();
         return this.self();
     }
 

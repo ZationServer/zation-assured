@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-
+const waitSymbol = Symbol();
 type Action = () => Promise<void> | void;
-type TestAction = { action: Action, wait: boolean };
+type TestAction = Action | typeof waitSymbol;
 
 export class Test {
 
@@ -25,17 +25,22 @@ export class Test {
         this._subTests.push(subTest);
     }
 
-    beforeTest(action: Action, waitForTask: boolean = false): void {
-        this.currentSubTest.beforeTest(action, waitForTask);
+    beforeTest(action: Action): void {
+        this.currentSubTest.beforeTest(action);
     }
 
-    test(action: Action, waitForTask: boolean = false): void {
-        this.currentSubTest.test(action, waitForTask);
+    test(action: Action): void {
+        this.currentSubTest.test(action);
+    }
+
+
+    pushSyncWait(): void {
+        this.currentSubTest.pushSyncWait();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    afterTest(action: Action, waitForTask: boolean = false): void {
-        this.currentSubTest.afterTest(action, waitForTask);
+    afterTest(action: Action): void {
+        this.currentSubTest.afterTest(action);
     }
 
     private async _run() {
@@ -66,30 +71,31 @@ class SubTest {
     private _test: TestAction[] = [];
     private _afterTest: TestAction[] = [];
 
-    beforeTest(action: Action, waitForTask: boolean = false): void {
-        this._beforeTest.push({action: action, wait: waitForTask});
+    beforeTest(action: Action): void {
+        this._beforeTest.push(action);
     }
 
-    test(action: Action, waitForTask: boolean = false): void {
-        this._test.push({action: action, wait: waitForTask});
+    test(action: Action): void {
+        this._test.push(action);
     }
 
-    afterTest(action: Action, waitForTask: boolean = false): void {
-        this._afterTest.push({action: action, wait: waitForTask});
+    pushSyncWait(): void {
+        this._test.push(waitSymbol);
+    }
+
+    afterTest(action: Action): void {
+        this._afterTest.push(action);
     }
 
     private static async _executeList(list: TestAction[]) {
         let tmpPromises: (Promise<void> | void)[] = [];
-        for (let i = 0; i < list.length; i++) {
-            if (list[i].wait) {
+        for (const action of list) {
+            if (action === waitSymbol) {
                 if (tmpPromises.length > 0) {
                     await Promise.all(tmpPromises);
                     tmpPromises = [];
                 }
-                await list[i].action();
-            } else {
-                tmpPromises.push(list[i].action());
-            }
+            } else tmpPromises.push(action());
         }
         if (tmpPromises.length > 0) {
             await Promise.all(tmpPromises);
