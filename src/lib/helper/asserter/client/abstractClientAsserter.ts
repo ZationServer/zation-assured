@@ -10,7 +10,7 @@ const assert = require('assert');
 import {AuthenticationRequiredError, DataboxOptions, ZationClient} from 'zation-client';
 import ObjectAsserter from "../objectAsserter";
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
-import DoUtils from "../../do/doUtils";
+import ActionUtils from "../../do/actionUtils";
 import {DataEventAsserter} from "../dataEventAsserter";
 import {DataboxAsserter} from "../databox/databoxAsserter";
 import {ChannelAsserter} from "../channel/channelAsserter";
@@ -283,31 +283,14 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * With this function you can create custom assertions for a client.
-     * @param assert
-     * The assert function with params:
-     * -client the client
-     * -index the index of the client
+     * This function lets you do extra actions on each client and asserts that no error is thrown.
+     * When an error throws, it lets the test fail with the provided message or the concrete error.
+     * @param action
+     * @param message if not provided it throws the specific error.
      */
-    assert(assert: (client: ZationClient, index: number) => Promise<void> | void): T {
-        this._test.test(async () => {
-            await this._forEachClient(async (c, i) => {
-                await assert(c, i);
-            });
-        });
-        return this.self();
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * With this function, you can do extra things in the test.
-     * @param func
-     * @param failMsg if not provided it throws the specific error.
-     */
-    do(func: (client: ZationClient) => void | Promise<void>, failMsg ?: string): T {
-        this.clients.forEach(client => {
-            DoUtils.do(this._test, () => func(client), failMsg);
+    action(action: (client: ZationClient, index: number) => void | Promise<void>, message?: string): T {
+        this.clients.forEach((client,index) => {
+            ActionUtils.action(this._test, () => action(client,index), message);
         })
         return this.self();
     }
@@ -315,16 +298,18 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * With this function, you can do extra things in the test
-     * and assert that it should throw an error or a specific error.
-     * Subscribe a channel, publish to a channel...
-     * @param func
-     * @param failMsg
-     * @param errors
+     * This function lets you do extra actions on each client and
+     * asserts that an error or an error instance of a specific class is thrown.
+     * When no error is thrown, or the error does not match with the given classes
+     * (only if at least one class is given), it lets the test fail with the provided message.
+     * @param action
+     * @param message
+     * @param validErrorClasses
      */
-    doShouldThrow(func: (client: ZationClient) => void | Promise<void>, failMsg: string, ...errors: any[]): T {
-        this.clients.forEach(client => {
-            DoUtils.doShouldThrow(this._test, () => func(client), failMsg, ...errors);
+    actionShouldThrow(action: (client: ZationClient, index: number) => void | Promise<void>,
+                      message: string, ...validErrorClasses: any[]): T {
+        this.clients.forEach((client,index) => {
+            ActionUtils.actionShouldThrow(this._test, () => action(client,index), message, ...validErrorClasses);
         })
         return this.self();
     }

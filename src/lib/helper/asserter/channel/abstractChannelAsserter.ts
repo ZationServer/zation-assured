@@ -8,7 +8,7 @@ import {Test} from "../../test/test";
 
 import {Channel} from 'zation-client';
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
-import DoUtils from "../../do/doUtils";
+import ActionUtils from "../../do/actionUtils";
 import {DataEventAsserter} from "../dataEventAsserter";
 import {AnyAsserter} from "../anyAsserter";
 
@@ -91,31 +91,14 @@ export abstract class AbstractChannelAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * With this function you can create custom assertions for a channel.
-     * @param assert
-     * The assert function with params:
-     * -channel the channel
-     * -index the index of the channel
+     * This function lets you do extra actions on each channel and asserts that no error is thrown.
+     * When an error throws, it lets the test fail with the provided message or the concrete error.
+     * @param action
+     * @param message if not provided it throws the specific error.
      */
-    assert(assert: (channel: Channel, index: number) => Promise<void> | void): T {
-        this._test.test(async () => {
-            await this._forEachChannel(async (ch, i) => {
-                await assert(ch, i);
-            });
-        });
-        return this.self();
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * With this function, you can do extra things in the test.
-     * @param func
-     * @param failMsg if not provided it throws the specific error.
-     */
-    do(func: (channel: Channel) => void | Promise<void>, failMsg ?: string): T {
-        this.channels.forEach(channel => {
-            DoUtils.do(this._test, () => func(channel), failMsg);
+    action(action: (channel: Channel, index: number) => void | Promise<void>, message?: string): T {
+        this.channels.forEach((channel,index) => {
+            ActionUtils.action(this._test, () => action(channel,index), message);
         })
         return this.self();
     }
@@ -123,15 +106,17 @@ export abstract class AbstractChannelAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * With this function, you can do extra things in the test
-     * and assert that it should throw an error or a specific error.
-     * @param func
-     * @param failMsg
-     * @param errors
+     * This function lets you do extra actions on each channel and
+     * asserts that an error or an error instance of a specific class is thrown.
+     * When no error is thrown, or the error does not match with the given classes
+     * (only if at least one class is given), it lets the test fail with the provided message.
+     * @param action
+     * @param message
+     * @param validErrorClasses
      */
-    doShouldThrow(func: (channel: Channel) => void | Promise<void>, failMsg: string, ...errors: any[]): T {
-        this.channels.forEach(channel => {
-            DoUtils.doShouldThrow(this._test, () => func(channel), failMsg, ...errors);
+    actionShouldThrow(action: (channel: Channel, index: number) => void | Promise<void>, message: string, ...validErrorClasses: any[]): T {
+        this.channels.forEach((channel,index) => {
+            ActionUtils.actionShouldThrow(this._test, () => action(channel,index), message, ...validErrorClasses);
         })
         return this.self();
     }

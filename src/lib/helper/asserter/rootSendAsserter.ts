@@ -8,7 +8,7 @@ import {Channel, ConnectionRequiredError, Databox, TimeoutError, ZationClient,} 
 import {Test} from "../test/test";
 import {WhenBuilder} from "../../api/when";
 import {ClientAsserter} from "./client/clientAsserter";
-import DoUtils from "../do/doUtils";
+import ActionUtils from "../do/actionUtils";
 import {DataboxAsserter} from "./databox/databoxAsserter";
 import {ChannelAsserter} from "./channel/channelAsserter";
 const assert = require('assert');
@@ -84,27 +84,30 @@ export abstract class RootSendAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * With this function, you can do extra things in the test.
-     * @param func
-     * @param failMsg if not provided it throws the specific error.
+     * This function lets you do an extra action on the client and asserts that no error is thrown.
+     * When an error throws, it lets the test fail with the provided message or the concrete error.
+     * @param action
+     * @param message if not provided it throws the specific error.
      */
-    do(func: (client: ZationClient) => void | Promise<void>, failMsg ?: string): T {
-        DoUtils.do(this._test, () => func(this._client), failMsg);
+    action(action: (client: ZationClient) => void | Promise<void>, message?: string): T {
+        ActionUtils.action(this._test, () => action(this._client), message);
         return this.self();
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * With this function, you can do extra things in the test
-     * and assert that it should throw an error or a specific error.
-     * Subscribe a channel, publish to a channel...
-     * @param func
-     * @param failMsg
-     * @param errors
+     * This function lets you do an extra action on the client and
+     * asserts that an error or an error instance of a specific class is thrown.
+     * When no error is thrown, or the error does not match with the given classes
+     * (only if at least one class is given), it lets the test fail with the provided message.
+     * @param action
+     * @param message
+     * @param validErrorClasses
      */
-    doShouldThrow(func: (client: ZationClient) => void | Promise<void>, failMsg: string, ...errors: any[]): T {
-        DoUtils.doShouldThrow(this._test, () => func(this._client), failMsg, ...errors);
+    actionShouldThrow(action: (client: ZationClient) => void | Promise<void>,
+                      message: string, ...validErrorClasses: any[]): T {
+        ActionUtils.actionShouldThrow(this._test, () => action(this._client), message, ...validErrorClasses);
         return this.self();
     }
 
@@ -116,19 +119,6 @@ export abstract class RootSendAsserter<T> {
     and(): WhenBuilder {
         this._test.newSubTest();
         return new WhenBuilder(this._client, this._test);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Runs the test.
-     * @param autoConnect
-     * Will auto connect the client
-     * if the client is not connected to the server.
-     */
-    async test(autoConnect: boolean = false): Promise<void> {
-        this.autoConnectedClient = autoConnect;
-        return this._test.execute();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -168,6 +158,19 @@ export abstract class RootSendAsserter<T> {
      */
     otherChannels(...channels: Channel[]): ChannelAsserter<T> {
         return new ChannelAsserter<T>(channels, this._test, this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Runs the test.
+     * @param autoConnect
+     * Will auto connect the client
+     * if the client is not connected to the server.
+     */
+    async test(autoConnect: boolean = false): Promise<void> {
+        this.autoConnectedClient = autoConnect;
+        return this._test.execute();
     }
 
     // noinspection JSUnusedGlobalSymbols
