@@ -9,8 +9,9 @@ import {Test} from "../../test/test";
 import {Channel} from 'zation-client';
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
 import ActionUtils from "../../do/actionUtils";
-import {DataEventAsserter} from "../dataEventAsserter";
+import {DataEventAsserter} from "../event/dataEventAsserter";
 import {AnyAsserter} from "../anyAsserter";
+import {CodeDataEventAsserter} from "../event/codeDataEventAsserter";
 
 export abstract class AbstractChannelAsserter<T> {
 
@@ -134,5 +135,35 @@ export abstract class AbstractChannelAsserter<T> {
                 });
             }
         }), "Channel", `Publish - ${event}`, this._test, this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert that the channel should trigger an Close event.
+     */
+    closeTriggers(): CodeDataEventAsserter<T> {
+        return new CodeDataEventAsserter<T>(this.channels.map(ch => {
+            return (listener) => {
+                ch.onceClose((code, data) => {
+                    listener(data,code);
+                });
+            }
+        }), "Channel", "Close", this._test, this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert that the channel should trigger an KickOut event.
+     */
+    kickOutTriggers(): CodeDataEventAsserter<T> {
+        return new CodeDataEventAsserter<T>(this.channels.map(ch => {
+            return (listener) => {
+                ch.onceKickOut((code, data) => {
+                    listener(data,code);
+                });
+            }
+        }), "Channel", "KickOut", this._test, this.self());
     }
 }

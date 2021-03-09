@@ -9,8 +9,9 @@ import {Test} from "../../test/test";
 import {Databox} from 'zation-client';
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
 import ActionUtils from "../../do/actionUtils";
-import {DataEventAsserter} from "../dataEventAsserter";
+import {DataEventAsserter} from "../event/dataEventAsserter";
 import {AnyAsserter} from "../anyAsserter";
+import {CodeDataEventAsserter} from "../event/codeDataEventAsserter";
 
 export abstract class AbstractDataboxAsserter<T> {
 
@@ -164,5 +165,35 @@ export abstract class AbstractDataboxAsserter<T> {
                 });
             }
         }), "Databox", "DataTouch", this._test, this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert that the databox should trigger an Close event.
+     */
+    closeTriggers(): CodeDataEventAsserter<T> {
+        return new CodeDataEventAsserter<T>(this.databoxes.map(d => {
+            return (listener) => {
+                d.onceClose((code, data) => {
+                    listener(data,code);
+                });
+            }
+        }), "Databox", "Close", this._test, this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert that the databox should trigger an KickOut event.
+     */
+    kickOutTriggers(): CodeDataEventAsserter<T> {
+        return new CodeDataEventAsserter<T>(this.databoxes.map(d => {
+            return (listener) => {
+                d.onceKickOut((code, data) => {
+                    listener(data,code);
+                });
+            }
+        }), "Databox", "KickOut", this._test, this.self());
     }
 }

@@ -11,7 +11,7 @@ import {AuthenticationRequiredError, DataboxOptions, ZationClient} from 'zation-
 import ObjectAsserter from "../objectAsserter";
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
 import ActionUtils from "../../do/actionUtils";
-import {DataEventAsserter} from "../dataEventAsserter";
+import {DataEventAsserter} from "../event/dataEventAsserter";
 import {DataboxAsserter} from "../databox/databoxAsserter";
 import {ChannelAsserter} from "../channel/channelAsserter";
 

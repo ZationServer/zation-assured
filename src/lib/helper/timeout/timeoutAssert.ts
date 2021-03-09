@@ -8,64 +8,55 @@ const assert = require('assert');
 
 export class TimeoutAssert {
 
-    private readonly msg;
-    private readonly time;
-    private readonly invert: boolean;
+    private readonly msg: string;
+    private readonly time: number;
+    private readonly assertNotOccur: boolean;
 
-    private timeoutSet;
-    private res;
+    private _set: boolean = false;
 
-    private resolved: boolean = false;
-    private success: boolean = true;
+    private _timeoutTicker;
 
-    constructor(msg: string, time: number, invert: boolean = false) {
+    private _resolve: () => void;
+    private _reject: (err?: any) => void;
+    private _promiseEnd: boolean = false;
+    private readonly promise: Promise<void> = new Promise<void>(((resolve, reject) => {
+        this._resolve = resolve;
+        this._reject = reject;
+    }))
+
+    constructor(msg: string, time: number, assertNotOccur: boolean = false) {
         this.msg = msg;
         this.time = time;
-        this.invert = invert;
+        this.assertNotOccur = assertNotOccur;
     }
 
     async set(): Promise<void> {
-        this.resolved = false;
-        this.success = true;
-        return new Promise<void>((r) => {
-            this.res = r;
-            if (this.time === 0) {
-                //success resolved in (invert = true) otherwise fail
-                this.success = this.invert;
-                if (!this.invert) {
-                    assert.fail(this.msg);
-                }
-                this.resolve(true);
-            } else {
-                this.timeoutSet = setTimeout(() => {
-                    //success resolved in (invert = true) otherwise fail
-                    this.success = this.invert;
-                    if (!this.invert) {
-                        assert.fail(this.msg);
-                    }
-                    this.resolve(true);
-                }, this.time);
-            }
-        });
+        if(this._set) throw new Error('TimeoutAsserter already set.');
+        this._set = true;
+        this._timeoutTicker = setTimeout(() => {
+            if (this.assertNotOccur) this.internalResolve();
+            else this.internalReject();
+        }, this.time);
+        return this.promise;
     }
 
-    isSuccess(): boolean {
-        return this.success;
+    private internalReject() {
+        if(this._promiseEnd) return;
+        this._promiseEnd = true;
+        this._reject(new assert.AssertionError({message: this.msg}))
     }
 
-    resolve(internalCall: boolean = false) {
-        if (!this.resolved) {
-            if (this.timeoutSet) {
-                clearTimeout(this.timeoutSet);
-            }
-            if (typeof this.res === 'function') {
-                this.res();
-            }
-            //ups in invert mode that means it is resolved before timeout (from outside).
-            if (!internalCall && this.invert) {
-                assert.fail(this.msg);
-            }
-            this.resolved = true;
+    private internalResolve() {
+        if(this._promiseEnd) return;
+        this._promiseEnd = true;
+        this._resolve();
+    }
+
+    resolve() {
+        if (!this._promiseEnd) {
+            if (this._timeoutTicker) clearTimeout(this._timeoutTicker);
+            if(this.assertNotOccur) this.internalReject();
+            else this.internalResolve();
         }
     }
 }
