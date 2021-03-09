@@ -10,7 +10,7 @@ import {Databox} from 'zation-client';
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
 import ActionUtils from "../../do/actionUtils";
 import {DataEventAsserter} from "../event/dataEventAsserter";
-import {AnyAsserter} from "../anyAsserter";
+import {ValueAsserter} from "../value/valueAsserter";
 import {CodeDataEventAsserter} from "../event/codeDataEventAsserter";
 
 export abstract class AbstractDataboxAsserter<T> {
@@ -79,8 +79,8 @@ export abstract class AbstractDataboxAsserter<T> {
     /**
      * Assert the current data of the databox.
      */
-    data(): AnyAsserter<T> {
-        return new AnyAsserter<T>(this.self(), 'Databox', (test) => {
+    data(): ValueAsserter<T> {
+        return new ValueAsserter<T>(this.self(), 'Databox', (test) => {
             this._test.test(async () => {
                 await this._forEachDatabox(async (d, i) => {
                     test(d.data, ` ${i} data: `);
@@ -93,8 +93,8 @@ export abstract class AbstractDataboxAsserter<T> {
     /**
      * Assert the current member of the databox.
      */
-    member(): AnyAsserter<T> {
-        return new AnyAsserter<T>(this.self(), 'Databox', (test) => {
+    member(): ValueAsserter<T> {
+        return new ValueAsserter<T>(this.self(), 'Databox', (test) => {
             this._test.test(async () => {
                 await this._forEachDatabox(async (d, i) => {
                     test(d.member, ` ${i} member: `);

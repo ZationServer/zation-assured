@@ -9,11 +9,11 @@ import {Test} from "../../test/test";
 import {AbstractDataboxAsserter} from "./abstractDataboxAsserter";
 
 export class DataboxAsserter<T> extends AbstractDataboxAsserter<DataboxAsserter<T>> {
-    private readonly source: T;
+    private readonly _source: T;
 
     constructor(databoxes: Databox[], test: Test, source: T) {
         super(databoxes, test);
-        this.source = source;
+        this._source = source;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -22,7 +22,7 @@ export class DataboxAsserter<T> extends AbstractDataboxAsserter<DataboxAsserter<
      * End the databox asserter.
      */
     end(): T {
-        return this.source;
+        return this._source;
     }
 
     protected self(): DataboxAsserter<T> {

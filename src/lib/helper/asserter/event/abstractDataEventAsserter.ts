@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {AnyAsserter} from "../anyAsserter";
+import {ValueAsserter} from "../value/valueAsserter";
 import {AbstractEventAsserter} from "./abstractEventAsserter";
 
 export abstract class AbstractDataEventAsserter<T,S,A extends [any,...any[]] = [any]> extends AbstractEventAsserter<T,S,A>{
@@ -17,8 +17,8 @@ export abstract class AbstractDataEventAsserter<T,S,A extends [any,...any[]] = [
      * Asserts the data of the event.
      * Notice that the data will not be checked in (get not) mode.
      */
-    withData(): AnyAsserter<T> {
-        return new AnyAsserter<T>(this.self(), '', (test) => {
+    withData(): ValueAsserter<T> {
+        return new ValueAsserter<T>(this.self(), '', (test) => {
             this._dataChecker.push(test);
         });
     }

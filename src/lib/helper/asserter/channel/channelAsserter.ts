@@ -9,11 +9,12 @@ import {Test} from "../../test/test";
 import {AbstractChannelAsserter} from "./abstractChannelAsserter";
 
 export class ChannelAsserter<T> extends AbstractChannelAsserter<ChannelAsserter<T>> {
-    private readonly source: T;
+
+    private readonly _source: T;
 
     constructor(channels: Channel[], test: Test, source: T) {
         super(channels, test);
-        this.source = source;
+        this._source = source;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -22,7 +23,7 @@ export class ChannelAsserter<T> extends AbstractChannelAsserter<ChannelAsserter<
      * End the channel asserter.
      */
     end(): T {
-        return this.source;
+        return this._source;
     }
 
     protected self(): ChannelAsserter<T> {

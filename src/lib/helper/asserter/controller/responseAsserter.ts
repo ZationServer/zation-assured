@@ -15,7 +15,7 @@ import {
     from "zation-client";
 import {Test} from "../../test/test";
 import {Logger} from "../../console/logger";
-import {AnyAsserter} from "../anyAsserter";
+import {ValueAsserter} from "../value/valueAsserter";
 import {BackErrorFilterBuilder} from "../../backError/backErrorFilterBuilder";
 import {RootSendAsserter} from "../rootSendAsserter";
 
@@ -81,8 +81,8 @@ export class ResponseAsserter extends RootSendAsserter<ResponseAsserter> {
      * @description
      * Assert the result of the response.
      */
-    assertResult(): AnyAsserter<ResponseAsserter> {
-        return new AnyAsserter<ResponseAsserter>(this, 'Response Result', (test) => {
+    assertResult(): ValueAsserter<ResponseAsserter> {
+        return new ValueAsserter<ResponseAsserter>(this, 'Response Result', (test) => {
             this.req.onResponse((res) => {
                 test(res.getResult());
             });

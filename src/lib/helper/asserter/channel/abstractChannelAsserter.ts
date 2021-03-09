@@ -10,7 +10,7 @@ import {Channel} from 'zation-client';
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
 import ActionUtils from "../../do/actionUtils";
 import {DataEventAsserter} from "../event/dataEventAsserter";
-import {AnyAsserter} from "../anyAsserter";
+import {ValueAsserter} from "../value/valueAsserter";
 import {CodeDataEventAsserter} from "../event/codeDataEventAsserter";
 
 export abstract class AbstractChannelAsserter<T> {
@@ -79,8 +79,8 @@ export abstract class AbstractChannelAsserter<T> {
     /**
      * Assert the current member of the channel.
      */
-    member(): AnyAsserter<T> {
-        return new AnyAsserter<T>(this.self(), 'Channel', (test) => {
+    member(): ValueAsserter<T> {
+        return new ValueAsserter<T>(this.self(), 'Channel', (test) => {
             this._test.test(async () => {
                 await this._forEachChannel(async (ch, i) => {
                     test(ch.member, ` ${i} channel: `);

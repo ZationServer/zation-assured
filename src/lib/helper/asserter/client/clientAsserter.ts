@@ -9,11 +9,11 @@ import {AbstractClientAsserter} from "./abstractClientAsserter";
 import {Test} from "../../test/test";
 
 export class ClientAsserter<T> extends AbstractClientAsserter<ClientAsserter<T>> {
-    private readonly source: T;
+    private readonly _source: T;
 
     constructor(clients: ZationClient[], test: Test, source: T) {
         super(clients, test);
-        this.source = source;
+        this._source = source;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -22,7 +22,7 @@ export class ClientAsserter<T> extends AbstractClientAsserter<ClientAsserter<T>>
      * End the client asserter.
      */
     end(): T {
-        return this.source;
+        return this._source;
     }
 
     protected self(): ClientAsserter<T> {

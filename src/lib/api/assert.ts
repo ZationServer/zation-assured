@@ -10,6 +10,7 @@ import {Channel, Databox, ZationClient} from "zation-client";
 import forint, {ForintQuery} from "forint";
 import {StandaloneDataboxAsserter} from "../helper/asserter/databox/standaloneDataboxAsserter";
 import {StandaloneChannelAsserter} from "../helper/asserter/channel/standaloneChannelAsserter";
+import {StandaloneValueAsserter} from "../helper/asserter/value/standaloneValueAsserter";
 
 export const assert: {
     /**
@@ -18,6 +19,12 @@ export const assert: {
      * @param message
      */
     (value: any, message?: string | Error): void,
+    /**
+     * Start value assertions.
+     * @param client
+     * @param itTestDescription
+     */
+    value: (value: any, itTestDescription?: string) => StandaloneValueAsserter,
     /**
      * Start client assertions.
      * Notice that this method will not automatically connect the clients.
@@ -76,6 +83,9 @@ export const assert: {
     assertFunc(value, message);
 }) as any;
 
+assert.value = (value, itTestDescription) => {
+    return new StandaloneValueAsserter(value, itTestDescription);
+}
 assert.client = (client, itTestDescription) => {
     return new StandaloneClientAsserter(client, itTestDescription);
 }

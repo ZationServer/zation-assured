@@ -8,12 +8,12 @@ import {Test} from "../../test/test";
 
 const assert = require('assert');
 import {AuthenticationRequiredError, DataboxOptions, ZationClient} from 'zation-client';
-import ObjectAsserter from "../objectAsserter";
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
 import ActionUtils from "../../do/actionUtils";
 import {DataEventAsserter} from "../event/dataEventAsserter";
 import {DataboxAsserter} from "../databox/databoxAsserter";
 import {ChannelAsserter} from "../channel/channelAsserter";
+import {ValueAsserter} from "../value/valueAsserter";
 
 export type Responder = (resp: (err?: (any | number), responseData?: any) => void, data: any) => void;
 
@@ -222,18 +222,16 @@ export abstract class AbstractClientAsserter<T> {
      * @description
      * Assert the token payload of the client.
      */
-    tokenPayload(): ObjectAsserter<T> {
-        return new ObjectAsserter<T>(this.self(), 'Client:', (test) => {
+    tokenPayload(): ValueAsserter<T> {
+        return new ValueAsserter<T>(this.self(), 'Client:', (test) => {
             this._test.test(async () => {
                 await this._forEachClient(async (c, i) => {
                     try {
                         test(c.getTokenPayload(), ` ${i} Token: `);
                     } catch (e) {
                         if (e instanceof AuthenticationRequiredError) {
-                            assert.fail(`Client: ${i} can not access the token for assert token payload.`);
-                        } else {
-                            throw e;
-                        }
+                            assert.fail(`Client: ${i} token payload can not be asserted because the client is not authenticated.`);
+                        } else throw e;
                     }
                 });
             });

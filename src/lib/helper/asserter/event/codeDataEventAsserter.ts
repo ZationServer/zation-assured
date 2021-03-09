@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {AnyAsserter} from "../anyAsserter";
+import {ValueAsserter} from "../value/valueAsserter";
 import {AbstractDataEventAsserter} from "./abstractDataEventAsserter";
 
 export class CodeDataEventAsserter<T> extends AbstractDataEventAsserter<CodeDataEventAsserter<T>,T,[any,number | string | undefined]>{
@@ -17,8 +17,8 @@ export class CodeDataEventAsserter<T> extends AbstractDataEventAsserter<CodeData
      * Asserts the code of the event.
      * Notice that the code will not be checked in (get not) mode.
      */
-    withCode(): AnyAsserter<CodeDataEventAsserter<T>> {
-        return new AnyAsserter<CodeDataEventAsserter<T>>(this.self(), '', (test) => {
+    withCode(): ValueAsserter<CodeDataEventAsserter<T>> {
+        return new ValueAsserter<CodeDataEventAsserter<T>>(this.self(), '', (test) => {
             this._codeChecker.push(test);
         });
     }
