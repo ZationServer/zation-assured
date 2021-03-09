@@ -10,6 +10,7 @@ import {Channel} from 'zation-client';
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
 import DoUtils from "../../do/doUtils";
 import {DataEventAsserter} from "../dataEventAsserter";
+import {AnyAsserter} from "../anyAsserter";
 
 export abstract class AbstractChannelAsserter<T> {
 
@@ -71,6 +72,20 @@ export abstract class AbstractChannelAsserter<T> {
             });
         });
         return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Assert the current member of the Channel.
+     */
+    member(): AnyAsserter<T> {
+        return new AnyAsserter<T>(this.self(), 'Channel', (test) => {
+            this._test.test(async () => {
+                await this._forEachChannel(async (ch, i) => {
+                    test(ch.member, ` ${i} channel: `);
+                })
+            })
+        });
     }
 
     // noinspection JSUnusedGlobalSymbols
