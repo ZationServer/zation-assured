@@ -4,12 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ValidationCheckPair, ZationClient} from 'zation-client';
+import {SpecialController, ValidationCheckPair, ZationClient} from 'zation-client';
 import {Test} from "../helper/test/test";
-import {AuthRequestBuilder} from "../helper/controller/request/authRequestBuilder";
-import {ValidationCheckRequestBuilder} from "../helper/controller/request/validationCheckRequestBuilder";
-import {StandardRequestBuilder} from "../helper/controller/request/standardRequestBuilder";
-import {SpecialController} from "zation-client/dist/lib/main/controller/controllerDefinitions";
+import {AuthRequestBuilder} from "../helper/builder/controller/authRequestBuilder";
+import {ValidationCheckRequestBuilder} from "../helper/builder/controller/validationCheckRequestBuilder";
+import {StandardRequestBuilder} from "../helper/builder/controller/standardRequestBuilder";
+import {PackageBuilder} from "../helper/builder/receiver/packageBuilder";
 
 export const when = (client: ZationClient, itTestDescription?: string): WhenBuilder => {
     return WhenBuilder.when(client, itTestDescription);
@@ -44,7 +44,7 @@ export class WhenBuilder {
      * @param controller
      * @param data
      */
-    request(controller: string | SpecialController, data: any = undefined): StandardRequestBuilder {
+    request(controller: string | SpecialController, data?: any): StandardRequestBuilder {
         return new StandardRequestBuilder(this._client.request(controller, data), this._test, this._client);
     }
 
@@ -62,7 +62,7 @@ export class WhenBuilder {
      * ...
      * @param authData
      */
-    authRequest(authData: object = {}): AuthRequestBuilder {
+    authRequest(authData?: any): AuthRequestBuilder {
         return new AuthRequestBuilder
         (this._client.authRequest(authData), this._test, this._client);
     }
@@ -82,9 +82,24 @@ export class WhenBuilder {
      * @param controller
      * @param checks
      */
-    validationRequest(controller: string | SpecialController = '', ...checks: ValidationCheckPair[]): ValidationCheckRequestBuilder {
+    validationRequest(controller: string | SpecialController, ...checks: ValidationCheckPair[]): ValidationCheckRequestBuilder {
         return new ValidationCheckRequestBuilder
         (this._client.validationRequest(controller, ...checks), this._test, this._client);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns a PackageBuilder.
+     * The PackageBuilder can be used to easily build a package send it to a receiver.
+     * @example
+     * when(client1).transmit('movement').data('up')
+     * @param receiver
+     * @param data
+     */
+    transmit(receiver: string, data?: any): PackageBuilder {
+        return new PackageBuilder
+        (this._client.transmit(receiver,data), this._test, this._client);
     }
 
     // noinspection JSUnusedGlobalSymbols

@@ -6,44 +6,43 @@ GitHub: LucaCode
 
 import {Test} from "../test/test";
 import {TimeoutAssert} from "../timeout/timeoutAssert";
-import {ZationClient} from 'zation-client';
 import {AnyAsserter} from "./anyAsserter";
 
 const assert = require('assert');
 
-export type Responder = (resp: (err?: (any | number), responseData?: any) => void, data: any) => void;
+export type EventOnceListenerAdder = (listener: (data: any) => void) => void;
 
-export class EventAsserter<T> {
+export class DataEventAsserter<T> {
 
     protected readonly _test: Test;
-    protected readonly _clients: ZationClient[];
     protected readonly _source: T;
+
+    protected readonly _eventOnceListenerAdder: EventOnceListenerAdder[];
+    protected readonly _target: string;
     protected readonly _event: string;
-    protected readonly _responder: Responder;
 
     private readonly _dataChecker: ((data: any, info: string) => void)[] = [];
 
     private _timeout: number = 0;
     private _not: boolean = false;
 
-    constructor(clients: ZationClient[], event: string, test: Test, source: T, responder: Responder = () => {
-    }) {
-        this._clients = clients;
+    constructor(eventOnceListenerAdder: EventOnceListenerAdder[], target: string, event: string, test: Test, source: T) {
+        this._eventOnceListenerAdder = eventOnceListenerAdder;
+        this._target = target;
         this._event = event;
         this._test = test;
         this._source = source;
-        this._responder = responder;
     }
 
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * With this function, you can set a time limit in that the event should receive.
+     * With this function, you can set a time limit in that the event should occur.
      * @default
      * The default value is 0.
      */
-    timeout(timeout: number): EventAsserter<T> {
+    timeout(timeout: number): DataEventAsserter<T> {
         this._timeout = timeout;
         return this;
     }
@@ -51,11 +50,11 @@ export class EventAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * With this function, you set that the client should not receive the event.
+     * With this function, you set that the event should not occur.
      * @default
      * The default value is false.
      */
-    not(): EventAsserter<T> {
+    not(): DataEventAsserter<T> {
         this._not = true;
         return this;
     }
@@ -63,18 +62,18 @@ export class EventAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert the received data.
+     * Assert the data of the event.
      * Notice that the data will not checked in (get not) mode.
      */
-    assertData(): AnyAsserter<EventAsserter<T>> {
-        return new AnyAsserter<EventAsserter<T>>(this, '', (test) => {
+    assertData(): AnyAsserter<DataEventAsserter<T>> {
+        return new AnyAsserter<DataEventAsserter<T>>(this, '', (test) => {
             this._dataChecker.push(test);
         });
     }
 
-    private _checkData(data, clientIndex: number) {
+    private _checkData(data, index: number) {
         this._dataChecker.forEach((f) => {
-            f(data, `Client: ${clientIndex} event: ${this._event} -> Received data `);
+            f(data, `${this._target}: ${index} event: ${this._event} -> data `);
         });
     }
 
@@ -84,13 +83,12 @@ export class EventAsserter<T> {
      * End the event asserter.
      */
     end(): T {
-        this._clients.forEach((c, i) => {
+        this._eventOnceListenerAdder.forEach((addListener, i) => {
             let receivedEmit = false;
             let data;
             let resolve;
             this._test.beforeTest(() => {
-                c.once(this._event, (d, res) => {
-                    this._responder(res, d);
+                addListener((d) => {
                     data = d;
                     receivedEmit = true;
                     if (typeof resolve === 'function') {
@@ -98,7 +96,7 @@ export class EventAsserter<T> {
                     }
                 });
             });
-            const failMsg = `Client: ${i} should ${this._not ? 'not ' : ''}receive the event: ${this._event} from the server.`;
+            const failMsg = `${this._target}: ${i} should ${this._not ? 'not ' : ''}trigger the ${this._event} event.`;
 
             this._test.test(async () => {
                 if (!receivedEmit) {

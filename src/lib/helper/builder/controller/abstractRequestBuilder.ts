@@ -6,19 +6,19 @@ GitHub: LucaCode
 
 import {AbstractRequestBuilder as NativeAbstractRequestBuilder, ZationClient} from "zation-client";
 import {Test} from "../../test/test";
-import {ResponseAsserter} from "../../asserter/responseAsserter";
+import {ResponseAsserter} from "../../asserter/controller/responseAsserter";
 import {ConnectTimeoutOption} from "zation-client/dist/lib/main/utils/connectionUtils";
 
 export abstract class AbstractRequestBuilder<T, RT> {
 
     private readonly test: Test;
     private readonly client: ZationClient;
-    private readonly abReq: NativeAbstractRequestBuilder<any>;
+    private readonly nativeBuilder: NativeAbstractRequestBuilder<any>;
 
-    protected constructor(test: Test, client: ZationClient, req: NativeAbstractRequestBuilder<any>) {
+    protected constructor(test: Test, client: ZationClient, nativeBuilder: NativeAbstractRequestBuilder<any>) {
         this.test = test;
         this.client = client;
-        this.abReq = req;
+        this.nativeBuilder = nativeBuilder;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -29,7 +29,7 @@ export abstract class AbstractRequestBuilder<T, RT> {
      * @default undefined.
      */
     apiLevel(apiLevel: number | undefined): T {
-        this.abReq.apiLevel(apiLevel);
+        this.nativeBuilder.apiLevel(apiLevel);
         return this.self();
     }
 
@@ -43,7 +43,7 @@ export abstract class AbstractRequestBuilder<T, RT> {
      * @param timeout
      */
     responseTimeout(timeout: null | undefined | number): T {
-        this.abReq.responseTimeout(timeout);
+        this.nativeBuilder.responseTimeout(timeout);
         return this.self();
     }
 
@@ -64,7 +64,7 @@ export abstract class AbstractRequestBuilder<T, RT> {
      * @default undefined
      */
     connectTimeout(timeout: ConnectTimeoutOption): T {
-        this.abReq.connectTimeout(timeout);
+        this.nativeBuilder.connectTimeout(timeout);
         return this.self();
     }
 
@@ -74,7 +74,7 @@ export abstract class AbstractRequestBuilder<T, RT> {
      * Start the assertions.
      */
     assertThat(): ResponseAsserter {
-        return new ResponseAsserter(this.abReq, this.test, this.client);
+        return new ResponseAsserter(this.nativeBuilder, this.test, this.client);
     }
 
     // noinspection JSUnusedGlobalSymbols

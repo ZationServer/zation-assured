@@ -7,7 +7,7 @@ GitHub: LucaCode
 
 import {AbstractBackErrorFilterBuilder} from "zation-client";
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
-import {ResponseAsserter} from "./../asserter/responseAsserter";
+import {ResponseAsserter} from "../asserter/controller/responseAsserter";
 
 export class BackErrorFilterBuilder<T extends ResponseAsserter> extends AbstractBackErrorFilterBuilder<BackErrorFilterBuilder<T>> {
     private readonly respAsserter: T;

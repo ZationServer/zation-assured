@@ -4,14 +4,18 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Test} from "../test/test";
+import {Test} from "../../test/test";
 
 const assert = require('assert');
-import {AuthenticationRequiredError, ZationClient} from 'zation-client';
-import ObjectAsserter from "./objectAsserter";
-import {TimeoutAssert} from "../timeout/timeoutAssert";
-import DoUtils from "../do/doUtils";
-import {EventAsserter, Responder} from "./eventAsserter";
+import {AuthenticationRequiredError, DataboxOptions, ZationClient} from 'zation-client';
+import ObjectAsserter from "../objectAsserter";
+import {TimeoutAssert} from "../../timeout/timeoutAssert";
+import DoUtils from "../../do/doUtils";
+import {DataEventAsserter} from "../dataEventAsserter";
+import {DataboxAsserter} from "../databox/databoxAsserter";
+import {ChannelAsserter} from "../channel/channelAsserter";
+
+export type Responder = (resp: (err?: (any | number), responseData?: any) => void, data: any) => void;
 
 export abstract class AbstractClientAsserter<T> {
 
@@ -218,12 +222,12 @@ export abstract class AbstractClientAsserter<T> {
      * @description
      * Assert the token payload of the client.
      */
-    assertTokenPayload(): ObjectAsserter<T> {
+    tokenPayload(): ObjectAsserter<T> {
         return new ObjectAsserter<T>(this.self(), 'Client:', (test) => {
             this._test.test(async () => {
                 await this._forEachClient(async (c, i) => {
                     try {
-                        test(c.getTokenPayload(), ` ${i}  Token: `);
+                        test(c.getTokenPayload(), ` ${i} Token: `);
                     } catch (e) {
                         if (e instanceof AuthenticationRequiredError) {
                             assert.fail(`Client: ${i} can not access the token for assert token payload.`);
@@ -234,6 +238,46 @@ export abstract class AbstractClientAsserter<T> {
                 });
             });
         });
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert Databox.
+     * Will automatically connect and disconnect the Databox.
+     */
+    databox(identifier: string, member?: any, options: DataboxOptions = {}): DataboxAsserter<T> {
+        return new DataboxAsserter<T>(this.clients.map(client => {
+            const db = client.databox(identifier,options);
+            this._test.test(async () => {
+                try {await db.connect(member);}
+                catch (err) {assert.fail("Cannot connect the databox: " + err.stack);}
+            })
+            this._test.afterTest(async () => {
+                await db.disconnect();
+            });
+            return db;
+        }), this._test, this.self());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Assert Channel.
+     * Will automatically subscribe and unsubscribe the Channel.
+     */
+    channel(identifier: string, member?: any): ChannelAsserter<T> {
+        return new ChannelAsserter<T>(this.clients.map(client => {
+            const ch = client.channel(identifier);
+            this._test.test(async () => {
+                try {await ch.subscribe(member);}
+                catch (err) {assert.fail("Cannot subscribe to the channel: " + err.stack);}
+            })
+            this._test.afterTest(async () => {
+                await ch.unsubscribe();
+            });
+            return ch;
+        }), this._test, this.self());
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -258,12 +302,13 @@ export abstract class AbstractClientAsserter<T> {
     /**
      * @description
      * With this function, you can do extra things in the test.
-     * Subscribe a channel, publish to a channel...
      * @param func
      * @param failMsg if not provided it throws the specific error.
      */
-    do(func: () => void | Promise<void>, failMsg ?: string): T {
-        DoUtils.do(this._test, func, failMsg);
+    do(func: (client: ZationClient) => void | Promise<void>, failMsg ?: string): T {
+        this.clients.forEach(client => {
+            DoUtils.do(this._test, () => func(client), failMsg);
+        })
         return this.self();
     }
 
@@ -277,8 +322,10 @@ export abstract class AbstractClientAsserter<T> {
      * @param failMsg
      * @param errors
      */
-    doShouldThrow(func: () => void | Promise<void>, failMsg: string, ...errors: any[]): T {
-        DoUtils.doShouldThrow(this._test, func, failMsg, ...errors);
+    doShouldThrow(func: (client: ZationClient) => void | Promise<void>, failMsg: string, ...errors: any[]): T {
+        this.clients.forEach(client => {
+            DoUtils.doShouldThrow(this._test, () => func(client), failMsg, ...errors);
+        })
         return this.self();
     }
 
@@ -289,7 +336,16 @@ export abstract class AbstractClientAsserter<T> {
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
      */
-    receiveEvent(event: string, responder ?: Responder): EventAsserter<T> {
-        return new EventAsserter<T>(this.clients, event, this._test, this.self(), responder);
+    receiveEvent(event: string, responder: Responder = (resp) => {
+        resp(null)
+    }): DataEventAsserter<T> {
+        return new DataEventAsserter<T>(this.clients.map(c => {
+            return (listener) => {
+                c.once(event, (data, response) => {
+                    listener(data);
+                    responder(response, data);
+                })
+            };
+        }), "Client", event, this._test, this.self());
     }
 }

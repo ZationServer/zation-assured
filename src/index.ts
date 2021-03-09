@@ -20,6 +20,7 @@ import {
     from "./lib/api/testHelper";
 import {ClientUtils} from "./lib/helper/utils/clientUtils";
 import {assert} from "./lib/api/assert";
+
 const forEachClient = ClientUtils.forEachClient;
 
 export * from 'zation-client';
@@ -38,8 +39,3 @@ export {
     ZationClient,
     forEachClient
 };
-
-
-
-
-

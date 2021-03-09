@@ -5,6 +5,7 @@ GitHub: LucaCode
  */
 
 import forint, {ForintQuery} from "forint";
+
 const cAssert = require('chai').assert;
 
 type AddTest = (test: (obj: any, eStr ?: string) => void) => void;

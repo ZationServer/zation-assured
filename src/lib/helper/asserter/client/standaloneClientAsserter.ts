@@ -6,13 +6,12 @@ GitHub: LucaCode
 
 import {ZationClient} from 'zation-client';
 import {AbstractClientAsserter} from "./abstractClientAsserter";
-import {Test} from "../test/test";
+import {Test} from "../../test/test";
 
 export class StandaloneClientAsserter extends AbstractClientAsserter<StandaloneClientAsserter> {
 
     constructor(client: ZationClient | ZationClient[], itTestDescription?: string) {
-        let clients: ZationClient[] = Array.isArray(client) ? client : [client];
-        super(clients, new Test(itTestDescription));
+        super(Array.isArray(client) ? client : [client], new Test(itTestDescription));
     }
 
     // noinspection JSUnusedGlobalSymbols

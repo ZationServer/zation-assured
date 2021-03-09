@@ -10,93 +10,33 @@ import {
     Response,
     ErrorFilterEngine,
     BackError,
-    TimeoutError,
-    ConnectionRequiredError,
     BackErrorFilter
 }
     from "zation-client";
-import {Test} from "../test/test";
-import {WhenBuilder} from "../../api/when";
-import {Logger} from "../console/logger";
-import {AnyAsserter} from "./anyAsserter";
-import {BackErrorFilterBuilder} from "../backError/backErrorFilterBuilder";
-import {ClientAsserter} from "./clientAsserter";
-import DoUtils from "../do/doUtils";
+import {Test} from "../../test/test";
+import {Logger} from "../../console/logger";
+import {AnyAsserter} from "../anyAsserter";
+import {BackErrorFilterBuilder} from "../../backError/backErrorFilterBuilder";
+import {RootSendAsserter} from "../rootSendAsserter";
 
 const assert = require('assert');
 
-export class ResponseAsserter {
+export class ResponseAsserter extends RootSendAsserter<ResponseAsserter> {
 
     private req: NativeAbstractRequestBuilder<any>;
-    private readonly _test: Test;
-    private readonly _client: ZationClient;
-    private autoConnectedClient: boolean = false;
-
-    private _shouldThrowTimeoutError: boolean = false;
-    private _shouldThrowConnectionRequiredError: boolean = false;
 
     constructor(req: NativeAbstractRequestBuilder<any>, test: Test, client: ZationClient) {
+        super(test,client)
         this.req = req;
-        this._test = test;
-        this._client = client;
-
-        this._createTest();
     }
 
-    private _createTest() {
-        this._test.test(async () => {
-            if (!this._client.isConnected() && this.autoConnectedClient) {
-                await this._client.connect();
-            }
-            try {
-                await this.req.send(false);
-                if (this._shouldThrowTimeoutError) {
-                    assert.fail('Send should throw a timeout error.');
-                }
-                if (this._shouldThrowConnectionRequiredError) {
-                    assert.fail('Send should throw a connection required error.');
-                }
-            } catch (e) {
-                if (e instanceof TimeoutError) {
-                    if (!this._shouldThrowTimeoutError) {
-                        assert.fail('Send should not throw a timeout error.');
-                    }
-                } else if (e instanceof ConnectionRequiredError) {
-                    if (!this._shouldThrowConnectionRequiredError) {
-                        assert.fail('Send should not throw a connection required error.');
-                    }
-                } else {
-                    throw e;
-                }
-            }
-        }, true);
+    protected async _executeAction(): Promise<void> {
+        await this.req.send(false);
     }
 
     // noinspection JSMethodCanBeStatic
     private _respInfo(res: Response) {
         return '\n   ' + res.toString();
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Assert that send the request should throw a timeout error.
-     * @param value
-     */
-    throwsTimeoutError(value: boolean = true): ResponseAsserter {
-        this._shouldThrowTimeoutError = value;
-        return this;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Assert that send the request should throw a connection required error.
-     * @param value
-     */
-    throwsConnectionRequiredError(value: boolean = true): ResponseAsserter {
-        this._shouldThrowConnectionRequiredError = value;
-        return this;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -236,63 +176,7 @@ export class ResponseAsserter {
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * With this function, you can do extra things in the test.
-     * Subscribe a channel, publish to a channel...
-     * @param func
-     * @param failMsg if not provided it throws the specific error.
-     */
-    do(func: () => void | Promise<void>, failMsg ?: string): ResponseAsserter {
-        DoUtils.do(this._test, func, failMsg);
+    protected self(): ResponseAsserter {
         return this;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * With this function, you can do extra things in the test
-     * and assert that it should throw an error or a specific error.
-     * Subscribe a channel, publish to a channel...
-     * @param func
-     * @param failMsg
-     * @param errors
-     */
-    doShouldThrow(func: () => void | Promise<void>, failMsg: string, ...errors: any[]): ResponseAsserter {
-        DoUtils.doShouldThrow(this._test, func, failMsg, ...errors);
-        return this;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Start with a new request and link them to one test.
-     */
-    and(): WhenBuilder {
-        this._test.newSubTest();
-        return new WhenBuilder(this._client, this._test);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Run the test.
-     * @param autoConnect
-     * Will auto connect the client
-     * if the client is not connected to the server.
-     */
-    async test(autoConnect: boolean = false): Promise<void> {
-        this.autoConnectedClient = autoConnect;
-        return this._test.execute();
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Assert zation clients after request.
-     */
-    client(...client: ZationClient[]): ClientAsserter<ResponseAsserter> {
-        return new ClientAsserter<ResponseAsserter>(client, this._test, this);
     }
 }
