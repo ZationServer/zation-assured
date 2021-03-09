@@ -65,7 +65,7 @@ export class DataEventAsserter<T> {
      * Assert the data of the event.
      * Notice that the data will not checked in (get not) mode.
      */
-    assertData(): AnyAsserter<DataEventAsserter<T>> {
+    withData(): AnyAsserter<DataEventAsserter<T>> {
         return new AnyAsserter<DataEventAsserter<T>>(this, '', (test) => {
             this._dataChecker.push(test);
         });
