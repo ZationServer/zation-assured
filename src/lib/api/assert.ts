@@ -47,20 +47,6 @@ export const assert: {
      */
     channel: (channel: Channel | Channel[], itTestDescription?: string) => StandaloneChannelAsserter,
     /**
-     * Asserts that the value is deep equal.
-     * @param actual
-     * @param expect
-     * @param message
-     */
-    deepEqual: (actual: any, expect: any, message?: string | Error) => void,
-    /**
-     * Asserts that the value is not deep equal.
-     * @param actual
-     * @param expect
-     * @param message
-     */
-    notDeepEqual: (actual: any, expect: any, message?: string | Error) => void,
-    /**
      * Asserts that the promise rejects an error that matches with the forint query.
      * @param promise
      * @param query
@@ -94,12 +80,6 @@ assert.databox = (databox, itTestDescription) => {
 }
 assert.channel = (channel, itTestDescription) => {
     return new StandaloneChannelAsserter(channel, itTestDescription);
-}
-assert.deepEqual = (actual, expect, message) => {
-    assertFunc.deepStrictEqual(actual, expect, message);
-}
-assert.notDeepEqual = (actual, expect, message) => {
-    assertFunc.notDeepStrictEqual(actual, expect, message);
 }
 assert.rejects = (promise, query, message) => {
     return new Promise<void>(r => {

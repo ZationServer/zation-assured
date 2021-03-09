@@ -227,7 +227,7 @@ export abstract class AbstractClientAsserter<T> {
             this._test.test(async () => {
                 await this._forEachClient(async (c, i) => {
                     try {
-                        test(c.getTokenPayload(), ` ${i} Token: `);
+                        test(c.getTokenPayload(), ` ${i} Token:`);
                     } catch (e) {
                         if (e instanceof AuthenticationRequiredError) {
                             assert.fail(`Client: ${i} token payload can not be asserted because the client is not authenticated.`);
@@ -249,8 +249,8 @@ export abstract class AbstractClientAsserter<T> {
             const db = client.databox(identifier,options);
             this._test.test(async () => {
                 try {await db.connect(member);}
-                catch (err) {assert.fail("Cannot connect the databox: " + err.stack);}
-            })
+                catch (err) {assert.fail("Cannot connect the databox. Error -> " + err.stack);}
+            },true)
             this._test.afterTest(async () => {
                 await db.disconnect();
             });
@@ -269,8 +269,8 @@ export abstract class AbstractClientAsserter<T> {
             const ch = client.channel(identifier);
             this._test.test(async () => {
                 try {await ch.subscribe(member);}
-                catch (err) {assert.fail("Cannot subscribe to the channel: " + err.stack);}
-            })
+                catch (err) {assert.fail("Cannot subscribe to the channel. Error -> " + err.stack);}
+            },true)
             this._test.afterTest(async () => {
                 await ch.unsubscribe();
             });

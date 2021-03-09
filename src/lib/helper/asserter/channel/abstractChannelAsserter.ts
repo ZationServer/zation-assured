@@ -83,7 +83,7 @@ export abstract class AbstractChannelAsserter<T> {
         return new ValueAsserter<T>(this.self(), 'Channel', (test) => {
             this._test.test(async () => {
                 await this._forEachChannel(async (ch, i) => {
-                    test(ch.member, ` ${i} channel: `);
+                    test(ch.member, ` ${i} channel:`);
                 })
             })
         });

@@ -37,7 +37,20 @@ export abstract class AbstractValueAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Asserts the type of the value.
+     * Asserts that the value is not undefined.
+     */
+    isNotUndefined(): T {
+        this.addTest((value, eStr = '') => {
+            cAssert(value !== undefined,
+                `${this.name + eStr} should be not undefined.`);
+        });
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Asserts that the type of the value matches.
      * @param type
      */
     typeOf(type: 'string' | 'boolean' | 'number' | 'undefined'
@@ -45,6 +58,21 @@ export abstract class AbstractValueAsserter<T> {
         this.addTest((value, eStr = '') => {
             cAssert.typeOf(value, type,
                 `${this.name + eStr} should be type of ${type}`);
+        });
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Asserts that the type of the value not matches.
+     * @param type
+     */
+    notTypeOf(type: 'string' | 'boolean' | 'number' | 'undefined'
+        | 'object' | 'array' | 'function' | 'symbol' | 'bigint' | string): T {
+        this.addTest((value, eStr = '') => {
+            cAssert.notTypeOf(value, type,
+                `${this.name + eStr} should be not type of ${type}`);
         });
         return this.self();
     }
@@ -66,6 +94,20 @@ export abstract class AbstractValueAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * Asserts that the value is not content equal (==).
+     * @param expectedValue
+     */
+    notContentEqual(expectedValue: any): T {
+        this.addTest((value, eStr = '') => {
+            cAssert.notEqual(value, expectedValue,
+                `${this.name + eStr} should be not content equal with ${expectedValue}`);
+        });
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * Asserts that the value is strict equal (===).
      * @param expectedValue
      */
@@ -80,13 +122,13 @@ export abstract class AbstractValueAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Asserts that the value is deep content equal.
+     * Asserts that the value is not strict equal (===).
      * @param expectedValue
      */
-    deepContentEqual(expectedValue: any): T {
+    notEqual(expectedValue: any): T {
         this.addTest((value, eStr = '') => {
-            cAssert.deepEqual(value, expectedValue,
-                `${this.name + eStr} should be deep content equal with ${JSON.stringify(expectedValue)}`);
+            cAssert.notStrictEqual(value, expectedValue,
+                `${this.name + eStr} should be not strict equal with ${expectedValue}`);
         });
         return this.self();
     }
@@ -99,8 +141,22 @@ export abstract class AbstractValueAsserter<T> {
      */
     deepEqual(expectedValue: any): T {
         this.addTest((value, eStr = '') => {
-            cAssert.deepStrictEqual(value, expectedValue,
+            cAssert.deepEqual(value, expectedValue,
                 `${this.name + eStr} should be deep strict equal with ${JSON.stringify(expectedValue)}`);
+        });
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Asserts that the value is not deep strict equal.
+     * @param expectedValue
+     */
+    notDeepEqual(expectedValue: any): T {
+        this.addTest((value, eStr = '') => {
+            cAssert.notDeepEqual(value, expectedValue,
+                `${this.name + eStr} should be not deep strict equal with ${JSON.stringify(expectedValue)}`);
         });
         return this.self();
     }
@@ -113,6 +169,18 @@ export abstract class AbstractValueAsserter<T> {
         this.addTest(async (inAny, eStr = '') => {
             await cAssert(forint(query)(inAny),
                 `${this.name + eStr} should match with the forint query.`);
+        });
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Asserts that the value not matches with a forint query.
+     */
+    notMatches(query: ForintQuery): T {
+        this.addTest(async (inAny, eStr = '') => {
+            await cAssert(!forint(query)(inAny),
+                `${this.name + eStr} should not match with the forint query.`);
         });
         return this.self();
     }
@@ -148,6 +216,20 @@ export abstract class AbstractValueAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * Asserts that the value does not have any of the specific keys.
+     * @param keys
+     */
+    doesNotHaveAnyKeys(...keys: string[]): T {
+        this.addTest((value, eStr = '') => {
+            cAssert.doesNotHaveAnyKeys(value, keys,
+                `${this.name + eStr} should not contain any of these keys: ${keys}.`);
+        });
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * Asserts that the value should own include a subset.
      * @example
      * ownInclude({id: 10});
@@ -157,6 +239,22 @@ export abstract class AbstractValueAsserter<T> {
         this.addTest((value, eStr = '') => {
             cAssert.ownInclude(value, subset,
                 `${this.name + eStr} should own include ${JSON.stringify(subset)}.`);
+        });
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Asserts that the value should not own include a subset.
+     * @example
+     * notOwnInclude({id: 10});
+     * @param subset
+     */
+    notOwnInclude(subset: Record<string,any>): T {
+        this.addTest((value, eStr = '') => {
+            cAssert.notOwnInclude(value, subset,
+                `${this.name + eStr} should not own include ${JSON.stringify(subset)}.`);
         });
         return this.self();
     }
@@ -174,6 +272,23 @@ export abstract class AbstractValueAsserter<T> {
         this.addTest((value, eStr = '') => {
             cAssert.include(value, subset,
                 `${this.name + eStr} should include ${JSON.stringify(subset)}.`);
+        });
+        return this.self();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Asserts that the value should not include a subset.
+     * @example
+     * [1,2,3] - 2
+     * 'foobar' - 'foo'
+     * @param subset
+     */
+    notInclude(subset: any): T {
+        this.addTest((value, eStr = '') => {
+            cAssert.notInclude(value, subset,
+                `${this.name + eStr} should not include ${JSON.stringify(subset)}.`);
         });
         return this.self();
     }

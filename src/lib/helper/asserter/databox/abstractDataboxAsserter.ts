@@ -83,7 +83,7 @@ export abstract class AbstractDataboxAsserter<T> {
         return new ValueAsserter<T>(this.self(), 'Databox', (test) => {
             this._test.test(async () => {
                 await this._forEachDatabox(async (d, i) => {
-                    test(d.data, ` ${i} data: `);
+                    test(d.data, ` ${i} data:`);
                 })
             })
         });
@@ -97,7 +97,7 @@ export abstract class AbstractDataboxAsserter<T> {
         return new ValueAsserter<T>(this.self(), 'Databox', (test) => {
             this._test.test(async () => {
                 await this._forEachDatabox(async (d, i) => {
-                    test(d.member, ` ${i} member: `);
+                    test(d.member, ` ${i} member:`);
                 })
             })
         });
