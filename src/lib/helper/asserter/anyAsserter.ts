@@ -27,12 +27,23 @@ export class AnyAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * Assert that any is undefined.
+     */
+    isUndefined(): AnyAsserter<T> {
+        this.addTest((any, eStr = '') => {
+            cAssert(any === undefined,`${this.name + eStr} should be undefined.`);
+        });
+        return this;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * Assert that any is from a specific type.
      * @param type
      */
     typeOf(type: string): AnyAsserter<T> {
         this.addTest((any, eStr = '') => {
-            // noinspection TypeScriptValidateJSTypes
             cAssert.typeOf(any, type, `${this.name + eStr} should from type ${type}`);
         });
         return this;
@@ -47,7 +58,6 @@ export class AnyAsserter<T> {
      */
     equal(any: any): AnyAsserter<T> {
         this.addTest((inAny, eStr = '') => {
-            // noinspection TypeScriptValidateJSTypes
             cAssert.equal(inAny, any, `${this.name + eStr} should equal with ${any}`);
         });
         return this;
@@ -62,7 +72,6 @@ export class AnyAsserter<T> {
      */
     strictEqual(any: any): AnyAsserter<T> {
         this.addTest((inAny, eStr = '') => {
-            // noinspection TypeScriptValidateJSTypes
             cAssert.strictEqual(inAny, any, `${this.name + eStr} should strict equal with ${any}`);
         });
         return this;
