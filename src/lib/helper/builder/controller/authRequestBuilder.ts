@@ -19,9 +19,9 @@ export class AuthRequestBuilder extends AbstractRequestBuilder<AuthRequestBuilde
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the authData of the request.
+     * Sets the authData of the request.
      * @param data
-     * @default undefined (equals to {} on server param based input).
+     * @default undefined
      */
     authData(data: any): AuthRequestBuilder {
         this.req.authData(data);

@@ -20,9 +20,9 @@ export class StandardRequestBuilder extends AbstractRequestBuilder<StandardReque
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the data of the request.
+     * Sets the data of the request.
      * @param data
-     * @default undefined (equals to {} on server param based input).
+     * @default undefined
      */
     data(data: any): StandardRequestBuilder {
         this.req.data(data);
