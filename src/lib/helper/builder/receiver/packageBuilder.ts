@@ -24,6 +24,18 @@ export class PackageBuilder {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * Sets the data of the package.
+     * @param data
+     * @default undefined
+     */
+    data(data: any): PackageBuilder {
+        this.natveBuilder.data(data);
+        return this;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * Set the apiLevel of the package.
      * @param apiLevel.
      * @default undefined.
