@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import {Test} from "../../test/test";
-import {Databox} from 'zation-client';
+import {Databox, DataEventReason} from 'zation-client';
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
 import ActionUtils from "../../utils/actionUtils";
 import {DataEventAsserter} from "../event/dataEventAsserter";
@@ -164,30 +164,42 @@ export abstract class AbstractDataboxAsserter<T> {
     /**
      * @description
      * Assert that the databox should trigger an DataChange event.
+     * It is also possible to assert only in case of specific data event reasons.
      */
-    dataChangeTriggers(): DataEventAsserter<T> {
+    dataChangeTriggers(...reasons: DataEventReason[]): DataEventAsserter<T> {
         return new DataEventAsserter<T>(this.databoxes.map(d => {
             return (listener) => {
-                d.onceDataChange((data) => {
-                    listener(data);
+                let handler;
+                d.onDataChange(handler = (data,triggerReasons) => {
+                    if(reasons.length === 0 || (triggerReasons.findIndex(r => reasons.indexOf(r) !== -1) !== -1)) {
+                        d.offDataChange(handler);
+                        listener(data);
+                    }
                 });
             }
-        }), "Databox", "DataChange", this._test, this.self());
+        }), "Databox", "DataChange",
+            this._test, this.self(), ((reasons.length > 0) ? ` with any of these reasons: [${reasons}]` : ''));
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
      * Assert that the databox should trigger an DataTouch event.
+     * It is also possible to assert only in case of specific data event reasons.
      */
-    dataTouchTriggers(): DataEventAsserter<T> {
+    dataTouchTriggers(...reasons: DataEventReason[]): DataEventAsserter<T> {
         return new DataEventAsserter<T>(this.databoxes.map(d => {
             return (listener) => {
-                d.onceDataTouch((data) => {
-                    listener(data);
+                let handler;
+                d.onDataTouch(handler = (data,triggerReasons) => {
+                    if(reasons.length === 0 || (triggerReasons.findIndex(r => reasons.indexOf(r) !== -1) !== -1)) {
+                        d.offDataTouch(handler);
+                        listener(data);
+                    }
                 });
             }
-        }), "Databox", "DataTouch", this._test, this.self());
+        }), "Databox", "DataTouch",
+            this._test, this.self(), ((reasons.length > 0) ? ` with any of these reasons: [${reasons}]` : ''));
     }
 
     // noinspection JSUnusedGlobalSymbols
