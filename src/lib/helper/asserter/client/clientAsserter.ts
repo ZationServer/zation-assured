@@ -4,14 +4,14 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ZationClient} from 'zation-client';
+import {Client} from 'zation-client';
 import {AbstractClientAsserter} from "./abstractClientAsserter";
 import {Test} from "../../test/test";
 
 export class ClientAsserter<T> extends AbstractClientAsserter<ClientAsserter<T>> {
     private readonly _source: T;
 
-    constructor(clients: ZationClient[], test: Test, source: T) {
+    constructor(clients: Client[], test: Test, source: T) {
         super(clients, test);
         this._source = source;
     }

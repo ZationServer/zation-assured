@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {AbstractRequestBuilder as NativeAbstractRequestBuilder, ZationClient} from "zation-client";
+import {AbstractRequestBuilder as NativeAbstractRequestBuilder, Client} from "zation-client";
 import {Test} from "../../test/test";
 import {ResponseAsserter} from "../../asserter/controller/responseAsserter";
 import {ConnectTimeoutOption} from "zation-client/dist/lib/main/utils/connectionUtils";
@@ -12,10 +12,10 @@ import {ConnectTimeoutOption} from "zation-client/dist/lib/main/utils/connection
 export abstract class AbstractRequestBuilder<T, RT> {
 
     private readonly test: Test;
-    private readonly client: ZationClient;
+    private readonly client: Client;
     private readonly nativeBuilder: NativeAbstractRequestBuilder<any>;
 
-    protected constructor(test: Test, client: ZationClient, nativeBuilder: NativeAbstractRequestBuilder<any>) {
+    protected constructor(test: Test, client: Client, nativeBuilder: NativeAbstractRequestBuilder<any>) {
         this.test = test;
         this.client = client;
         this.nativeBuilder = nativeBuilder;
@@ -38,7 +38,7 @@ export abstract class AbstractRequestBuilder<T, RT> {
      * @description
      * Set the timeout for the response of the request.
      * Value can be null which means the timeout is disabled or
-     * undefined then it will use the default timeout of the zation config,
+     * undefined then it will use the default timeout of the client config,
      * or it can be a number that indicates the milliseconds.
      * @param timeout
      */

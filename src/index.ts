@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 //Api Classes
-import {ZationClientOptions as ClientOptions, ZationClient, create} from "zation-client";
+import {ClientOptions, Client, create} from "zation-client";
 import {when} from "./lib/api/when";
 
 import {
@@ -36,6 +36,6 @@ export {
     afterEach,
     it,
     fail,
-    ZationClient,
+    Client,
     forEachClient
 };

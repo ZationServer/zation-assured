@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {
     PackageBuilder as NativePackageBuilder,
-    ZationClient,
+    Client,
 }
     from "zation-client";
 import {Test} from "../../test/test";
@@ -16,7 +16,7 @@ export class TransmitAsserter extends RootSendAsserter<TransmitAsserter> {
 
     private nativeBuilder: NativePackageBuilder<any>;
 
-    constructor(nativeBuilder: NativePackageBuilder<any>, test: Test, client: ZationClient) {
+    constructor(nativeBuilder: NativePackageBuilder<any>, test: Test, client: Client) {
         super(test,client)
         this.nativeBuilder = nativeBuilder;
     }

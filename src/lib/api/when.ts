@@ -4,28 +4,28 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {SpecialController, ValidationCheckPair, ZationClient} from 'zation-client';
+import {SpecialController, ValidationCheckPair, Client} from 'zation-client';
 import {Test} from "../helper/test/test";
 import {AuthRequestBuilder} from "../helper/builder/controller/authRequestBuilder";
 import {ValidationCheckRequestBuilder} from "../helper/builder/controller/validationCheckRequestBuilder";
 import {StandardRequestBuilder} from "../helper/builder/controller/standardRequestBuilder";
 import {PackageBuilder} from "../helper/builder/receiver/packageBuilder";
 
-export const when = (client: ZationClient, itTestDescription?: string): WhenBuilder => {
+export const when = (client: Client, itTestDescription?: string): WhenBuilder => {
     return WhenBuilder.when(client, itTestDescription);
 };
 
 export class WhenBuilder {
 
-    private readonly _client: ZationClient;
+    private readonly _client: Client;
     private readonly _test: Test;
 
-    constructor(client: ZationClient, test: Test) {
+    constructor(client: Client, test: Test) {
         this._client = client;
         this._test = test;
     }
 
-    static when(client: ZationClient, itTestDescription?: string): WhenBuilder {
+    static when(client: Client, itTestDescription?: string): WhenBuilder {
         return new WhenBuilder(client, new Test(itTestDescription));
     }
 

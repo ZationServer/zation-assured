@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Channel, ConnectionRequiredError, Databox, TimeoutError, ZationClient,} from "zation-client";
+import {Channel, ConnectionRequiredError, Databox, TimeoutError, Client,} from "zation-client";
 import {Test} from "../test/test";
 import {WhenBuilder} from "../../api/when";
 import {ClientAsserter} from "./client/clientAsserter";
@@ -16,14 +16,14 @@ const assert = require('assert');
 export abstract class RootSendAsserter<T> {
 
     protected readonly _test: Test;
-    protected readonly _client: ZationClient;
+    protected readonly _client: Client;
 
     private autoConnectedClient: boolean = false;
 
     private _shouldThrowTimeoutError: boolean = false;
     private _shouldThrowConnectionRequiredError: boolean = false;
 
-    protected constructor(test: Test, client: ZationClient) {
+    protected constructor(test: Test, client: Client) {
         this._test = test;
         this._client = client;
 
@@ -90,7 +90,7 @@ export abstract class RootSendAsserter<T> {
      * @param action
      * @param message if not provided it throws the specific error.
      */
-    action(action: (client: ZationClient) => void | Promise<void>, message?: string): T {
+    action(action: (client: Client) => void | Promise<void>, message?: string): T {
         ActionUtils.action(this._test, () => action(this._client), message);
         this._test.pushSyncWait();
         return this.self();
@@ -107,7 +107,7 @@ export abstract class RootSendAsserter<T> {
      * @param message
      * @param validErrorClasses
      */
-    actionShouldThrow(action: (client: ZationClient) => void | Promise<void>,
+    actionShouldThrow(action: (client: Client) => void | Promise<void>,
                       message: string, ...validErrorClasses: any[]): T {
         ActionUtils.actionShouldThrow(this._test, () => action(this._client), message, ...validErrorClasses);
         this._test.pushSyncWait();
@@ -139,7 +139,7 @@ export abstract class RootSendAsserter<T> {
      * Assert other clients.
      * Notice that this method will not automatically connect the clients.
      */
-    otherClients(...clients: ZationClient[]): ClientAsserter<T> {
+    otherClients(...clients: Client[]): ClientAsserter<T> {
         return new ClientAsserter<T>(clients, this._test, this.self());
     }
 

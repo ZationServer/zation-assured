@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import assertFunc = require('assert');
 import {StandaloneClientAsserter} from "../helper/asserter/client/standaloneClientAsserter";
-import {Channel, Databox, ZationClient} from "zation-client";
+import {Channel, Databox, Client} from "zation-client";
 import forint, {ForintQuery} from "forint";
 import {StandaloneDataboxAsserter} from "../helper/asserter/databox/standaloneDataboxAsserter";
 import {StandaloneChannelAsserter} from "../helper/asserter/channel/standaloneChannelAsserter";
@@ -31,7 +31,7 @@ export const assert: {
      * @param client
      * @param itTestDescription
      */
-    client: (client: ZationClient | ZationClient[], itTestDescription?: string) => StandaloneClientAsserter,
+    client: (client: Client | Client[], itTestDescription?: string) => StandaloneClientAsserter,
     /**
      * Start databox assertions.
      * Notice that this method will not automatically connect the databoxes.

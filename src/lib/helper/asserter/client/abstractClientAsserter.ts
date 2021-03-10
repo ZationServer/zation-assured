@@ -7,7 +7,7 @@ GitHub: LucaCode
 import {Test} from "../../test/test";
 
 const assert = require('assert');
-import {AuthenticationRequiredError, DataboxOptions, ZationClient} from 'zation-client';
+import {AuthenticationRequiredError, DataboxOptions, Client} from 'zation-client';
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
 import ActionUtils from "../../utils/actionUtils";
 import {DataEventAsserter} from "../event/dataEventAsserter";
@@ -20,16 +20,16 @@ export type Responder = (resp: (err?: (any | number), responseData?: any) => voi
 export abstract class AbstractClientAsserter<T> {
 
     protected _test: Test;
-    protected clients: ZationClient[];
+    protected clients: Client[];
 
     protected abstract self(): T;
 
-    protected constructor(clients: ZationClient[], test: Test) {
+    protected constructor(clients: Client[], test: Test) {
         this._test = test;
         this.clients = clients;
     }
 
-    protected async _forEachClient(func: (client: ZationClient, i: number) => Promise<void>) {
+    protected async _forEachClient(func: (client: Client, i: number) => Promise<void>) {
         let promises: Promise<void>[] = [];
         this.clients.forEach((c, i) => {
             promises.push(func(c, i));
@@ -290,7 +290,7 @@ export abstract class AbstractClientAsserter<T> {
      * @param action
      * @param message if not provided it throws the specific error.
      */
-    action(action: (client: ZationClient, index: number) => void | Promise<void>, message?: string): T {
+    action(action: (client: Client, index: number) => void | Promise<void>, message?: string): T {
         this.clients.forEach((client,index) => {
             ActionUtils.action(this._test, () => action(client,index), message);
         })
@@ -309,7 +309,7 @@ export abstract class AbstractClientAsserter<T> {
      * @param message
      * @param validErrorClasses
      */
-    actionShouldThrow(action: (client: ZationClient, index: number) => void | Promise<void>,
+    actionShouldThrow(action: (client: Client, index: number) => void | Promise<void>,
                       message: string, ...validErrorClasses: any[]): T {
         this.clients.forEach((client,index) => {
             ActionUtils.actionShouldThrow(this._test, () => action(client,index), message, ...validErrorClasses);

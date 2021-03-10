@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {StandardRequestBuilder as NativeStandardRequestBuilder, ZationClient} from "zation-client";
+import {StandardRequestBuilder as NativeStandardRequestBuilder, Client} from "zation-client";
 import {AbstractRequestBuilder} from "./abstractRequestBuilder";
 import {Test} from "../../test/test";
 
@@ -12,7 +12,7 @@ export class StandardRequestBuilder extends AbstractRequestBuilder<StandardReque
 
     private req: NativeStandardRequestBuilder;
 
-    constructor(req: NativeStandardRequestBuilder, test: Test, client: ZationClient) {
+    constructor(req: NativeStandardRequestBuilder, test: Test, client: Client) {
         super(test, client, req);
         this.req = req;
     }

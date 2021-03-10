@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {PackageBuilder as NativePackageBuilder, ZationClient} from "zation-client";
+import {PackageBuilder as NativePackageBuilder, Client} from "zation-client";
 import {Test} from "../../test/test";
 import {ConnectTimeoutOption} from "zation-client/dist/lib/main/utils/connectionUtils";
 import {TransmitAsserter} from "../../asserter/receiver/transmitAsserter";
@@ -12,10 +12,10 @@ import {TransmitAsserter} from "../../asserter/receiver/transmitAsserter";
 export class PackageBuilder {
 
     private readonly test: Test;
-    private readonly client: ZationClient;
+    private readonly client: Client;
     private readonly natveBuilder: NativePackageBuilder<any>;
 
-    constructor(nativeBuilder: NativePackageBuilder<any>, test: Test, client: ZationClient) {
+    constructor(nativeBuilder: NativePackageBuilder<any>, test: Test, client: Client) {
         this.test = test;
         this.client = client;
         this.natveBuilder = nativeBuilder;

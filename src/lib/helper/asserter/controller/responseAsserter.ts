@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {
     AbstractRequestBuilder as NativeAbstractRequestBuilder,
-    ZationClient,
+    Client,
     Response,
     ErrorFilterEngine,
     BackError,
@@ -25,7 +25,7 @@ export class ResponseAsserter extends RootSendAsserter<ResponseAsserter> {
 
     private req: NativeAbstractRequestBuilder<any>;
 
-    constructor(req: NativeAbstractRequestBuilder<any>, test: Test, client: ZationClient) {
+    constructor(req: NativeAbstractRequestBuilder<any>, test: Test, client: Client) {
         super(test,client)
         this.req = req;
     }

@@ -8,14 +8,14 @@ import {AbstractRequestBuilder} from "./abstractRequestBuilder";
 import {
     ValidationCheckPair,
     ValidationCheckRequestBuilder as NativeValidationCheckRequestBuilder,
-    ZationClient
+    Client
 } from "zation-client";
 import {Test} from "../../test/test";
 
 export class ValidationCheckRequestBuilder extends AbstractRequestBuilder<ValidationCheckRequestBuilder, NativeValidationCheckRequestBuilder> {
     private req: NativeValidationCheckRequestBuilder;
 
-    constructor(req: NativeValidationCheckRequestBuilder, test: Test, client: ZationClient) {
+    constructor(req: NativeValidationCheckRequestBuilder, test: Test, client: Client) {
         super(test, client, req);
         this.req = req;
     }

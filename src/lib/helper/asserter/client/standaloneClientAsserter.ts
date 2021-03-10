@@ -4,14 +4,14 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ZationClient} from 'zation-client';
+import {Client} from 'zation-client';
 import {AbstractClientAsserter} from "./abstractClientAsserter";
 import {Test} from "../../test/test";
 import {assert as cAssert} from 'chai';
 
 export class StandaloneClientAsserter extends AbstractClientAsserter<StandaloneClientAsserter> {
 
-    constructor(client: ZationClient | ZationClient[], itTestDescription?: string) {
+    constructor(client: Client | Client[], itTestDescription?: string) {
         super(Array.isArray(client) ? client : [client], new Test(itTestDescription));
     }
 
