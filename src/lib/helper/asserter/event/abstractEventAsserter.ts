@@ -38,9 +38,9 @@ export abstract class AbstractEventAsserter<T,S,A extends any[] = [any]> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * With this function, you can set a time limit in that the event should occur.
+     * With this function, you can set a time limit in milliseconds in that the event should occur.
      * @default
-     * The default value is 200.
+     * The default value is 200ms.
      */
     timeout(timeout: number): T {
         this._timeout = timeout;
