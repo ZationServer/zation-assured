@@ -44,7 +44,7 @@
     "chai": "^4.3.3",
     "mocha": "^6.1.4",
     "path": "0.12.7",
-    "zation-client": "^1.4.0",
+    "zation-client": "^1.5.0",
     "forint": "^0.2.0"
   },
   "devDependencies": {
