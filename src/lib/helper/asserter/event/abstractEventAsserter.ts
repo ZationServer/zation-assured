@@ -22,10 +22,11 @@ export abstract class AbstractEventAsserter<T,S,A extends any[] = [any]> {
     protected readonly _target: string;
     protected readonly _event: string;
 
-    private _timeout: number = 0;
+    private _timeout: number = 200;
     private _not: boolean = false;
 
-    constructor(eventOnceListenerAdder: EventOnceListenerAdder<A>[], target: string, event: string, test: Test, source: S) {
+    constructor(eventOnceListenerAdder: EventOnceListenerAdder<A>[], target: string, event: string,
+                test: Test, source: S, private messagePostfix: string = '') {
         this._eventOnceListenerAdder = eventOnceListenerAdder;
         this._target = target;
         this._event = event;
@@ -39,7 +40,7 @@ export abstract class AbstractEventAsserter<T,S,A extends any[] = [any]> {
      * @description
      * With this function, you can set a time limit in that the event should occur.
      * @default
-     * The default value is 0.
+     * The default value is 200.
      */
     timeout(timeout: number): T {
         this._timeout = timeout;
@@ -77,7 +78,7 @@ export abstract class AbstractEventAsserter<T,S,A extends any[] = [any]> {
                     if (resolve) resolve();
                 });
             });
-            const failMsg = `${this._target}: ${i} should ${this._not ? 'not ' : ''}trigger the ${this._event} event.`;
+            const failMsg = `${this._target}: ${i} should ${this._not ? 'not ' : ''}trigger the ${this._event} event${this.messagePostfix}.`;
             this._test.test(async () => {
                 if (!receivedEmit) {
                     const toa = new TimeoutAssert(failMsg, this._timeout, this._not);
