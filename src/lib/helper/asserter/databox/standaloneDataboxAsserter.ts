@@ -18,16 +18,15 @@ export class StandaloneDataboxAsserter extends AbstractDataboxAsserter<Standalon
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Will connect all databoxes.
+     * Will connect all databoxes (before the test).
      */
     connect(member?: any): StandaloneDataboxAsserter {
-        this._test.test(async () => {
+        this._test.beforeTest(async () => {
             await Promise.all(this.databoxes.map(async (databox, index) => {
                 try {await databox.connect(member);}
                 catch (err) {cAssert.fail(`Cannot connect the databox ${index}. Error -> ` + err.stack);}
             }));
         })
-        this._test.pushSyncWait();
         return this;
     }
 

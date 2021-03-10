@@ -242,12 +242,12 @@ export abstract class AbstractClientAsserter<T> {
     /**
      * @description
      * Assert databox.
-     * Will automatically connect and disconnect the databox.
+     * Will automatically connect (before the test) and disconnect (after the test) the databox.
      */
     databox(identifier: string, member?: any, options: DataboxOptions = {}): DataboxAsserter<T> {
         const databoxes = this.clients.map(client => {
             const db = client.databox(identifier,options);
-            this._test.test(async () => {
+            this._test.beforeTest(async () => {
                 try {await db.connect(member);}
                 catch (err) {assert.fail("Cannot connect the databox. Error -> " + err.stack);}
             });
@@ -256,7 +256,6 @@ export abstract class AbstractClientAsserter<T> {
             });
             return db;
         });
-        this._test.pushSyncWait();
         return new DataboxAsserter<T>(databoxes, this._test, this.self());
     }
 
@@ -264,12 +263,12 @@ export abstract class AbstractClientAsserter<T> {
     /**
      * @description
      * Assert channel.
-     * Will automatically subscribe and unsubscribe the channel.
+     * Will automatically subscribe (before the test) and unsubscribe (after the test) the channel.
      */
     channel(identifier: string, member?: any): ChannelAsserter<T> {
         const channels = this.clients.map(client => {
             const channel = client.channel(identifier);
-            this._test.test(async () => {
+            this._test.beforeTest(async () => {
                 try {await channel.subscribe(member);}
                 catch (err) {assert.fail("Cannot subscribe to the channel. Error -> " + err.stack);}
             });
@@ -278,7 +277,6 @@ export abstract class AbstractClientAsserter<T> {
             });
             return channel;
         });
-        this._test.pushSyncWait();
         return new ChannelAsserter<T>(channels, this._test, this.self());
     }
 

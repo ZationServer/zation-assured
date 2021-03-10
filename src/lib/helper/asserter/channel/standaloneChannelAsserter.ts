@@ -18,16 +18,15 @@ export class StandaloneChannelAsserter extends AbstractChannelAsserter<Standalon
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Will subscribe all channels.
+     * Will subscribe all channels (before the test).
      */
     subscribe(member?: any): StandaloneChannelAsserter {
-        this._test.test(async () => {
+        this._test.beforeTest(async () => {
             await Promise.all(this.channels.map(async (channel, index) => {
                 try {await channel.subscribe(member);}
                 catch (err) {cAssert.fail(`Cannot subscribe to the channel ${index}. Error -> ` + err.stack);}
             }));
         })
-        this._test.pushSyncWait();
         return this;
     }
 

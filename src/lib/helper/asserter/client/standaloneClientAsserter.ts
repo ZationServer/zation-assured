@@ -18,16 +18,15 @@ export class StandaloneClientAsserter extends AbstractClientAsserter<StandaloneC
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Will connect all clients.
+     * Will connect all clients (before the test).
      */
     connect(): StandaloneClientAsserter {
-        this._test.test(async () => {
+        this._test.beforeTest(async () => {
             await Promise.all(this.clients.map(async (client, index) => {
                 try {await client.connect();}
                 catch (err) {cAssert.fail(`Cannot connect the client ${index}. Error -> ` + err.stack);}
             }));
         })
-        this._test.pushSyncWait();
         return this;
     }
 
