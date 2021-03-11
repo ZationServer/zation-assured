@@ -40,7 +40,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the client is connected.
+     * Asserts that the client is connected.
      * @param timeout
      * With this parameter, you can set a time limit in that the assertion must be successful.
      */
@@ -63,7 +63,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the client is disconnected.
+     * Asserts that the client is disconnected.
      * @param timeout
      * With this parameter, you can set a time limit in that the assertion must be successful.
      */
@@ -86,7 +86,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the client is authenticated.
+     * Asserts that the client is authenticated.
      * @param timeout
      * With this parameter, you can set a time limit in that the assertion must be successful.
      */
@@ -109,7 +109,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the client is deauthenticated.
+     * Asserts that the client is deauthenticated.
      * @param timeout
      * With this parameter, you can set a time limit in that the assertion must be successful.
      */
@@ -132,7 +132,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the client has a user id.
+     * Asserts that the client has a user id.
      * @param userId
      * If it is not given it will assert that the client has any user id.
      */
@@ -153,7 +153,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the client has a authUserGroup.
+     * Asserts that the client has a authUserGroup.
      * @param authUserGroup
      * If it is not given it will assert that the client has any authUserGroup.
      */
@@ -174,7 +174,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the client has a specific token id.
+     * Asserts that the client has a specific token id.
      */
     hasTokenId(tokenId: string): T {
         this._test.test(async () => {
@@ -197,7 +197,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the client has panel access.
+     * Asserts that the client has panel access.
      */
     hasPanelAccess(access: boolean = true): T {
         this._test.test(async () => {
@@ -220,7 +220,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert the token payload of the client.
+     * Asserts the token payload of the client.
      */
     tokenPayload(): ValueAsserter<T> {
         return new ValueAsserter<T>(this.self(), 'Client:', (test) => {
@@ -319,7 +319,7 @@ export abstract class AbstractClientAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the client should receive an emit-event from the server.
+     * Asserts that the client should receive an emit-event from the server.
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
      */

@@ -36,7 +36,7 @@ export abstract class AbstractDataboxAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the databox is connected.
+     * Asserts that the databox is connected.
      * @param timeout
      * With this parameter, you can set a time limit in that the assertion must be successful.
      */
@@ -57,7 +57,7 @@ export abstract class AbstractDataboxAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the databox is disconnected.
+     * Asserts that the databox is disconnected.
      * @param timeout
      * With this parameter, you can set a time limit in that the assertion must be successful.
      */
@@ -77,7 +77,7 @@ export abstract class AbstractDataboxAsserter<T> {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Assert the current data of the databox.
+     * Asserts the current data of the databox.
      */
     data(): ValueAsserter<T> {
         return new ValueAsserter<T>(this.self(), 'Databox', (test) => {
@@ -91,7 +91,7 @@ export abstract class AbstractDataboxAsserter<T> {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Assert the current member of the databox.
+     * Asserts the current member of the databox.
      */
     member(): ValueAsserter<T> {
         return new ValueAsserter<T>(this.self(), 'Databox', (test) => {
@@ -163,7 +163,7 @@ export abstract class AbstractDataboxAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the databox should trigger an DataChange event.
+     * Asserts that the databox should trigger an DataChange event.
      * It is also possible to assert only in case of specific data event reasons.
      */
     dataChangeTriggers(...reasons: DataEventReason[]): DataEventAsserter<T> {
@@ -184,7 +184,7 @@ export abstract class AbstractDataboxAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the databox should trigger an DataTouch event.
+     * Asserts that the databox should trigger an DataTouch event.
      * It is also possible to assert only in case of specific data event reasons.
      */
     dataTouchTriggers(...reasons: DataEventReason[]): DataEventAsserter<T> {
@@ -205,7 +205,7 @@ export abstract class AbstractDataboxAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the databox should trigger an Close event.
+     * Asserts that the databox should trigger an Close event.
      */
     closeTriggers(): CodeDataEventAsserter<T> {
         return new CodeDataEventAsserter<T>(this.databoxes.map(d => {
@@ -220,7 +220,7 @@ export abstract class AbstractDataboxAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the databox should trigger an KickOut event.
+     * Asserts that the databox should trigger an KickOut event.
      */
     kickOutTriggers(): CodeDataEventAsserter<T> {
         return new CodeDataEventAsserter<T>(this.databoxes.map(d => {

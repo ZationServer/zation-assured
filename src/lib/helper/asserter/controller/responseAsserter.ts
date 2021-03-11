@@ -42,7 +42,7 @@ export class ResponseAsserter extends RootSendAsserter<ResponseAsserter> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the response is successful.
+     * Asserts that the response is successful.
      */
     isSuccessful(): ResponseAsserter {
         this.req.onResponse((res) => {
@@ -54,7 +54,7 @@ export class ResponseAsserter extends RootSendAsserter<ResponseAsserter> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the response is not successful.
+     * Asserts that the response is not successful.
      */
     isNotSuccessful(): ResponseAsserter {
         this.req.onResponse((res) => {
@@ -66,7 +66,7 @@ export class ResponseAsserter extends RootSendAsserter<ResponseAsserter> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the response has a result.
+     * Asserts that the response has a result.
      */
     hasResult(): ResponseAsserter {
         this.req.onResponse((res) => {
@@ -79,9 +79,9 @@ export class ResponseAsserter extends RootSendAsserter<ResponseAsserter> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert the result of the response.
+     * Asserts the result of the response.
      */
-    assertResult(): ValueAsserter<ResponseAsserter> {
+    result(): ValueAsserter<ResponseAsserter> {
         return new ValueAsserter<ResponseAsserter>(this, 'Response Result', (test) => {
             this.req.onResponse((res) => {
                 test(res.getResult());
@@ -92,7 +92,7 @@ export class ResponseAsserter extends RootSendAsserter<ResponseAsserter> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Print the complete response to the console.
+     * Prints the complete response to the console.
      */
     print(): ResponseAsserter {
         this.req.onResponse((res) => {

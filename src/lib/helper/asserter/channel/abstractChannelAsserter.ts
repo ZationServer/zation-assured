@@ -36,7 +36,7 @@ export abstract class AbstractChannelAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the channel is subscribed.
+     * Asserts that the channel is subscribed.
      * @param timeout
      * With this parameter, you can set a time limit in that the assertion must be successful.
      */
@@ -57,7 +57,7 @@ export abstract class AbstractChannelAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the channel is unsubscribed.
+     * Asserts that the channel is unsubscribed.
      * @param timeout
      * With this parameter, you can set a time limit in that the assertion must be successful.
      */
@@ -77,7 +77,7 @@ export abstract class AbstractChannelAsserter<T> {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Assert the current member of the channel.
+     * Asserts the current member of the channel.
      */
     member(): ValueAsserter<T> {
         return new ValueAsserter<T>(this.self(), 'Channel', (test) => {
@@ -127,7 +127,7 @@ export abstract class AbstractChannelAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the channel should get a publish.
+     * Asserts that the channel should get a publish.
      */
     getsPublish(event: string): DataEventAsserter<T> {
         return new DataEventAsserter<T>(this.channels.map(ch => {
@@ -142,7 +142,7 @@ export abstract class AbstractChannelAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the channel should trigger an Close event.
+     * Asserts that the channel should trigger an Close event.
      */
     closeTriggers(): CodeDataEventAsserter<T> {
         return new CodeDataEventAsserter<T>(this.channels.map(ch => {
@@ -157,7 +157,7 @@ export abstract class AbstractChannelAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the channel should trigger an KickOut event.
+     * Asserts that the channel should trigger an KickOut event.
      */
     kickOutTriggers(): CodeDataEventAsserter<T> {
         return new CodeDataEventAsserter<T>(this.channels.map(ch => {

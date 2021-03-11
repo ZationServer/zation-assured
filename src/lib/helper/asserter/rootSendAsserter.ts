@@ -63,7 +63,7 @@ export abstract class RootSendAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that send should throw a timeout error.
+     * Asserts that send should throw a timeout error.
      * @param value
      */
     throwsTimeoutError(value: boolean = true): T {
@@ -74,7 +74,7 @@ export abstract class RootSendAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that send should throw a connection required error.
+     * Asserts that send should throw a connection required error.
      * @param value
      */
     throwsConnectionRequiredError(value: boolean = true): T {
