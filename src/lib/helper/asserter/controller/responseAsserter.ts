@@ -8,7 +8,7 @@ import {
     AbstractRequestBuilder as NativeAbstractRequestBuilder,
     Client,
     Response,
-    ErrorFilterEngine,
+    filterBackErrors,
     BackError,
     BackErrorFilter
 }
@@ -104,61 +104,60 @@ export class ResponseAsserter extends RootSendAsserter<ResponseAsserter> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the response has a specific count of errors.
+     * Asserts that the response has a specific count of errors with a BackErrorFilterBuilder.
      * @param count
-     * count of errors
+     * Expected count of errors
+     */
+    hasErrorCount(count: number): BackErrorFilterBuilder<ResponseAsserter>
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Asserts that the response has a specific count of errors with a raw filter.
+     * @param count
+     * Expected count of errors
      * @param filter
-     * Filter to filter for specific errors.
+     * Forint filter to filter for specific errors.
      */
-    hasErrorCount(count: number, ...filter: BackErrorFilter[]): ResponseAsserter {
-        this.req.onResponse((res) => {
-            assert(ResponseAsserter._filterErrors(res, filter).length === count,
-                `Response should have ${count} back errors.${filter.length === 0 ? '' : ` With filter: ${JSON.stringify(filter)}`}`
-                + this._respInfo(res));
-        });
-        return this;
+    hasErrorCount(count: number, filter: BackErrorFilter): ResponseAsserter
+    hasErrorCount(count: number, filter?: BackErrorFilter): ResponseAsserter | BackErrorFilterBuilder<ResponseAsserter> {
+        if(filter !== undefined) {
+            this.req.onResponse((res) => {
+                assert(ResponseAsserter._filterBackErrorsOfResp(res,filter).length === count,
+                    `The response should have ${count} BackError${count === 1 ? '' : 's'} that matches the filter: ${JSON.stringify(filter)}.`
+                    + this._respInfo(res));
+            });
+            return this;
+        }
+        else return new BackErrorFilterBuilder(this, count);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the response has count of specific errors
-     * with filter builder.
-     * @param count
-     * count of errors
-     */
-    buildHasErrorCount(count: number): BackErrorFilterBuilder<ResponseAsserter> {
-        return new BackErrorFilterBuilder(this, count);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Assert that the response has an specific error
-     * with filter builder.
+     * Asserts that the response has specific errors with a BackErrorFilterBuilder.
      */
     hasError(): BackErrorFilterBuilder<ResponseAsserter>
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Assert that the response has an error.
+     * Asserts that the response has specific errors with a raw filter.
      * @param filter
-     * Filter to filter for specific errors.
+     * Forint filter to filter for specific errors.
      */
-    hasError(...filter: BackErrorFilter[]): ResponseAsserter
-    hasError(...filter: BackErrorFilter[]): ResponseAsserter | BackErrorFilterBuilder<ResponseAsserter> {
-        if (filter.length > 0) {
+    hasError(filter: BackErrorFilter): ResponseAsserter
+    hasError(filter?: BackErrorFilter): ResponseAsserter | BackErrorFilterBuilder<ResponseAsserter> {
+        if (filter !== undefined) {
             this.req.onResponse((res) => {
-                assert(ResponseAsserter._filterErrors(res, filter).length > 0,
-                    `Response should have an error.${filter.length === 0 ? '' : ` With filter: ${JSON.stringify(filter)}`}`
+                assert(ResponseAsserter._filterBackErrorsOfResp(res,filter).length > 0,
+                    `The response should have at least one error that matches the filter: ${JSON.stringify(filter)}.`
                     + this._respInfo(res));
             });
             return this;
         } else return new BackErrorFilterBuilder(this);
     }
 
-    private static _filterErrors(res: Response, filter: BackErrorFilter[]): BackError[] {
-        return ErrorFilterEngine.filterErrors(res.getErrors(false), filter);
+    private static _filterBackErrorsOfResp(res: Response, filter?: BackErrorFilter): BackError[] {
+        return filterBackErrors(res.getErrors(false), filter);
     }
 
     // noinspection JSUnusedGlobalSymbols

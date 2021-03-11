@@ -13,7 +13,7 @@ export class BackErrorFilterBuilder<T extends ResponseAsserter> extends Abstract
     private readonly respAsserter: T;
     private readonly count: number | undefined;
 
-    constructor(respAsserter: T, count ?: number) {
+    constructor(respAsserter: T, count?: number) {
         super();
         this.respAsserter = respAsserter;
         this.count = count;
@@ -22,15 +22,11 @@ export class BackErrorFilterBuilder<T extends ResponseAsserter> extends Abstract
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * End the filter builder.
+     * Ends the filter builder.
      */
     end(): T {
-        this._pushTmpFilter();
-        if (this.count) {
-            this.respAsserter.hasErrorCount(this.count, ...this.filter);
-        } else {
-            this.respAsserter.hasError(...this.filter);
-        }
+        if (this.count !== undefined) this.respAsserter.hasErrorCount(this.count,this.buildFinalFilter() || {});
+        else this.respAsserter.hasError(this.buildFinalFilter() || {});
         return this.respAsserter;
     }
 
