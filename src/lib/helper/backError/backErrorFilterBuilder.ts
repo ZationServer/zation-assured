@@ -25,8 +25,8 @@ export class BackErrorFilterBuilder<T extends ResponseAsserter> extends Abstract
      * Ends the filter builder.
      */
     end(): T {
-        if (this.count !== undefined) this.respAsserter.hasErrorCount(this.count,this.buildFinalFilter() || {});
-        else this.respAsserter.hasError(this.buildFinalFilter() || {});
+        if (this.count !== undefined) this.respAsserter.hasErrorCount(this.count,this.buildFilter() || {});
+        else this.respAsserter.hasError(this.buildFilter() || {});
         return this.respAsserter;
     }
 
