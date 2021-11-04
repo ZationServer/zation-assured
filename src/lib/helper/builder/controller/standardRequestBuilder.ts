@@ -1,7 +1,7 @@
 /*
-Author: Luca Scaringella
+Author: Ing. Luca Gian Scaringella
 GitHub: LucaCode
-©Copyright by Luca Scaringella
+Copyright(c) Ing. Luca Gian Scaringella
  */
 
 import {StandardRequestBuilder as NativeStandardRequestBuilder, Client} from "zation-client";
