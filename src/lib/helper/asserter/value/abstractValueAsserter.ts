@@ -7,18 +7,16 @@ Copyright(c) Ing. Luca Gian Scaringella
 import forint, {ForintQuery} from "forint";
 import {assert as cAssert} from 'chai';
 
-type AddTest = (test: (value: any, eStr ?: string) => void) => void;
+type AddTest = (test: (value: any, target: string) => void) => void;
 
-export abstract class AbstractValueAsserter<T> {
+export abstract class AbstractValueAsserter<V,T> {
 
     protected abstract self(): T;
 
     private readonly addTest: AddTest;
-    private readonly name: string;
 
-    protected constructor(name: string, addTest: AddTest) {
+    protected constructor(addTest: AddTest) {
         this.addTest = addTest;
-        this.name = name;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -27,9 +25,9 @@ export abstract class AbstractValueAsserter<T> {
      * Asserts that the value is undefined.
      */
     isUndefined(): T {
-        this.addTest((value, eStr = '') => {
+        this.addTest((value, target) => {
             cAssert(value === undefined,
-                `${this.name + eStr} should be undefined.`);
+                `${target} should be undefined.`);
         });
         return this.self();
     }
@@ -40,9 +38,9 @@ export abstract class AbstractValueAsserter<T> {
      * Asserts that the value is not undefined.
      */
     isNotUndefined(): T {
-        this.addTest((value, eStr = '') => {
+        this.addTest((value, target) => {
             cAssert(value !== undefined,
-                `${this.name + eStr} should be not undefined.`);
+                `${target} should be not undefined.`);
         });
         return this.self();
     }
@@ -55,9 +53,9 @@ export abstract class AbstractValueAsserter<T> {
      */
     typeOf(type: 'string' | 'boolean' | 'number' | 'undefined'
         | 'object' | 'array' | 'function' | 'symbol' | 'bigint' | string): T {
-        this.addTest((value, eStr = '') => {
+        this.addTest((value, target) => {
             cAssert.typeOf(value, type,
-                `${this.name + eStr} should be type of ${type}`);
+                `${target} should be type of ${type}`);
         });
         return this.self();
     }
@@ -70,9 +68,9 @@ export abstract class AbstractValueAsserter<T> {
      */
     notTypeOf(type: 'string' | 'boolean' | 'number' | 'undefined'
         | 'object' | 'array' | 'function' | 'symbol' | 'bigint' | string): T {
-        this.addTest((value, eStr = '') => {
+        this.addTest((value, target) => {
             cAssert.notTypeOf(value, type,
-                `${this.name + eStr} should be not type of ${type}`);
+                `${target} should be not type of ${type}`);
         });
         return this.self();
     }
@@ -84,9 +82,9 @@ export abstract class AbstractValueAsserter<T> {
      * @param expectedValue
      */
     contentEqual(expectedValue: any): T {
-        this.addTest((value, eStr = '') => {
+        this.addTest((value, target) => {
             cAssert.equal(value, expectedValue,
-                `${this.name + eStr} should be content equal with ${expectedValue}`);
+                `${target} should be content equal with ${expectedValue}`);
         });
         return this.self();
     }
@@ -98,9 +96,9 @@ export abstract class AbstractValueAsserter<T> {
      * @param expectedValue
      */
     notContentEqual(expectedValue: any): T {
-        this.addTest((value, eStr = '') => {
+        this.addTest((value, target) => {
             cAssert.notEqual(value, expectedValue,
-                `${this.name + eStr} should be not content equal with ${expectedValue}`);
+                `${target} should be not content equal with ${expectedValue}`);
         });
         return this.self();
     }
@@ -112,9 +110,9 @@ export abstract class AbstractValueAsserter<T> {
      * @param expectedValue
      */
     equal(expectedValue: any): T {
-        this.addTest((value, eStr = '') => {
+        this.addTest((value, target) => {
             cAssert.strictEqual(value, expectedValue,
-                `${this.name + eStr} should be strict equal with ${expectedValue}`);
+                `${target} should be strict equal with ${expectedValue}`);
         });
         return this.self();
     }
@@ -126,9 +124,9 @@ export abstract class AbstractValueAsserter<T> {
      * @param expectedValue
      */
     notEqual(expectedValue: any): T {
-        this.addTest((value, eStr = '') => {
+        this.addTest((value, target) => {
             cAssert.notStrictEqual(value, expectedValue,
-                `${this.name + eStr} should be not strict equal with ${expectedValue}`);
+                `${target} should be not strict equal with ${expectedValue}`);
         });
         return this.self();
     }
@@ -140,9 +138,9 @@ export abstract class AbstractValueAsserter<T> {
      * @param expectedValue
      */
     deepEqual(expectedValue: any): T {
-        this.addTest((value, eStr = '') => {
+        this.addTest((value, target) => {
             cAssert.deepEqual(value, expectedValue,
-                `${this.name + eStr} should be deep strict equal with ${JSON.stringify(expectedValue)}`);
+                `${target} should be deep strict equal with ${JSON.stringify(expectedValue)}`);
         });
         return this.self();
     }
@@ -154,9 +152,9 @@ export abstract class AbstractValueAsserter<T> {
      * @param expectedValue
      */
     notDeepEqual(expectedValue: any): T {
-        this.addTest((value, eStr = '') => {
+        this.addTest((value, target) => {
             cAssert.notDeepEqual(value, expectedValue,
-                `${this.name + eStr} should be not deep strict equal with ${JSON.stringify(expectedValue)}`);
+                `${target} should be not deep strict equal with ${JSON.stringify(expectedValue)}`);
         });
         return this.self();
     }
@@ -165,10 +163,10 @@ export abstract class AbstractValueAsserter<T> {
     /**
      * Asserts that the value matches with a forint query.
      */
-    matches(query: ForintQuery): T {
-        this.addTest(async (inAny, eStr = '') => {
+    matches(query: ForintQuery<V> | ForintQuery<Record<any,any>>): T {
+        this.addTest(async (inAny, target) => {
             await cAssert(forint(query)(inAny),
-                `${this.name + eStr} should match with the forint query.`);
+                `${target} should match with the forint query.`);
         });
         return this.self();
     }
@@ -177,10 +175,10 @@ export abstract class AbstractValueAsserter<T> {
     /**
      * Asserts that the value not matches with a forint query.
      */
-    notMatches(query: ForintQuery): T {
-        this.addTest(async (inAny, eStr = '') => {
+    notMatches(query: ForintQuery<V> | ForintQuery<Record<any,any>>): T {
+        this.addTest(async (inAny, target) => {
             await cAssert(!forint(query)(inAny),
-                `${this.name + eStr} should not match with the forint query.`);
+                `${target} should not match with the forint query.`);
         });
         return this.self();
     }
@@ -191,10 +189,10 @@ export abstract class AbstractValueAsserter<T> {
      * Asserts that the value has all specific keys.
      * @param keys
      */
-    containsAllKeys(...keys: string[]): T {
-        this.addTest((value, eStr = '') => {
+    containsAllKeys(...keys: (keyof V | string)[]): T {
+        this.addTest((value, target) => {
             cAssert.containsAllKeys(value, keys,
-                `${this.name + eStr} should contain all following keys: ${keys}.`);
+                `${target} should contain all following keys: ${keys}.`);
         });
         return this.self();
     }
@@ -205,10 +203,10 @@ export abstract class AbstractValueAsserter<T> {
      * Asserts that the value has at least one specific keys.
      * @param keys
      */
-    hasAnyKeys(...keys: string[]): T {
-        this.addTest((value, eStr = '') => {
+    hasAnyKeys(...keys: (keyof V | string)[]): T {
+        this.addTest((value, target) => {
             cAssert.hasAnyKeys(value, keys,
-                `${this.name + eStr} should contain at least one of these keys: ${keys}.`);
+                `${target} should contain at least one of these keys: ${keys}.`);
         });
         return this.self();
     }
@@ -219,10 +217,10 @@ export abstract class AbstractValueAsserter<T> {
      * Asserts that the value does not have any of the specific keys.
      * @param keys
      */
-    doesNotHaveAnyKeys(...keys: string[]): T {
-        this.addTest((value, eStr = '') => {
+    doesNotHaveAnyKeys(...keys: (keyof V | string)[]): T {
+        this.addTest((value, target) => {
             cAssert.doesNotHaveAnyKeys(value, keys,
-                `${this.name + eStr} should not contain any of these keys: ${keys}.`);
+                `${target} should not contain any of these keys: ${keys}.`);
         });
         return this.self();
     }
@@ -236,9 +234,9 @@ export abstract class AbstractValueAsserter<T> {
      * @param subset
      */
     ownInclude(subset: Record<string,any>): T {
-        this.addTest((value, eStr = '') => {
+        this.addTest((value, target) => {
             cAssert.ownInclude(value, subset,
-                `${this.name + eStr} should own include ${JSON.stringify(subset)}.`);
+                `${target} should own include ${JSON.stringify(subset)}.`);
         });
         return this.self();
     }
@@ -252,9 +250,9 @@ export abstract class AbstractValueAsserter<T> {
      * @param subset
      */
     notOwnInclude(subset: Record<string,any>): T {
-        this.addTest((value, eStr = '') => {
+        this.addTest((value, target) => {
             cAssert.notOwnInclude(value, subset,
-                `${this.name + eStr} should not own include ${JSON.stringify(subset)}.`);
+                `${target} should not own include ${JSON.stringify(subset)}.`);
         });
         return this.self();
     }
@@ -269,9 +267,9 @@ export abstract class AbstractValueAsserter<T> {
      * @param subset
      */
     include(subset: any): T {
-        this.addTest((value, eStr = '') => {
+        this.addTest((value, target) => {
             cAssert.include(value, subset,
-                `${this.name + eStr} should include ${JSON.stringify(subset)}.`);
+                `${target} should include ${JSON.stringify(subset)}.`);
         });
         return this.self();
     }
@@ -286,9 +284,9 @@ export abstract class AbstractValueAsserter<T> {
      * @param subset
      */
     notInclude(subset: any): T {
-        this.addTest((value, eStr = '') => {
+        this.addTest((value, target) => {
             cAssert.notInclude(value, subset,
-                `${this.name + eStr} should not include ${JSON.stringify(subset)}.`);
+                `${target} should not include ${JSON.stringify(subset)}.`);
         });
         return this.self();
     }
@@ -300,9 +298,9 @@ export abstract class AbstractValueAsserter<T> {
      * @param length
      */
     lengthOf(length: number): T {
-        this.addTest((value, eStr = '') => {
+        this.addTest((value, target) => {
             cAssert.lengthOf(value, length,
-                `${this.name + eStr} should have a length of ${length}.`);
+                `${target} should have a length of ${length}.`);
         });
         return this.self();
     }
@@ -310,17 +308,11 @@ export abstract class AbstractValueAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Lets you do a custom assertion with the value.
+     * Creates a custom assertion.
      * @param assert
-     * @param message
      */
-    assert(assert: (value: any) => boolean | Promise<boolean>,
-           message: string = 'Custom assertion should return true.'): T
-    {
-        this.addTest(async (value, eStr = '') => {
-            cAssert(await assert(value),
-                `${this.name + eStr}: ${message}`);
-        });
+    assert(assert: (value: any, target: string) => void | Promise<void>): T {
+        this.addTest((value, target) => assert(value,target));
         return this.self();
     }
 }
