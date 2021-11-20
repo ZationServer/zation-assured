@@ -5,32 +5,31 @@ Copyright(c) Ing. Luca Gian Scaringella
  */
 
 import {Test} from "../../test/test";
-import {Databox, DataEventReason} from 'zation-client';
+import {Databox, DataEventReason, DbStorage} from 'zation-client';
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
 import ActionUtils from "../../utils/actionUtils";
 import {DataEventAsserter} from "../event/dataEventAsserter";
 import {ValueAsserter} from "../value/valueAsserter";
-import {CodeDataEventAsserter} from "../event/codeDataEventAsserter";
+import {CodeMetadataEventAsserter} from "../event/codeMetadataEventAsserter";
 import {assert as cAssert} from 'chai';
+import forint, {ForintQuery} from "forint";
+import {DataboxData, DataboxFetchData, DataboxMember} from "../../utils/types";
+import {DeepReadonly} from "../../utils/types";
 
-export abstract class AbstractDataboxAsserter<T> {
+export abstract class AbstractDataboxAsserter<T, D extends Databox<any, any, any, any>> {
 
     protected _test: Test;
-    protected databoxes: Databox[];
+    protected databoxes: D[];
 
     protected abstract self(): T;
 
-    protected constructor(databoxes: Databox[], test: Test) {
+    protected constructor(databoxes: D[], test: Test) {
         this._test = test;
         this.databoxes = databoxes;
     }
 
-    protected async _forEachDatabox(func: (databox: Databox, i: number) => Promise<void>) {
-        let promises: Promise<void>[] = [];
-        this.databoxes.forEach((c, i) => {
-            promises.push(func(c, i));
-        });
-        await Promise.all(promises);
+    protected async _forEachDatabox(func: (databox: D, i: number) => Promise<void> | void) {
+        await Promise.all(this.databoxes.map((db, i) => func(db, i)));
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -38,19 +37,19 @@ export abstract class AbstractDataboxAsserter<T> {
      * @description
      * Asserts that the databox is connected.
      * @param timeout
-     * With this parameter, you can set a time limit in that the assertion must be successful.
+     * Sets a time limit in that the assertion must be successful.
      */
     isConnected(timeout: number = 0): T {
-        this._test.test(async () => {
-            await this._forEachDatabox(async (d, i) => {
+        this._test.test(async () =>
+            this._forEachDatabox(async (d, i) => {
                 if (d.isConnected()) return;
                 const toa = new TimeoutAssert(`Databox: ${i} should be connected.`, timeout);
                 d.onceConnect(() => {
                     toa.resolve()
                 });
                 await toa.set();
-            });
-        });
+            })
+        );
         return this.self();
     }
 
@@ -59,19 +58,19 @@ export abstract class AbstractDataboxAsserter<T> {
      * @description
      * Asserts that the databox is disconnected.
      * @param timeout
-     * With this parameter, you can set a time limit in that the assertion must be successful.
+     * Sets a time limit in that the assertion must be successful.
      */
     isDisconnected(timeout: number = 0): T {
-        this._test.test(async () => {
-            await this._forEachDatabox(async (d, i) => {
+        this._test.test(async () =>
+            this._forEachDatabox(async (d, i) => {
                 if (!d.isConnected()) return;
                 const toa = new TimeoutAssert(`Databox: ${i} should be disconnected.`, timeout);
                 d.onceDisconnect(() => {
                     toa.resolve()
                 });
                 await toa.set();
-            });
-        });
+            })
+        );
         return this.self();
     }
 
@@ -79,13 +78,11 @@ export abstract class AbstractDataboxAsserter<T> {
     /**
      * Asserts the current data of the databox.
      */
-    data(): ValueAsserter<T> {
-        return new ValueAsserter<T>(this.self(), 'Databox', (test) => {
-            this._test.test(async () => {
-                await this._forEachDatabox(async (d, i) => {
-                    test(d.data, ` ${i} data:`);
-                })
-            })
+    data(): ValueAsserter<DeepReadonly<DataboxData<D>>, T> {
+        return new ValueAsserter<DeepReadonly<DataboxData<D>>, T>(this.self(), (test) => {
+            this._test.test(() =>
+                this._forEachDatabox((d, i) =>
+                    test(d.data, `Databox: ${i} data:`)))
         });
     }
 
@@ -93,13 +90,13 @@ export abstract class AbstractDataboxAsserter<T> {
     /**
      * Asserts the current member of the databox.
      */
-    member(): ValueAsserter<T> {
-        return new ValueAsserter<T>(this.self(), 'Databox', (test) => {
-            this._test.test(async () => {
-                await this._forEachDatabox(async (d, i) => {
-                    test(d.member, ` ${i} member:`);
-                })
-            })
+    member(): ValueAsserter<DataboxMember<D>, T> {
+        return new ValueAsserter<DataboxMember<D>, T>(this.self(), (test) => {
+            this._test.test(() =>
+                this._forEachDatabox((d, i) =>
+                    test(d.member, `Databox: ${i} member:`)
+                )
+            )
         });
     }
 
@@ -107,14 +104,17 @@ export abstract class AbstractDataboxAsserter<T> {
     /**
      * Fetches data multiple times on each databox.
      */
-    fetch(times: number = 1, fetchData?: any): T {
+    fetch(times: number = 1, fetchData?: DataboxFetchData<D>): T {
         this._test.test(async () => {
-            await Promise.all(this.databoxes.map(async (databox,number) => {
+            await Promise.all(this.databoxes.map(async (databox, number) => {
                 const promises: Promise<void>[] = [];
-                for(let i = 1; i <= times; i++) {
+                for (let i = 1; i <= times; i++) {
                     promises.push((async () => {
-                        try {await databox.fetch(fetchData);}
-                        catch (err) {cAssert.fail(`Databox ${number} fetch ${i} failed. Error -> ` + err.stack)}
+                        try {
+                            await databox.fetch(fetchData);
+                        } catch (err: any) {
+                            cAssert.fail(`Databox: ${number} fetch ${i} failed. Error -> ` + err);
+                        }
                     })());
                 }
                 await Promise.all(promises);
@@ -127,15 +127,16 @@ export abstract class AbstractDataboxAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * This function lets you do extra actions on each databox and asserts that no error is thrown.
-     * When an error throws, it lets the test fail with the provided message or the concrete error.
+     * Runs a extra test action and asserts that no error will be thrown.
+     * AssertionErrors will be rethrown, and all other errors will fail
+     * the test with the provided message or the concrete error.
      * @param action
-     * @param message if not provided it throws the specific error.
+     * @param failMsg If not provided, the concrete error is used.
      */
-    action(action: (databox: Databox, index: number) => void | Promise<void>, message?: string): T {
-        this.databoxes.forEach((databox,index) => {
-            ActionUtils.action(this._test, () => action(databox,index), message);
-        })
+    action(action: (databox: D, index: number) => void | Promise<void>, failMsg?: string): T {
+        this._test.test(() =>
+            this._forEachDatabox((databox, index) =>
+                ActionUtils.runAction(() => action(databox, index), failMsg)))
         this._test.pushSyncWait();
         return this.self();
     }
@@ -143,92 +144,76 @@ export abstract class AbstractDataboxAsserter<T> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * This function lets you do extra actions on each databox and
-     * asserts that an error or an error instance of a specific class is thrown.
-     * When no error is thrown, or the error does not match with the given classes
-     * (only if at least one class is given), it lets the test fail with the provided message.
-     * @param action
-     * @param message
-     * @param validErrorClasses
+     * Asserts that the databox should trigger an data change event.
+     * It is also possible to filter for specific data event reasons with a forint query.
      */
-    actionShouldThrow(action: (databox: Databox, index: number) => void | Promise<void>,
-                      message: string, ...validErrorClasses: any[]): T {
-        this.databoxes.forEach((databox,index) => {
-            ActionUtils.actionShouldThrow(this._test, () => action(databox,index), message, ...validErrorClasses);
-        });
-        this._test.pushSyncWait();
-        return this.self();
+    dataChangeTriggers(reasonFilter?: ForintQuery<DataEventReason>):
+        DataEventAsserter<T, [DeepReadonly<DataboxData<D>>, DataEventReason, DbStorage<DataboxData<D>>], 0> {
+        const filter = reasonFilter ? forint(reasonFilter) : () => true;
+        return new DataEventAsserter<T, [DeepReadonly<DataboxData<D>>, DataEventReason, DbStorage<DataboxData<D>>], 0>
+        (this.databoxes.map(d => {
+                return (listener) => {
+                    let handler;
+                    d.onDataChange(handler = (data, reason: DataEventReason, storage) => {
+                        if (filter(reason)) {
+                            d.offDataChange(handler);
+                            listener(data, reason, storage);
+                        }
+                    });
+                }
+            }), "Databox", "data change",
+            this._test, this.self(), 0,
+            ((reasonFilter) ? ` with reasons that match the filter: ${reasonFilter}` : ''));
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Asserts that the databox should trigger an DataChange event.
-     * It is also possible to assert only in case of specific data event reasons.
+     * Asserts that the databox should trigger an data touch event.
+     * It is also possible to filter for specific data event reasons with a forint query.
      */
-    dataChangeTriggers(...reasons: DataEventReason[]): DataEventAsserter<T> {
-        return new DataEventAsserter<T>(this.databoxes.map(d => {
-            return (listener) => {
-                let handler;
-                d.onDataChange(handler = (data,triggerReasons) => {
-                    if(reasons.length === 0 || (triggerReasons.findIndex(r => reasons.indexOf(r) !== -1) !== -1)) {
-                        d.offDataChange(handler);
-                        listener(data);
-                    }
-                });
-            }
-        }), "Databox", "DataChange",
-            this._test, this.self(), ((reasons.length > 0) ? ` with any of these reasons: [${reasons}]` : ''));
+    dataTouchTriggers(reasonFilter?: ForintQuery<DataEventReason>):
+        DataEventAsserter<T, [DeepReadonly<DataboxData<D>>, DataEventReason, DbStorage<DataboxData<D>>], 0> {
+        const filter = reasonFilter ? forint(reasonFilter) : () => true;
+        return new DataEventAsserter<T, [DeepReadonly<DataboxData<D>>, DataEventReason, DbStorage<DataboxData<D>>], 0>
+        (this.databoxes.map(d => {
+                return (listener) => {
+                    let handler;
+                    d.onDataTouch(handler = (data, reason: DataEventReason, storage) => {
+                        if (filter(reason)) {
+                            d.offDataTouch(handler);
+                            listener(data, reason, storage);
+                        }
+                    });
+                }
+            }), "Databox", "data touch",
+            this._test, this.self(), 0,
+            ((reasonFilter) ? ` with reasons that match the filter: ${reasonFilter}` : ''));
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Asserts that the databox should trigger an DataTouch event.
-     * It is also possible to assert only in case of specific data event reasons.
+     * Asserts that the databox should trigger an close event.
      */
-    dataTouchTriggers(...reasons: DataEventReason[]): DataEventAsserter<T> {
-        return new DataEventAsserter<T>(this.databoxes.map(d => {
-            return (listener) => {
-                let handler;
-                d.onDataTouch(handler = (data,triggerReasons) => {
-                    if(reasons.length === 0 || (triggerReasons.findIndex(r => reasons.indexOf(r) !== -1) !== -1)) {
-                        d.offDataTouch(handler);
-                        listener(data);
-                    }
-                });
-            }
-        }), "Databox", "DataTouch",
-            this._test, this.self(), ((reasons.length > 0) ? ` with any of these reasons: [${reasons}]` : ''));
+    closeTriggers(): CodeMetadataEventAsserter<T, [number | string | undefined, any], 0, 1> {
+        return new CodeMetadataEventAsserter<T, [number | string | undefined, any], 0, 1>
+        (this.databoxes.map(d => {
+                return (listener) => d.onceClose(listener);
+            }), "Databox", "close", this._test, this.self(),
+             0, 1);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Asserts that the databox should trigger an Close event.
+     * Asserts that the databox should trigger an kick out event.
      */
-    closeTriggers(): CodeDataEventAsserter<T> {
-        return new CodeDataEventAsserter<T>(this.databoxes.map(d => {
-            return (listener) => {
-                d.onceClose((code, data) => {
-                    listener(data,code);
-                });
-            }
-        }), "Databox", "Close", this._test, this.self());
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Asserts that the databox should trigger an KickOut event.
-     */
-    kickOutTriggers(): CodeDataEventAsserter<T> {
-        return new CodeDataEventAsserter<T>(this.databoxes.map(d => {
-            return (listener) => {
-                d.onceKickOut((code, data) => {
-                    listener(data,code);
-                });
-            }
-        }), "Databox", "KickOut", this._test, this.self());
+    kickOutTriggers(): CodeMetadataEventAsserter<T, [number | string | undefined, any], 0, 1> {
+        return new CodeMetadataEventAsserter<T, [number | string | undefined, any], 0, 1>
+        (this.databoxes.map(d => {
+                return (listener) => d.onceKickOut(listener);
+            }), "Databox", "kick out", this._test, this.self(),
+            0, 1);
     }
 }
