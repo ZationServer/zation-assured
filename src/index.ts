@@ -9,12 +9,6 @@ import {ClientOptions, Client, create} from "zation-client";
 import {when} from "./lib/api/when";
 
 import {
-    beforeTest as before,
-    afterTest as after,
-    afterEachTest as afterEach,
-    beforeEachTest as beforeEach,
-    describeTest as describe,
-    itTest as it,
     failTest as fail
 }
     from "./lib/api/testHelper";
@@ -26,12 +20,6 @@ export {
     ClientOptions,
     when,
     assert,
-    describe,
-    before,
-    after,
-    beforeEach,
-    afterEach,
-    it,
     fail,
     Client
 };
