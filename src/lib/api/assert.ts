@@ -7,7 +7,7 @@ Copyright(c) Ing. Luca Gian Scaringella
 import assertFunc = require('assert');
 import {StandaloneClientAsserter} from "../helper/asserter/client/standaloneClientAsserter";
 import {Channel, Databox, Client, Response} from "zation-client";
-import forint, {ForintQuery} from "forint";
+import queric, {Query} from "queric";
 import {StandaloneDataboxAsserter} from "../helper/asserter/databox/standaloneDataboxAsserter";
 import {StandaloneChannelAsserter} from "../helper/asserter/channel/standaloneChannelAsserter";
 import {StandaloneValueAsserter} from "../helper/asserter/value/standaloneValueAsserter";
@@ -54,19 +54,19 @@ export const assert: {
      */
     channel: <C extends Channel<any,any>>(channel: C | C[], description?: string) => StandaloneChannelAsserter<C>,
     /**
-     * Asserts that the promise rejects an error that matches with the forint query.
+     * Asserts that the promise rejects an error that matches with the queric query.
      * @param promise
      * @param query
      * @param message
      */
-    rejects: (promise: Promise<any>, query: ForintQuery, message?: string | Error) => Promise<void>,
+    rejects: (promise: Promise<any>, query: Query, message?: string | Error) => Promise<void>,
     /**
-     * Asserts that the promise resolves with a result that matches with the forint query.
+     * Asserts that the promise resolves with a result that matches with the queric query.
      * @param promise
      * @param query
      * @param message
      */
-    resolves: (promise: Promise<any>, query: ForintQuery, message?: string | Error) => Promise<void>
+    resolves: (promise: Promise<any>, query: Query, message?: string | Error) => Promise<void>
     /**
      * Lets the test failing.
      * @param message
@@ -97,7 +97,7 @@ assert.rejects = (promise, query, message) => {
             assertFunc.fail(message);
             r();
         }, (err) => {
-            assert(forint(query)(err), message);
+            assert(queric(query)(err), message);
             r();
         })
     })
@@ -105,7 +105,7 @@ assert.rejects = (promise, query, message) => {
 assert.resolves = (promise, query, message) => {
     return new Promise<void>(r => {
         promise.then((res) => {
-            assert(forint(query)(res), message);
+            assert(queric(query)(res), message);
             r();
         }, () => {
             assertFunc.fail(message);

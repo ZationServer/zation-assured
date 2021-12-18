@@ -12,7 +12,7 @@ import {DataEventAsserter} from "../event/dataEventAsserter";
 import {ValueAsserter} from "../value/valueAsserter";
 import {CodeMetadataEventAsserter} from "../event/codeMetadataEventAsserter";
 import {assert as cAssert} from 'chai';
-import forint, {ForintQuery} from "forint";
+import queric, {Query} from "queric";
 import {DataboxData, DataboxFetchData, DataboxMember} from "../../utils/types";
 import {DeepReadonly} from "../../utils/types";
 
@@ -145,11 +145,11 @@ export abstract class AbstractDataboxAsserter<T, D extends Databox<any, any, any
     /**
      * @description
      * Asserts that the databox should trigger an data change event.
-     * It is also possible to filter for specific data event reasons with a forint query.
+     * It is also possible to filter for specific data event reasons with a queric query.
      */
-    dataChangeTriggers(reasonFilter?: ForintQuery<DataEventReason>):
+    dataChangeTriggers(reasonFilter?: Query<DataEventReason>):
         DataEventAsserter<T, [DeepReadonly<DataboxData<D>>, DataEventReason, DbStorage<DataboxData<D>>], 0> {
-        const filter = reasonFilter ? forint(reasonFilter) : () => true;
+        const filter = reasonFilter ? queric(reasonFilter) : () => true;
         return new DataEventAsserter<T, [DeepReadonly<DataboxData<D>>, DataEventReason, DbStorage<DataboxData<D>>], 0>
         (this.databoxes.map(d => {
                 return (listener) => {
@@ -170,11 +170,11 @@ export abstract class AbstractDataboxAsserter<T, D extends Databox<any, any, any
     /**
      * @description
      * Asserts that the databox should trigger an data touch event.
-     * It is also possible to filter for specific data event reasons with a forint query.
+     * It is also possible to filter for specific data event reasons with a queric query.
      */
-    dataTouchTriggers(reasonFilter?: ForintQuery<DataEventReason>):
+    dataTouchTriggers(reasonFilter?: Query<DataEventReason>):
         DataEventAsserter<T, [DeepReadonly<DataboxData<D>>, DataEventReason, DbStorage<DataboxData<D>>], 0> {
-        const filter = reasonFilter ? forint(reasonFilter) : () => true;
+        const filter = reasonFilter ? queric(reasonFilter) : () => true;
         return new DataEventAsserter<T, [DeepReadonly<DataboxData<D>>, DataEventReason, DbStorage<DataboxData<D>>], 0>
         (this.databoxes.map(d => {
                 return (listener) => {

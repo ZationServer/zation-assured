@@ -99,7 +99,7 @@ export class IntegratedResponseAsserter<R extends Response<any>,C extends Client
      * @description
      * Asserts that the response has specific errors with a raw filter.
      * @param filter
-     * Forint filter to filter for specific errors.
+     * Queric filter to filter for specific errors.
      */
     hasError(filter: BackErrorFilter): IntegratedResponseAsserter<R,C>
     hasError(filter?: BackErrorFilter): IntegratedResponseAsserter<R,C> | BackErrorsFilterBuilder<IntegratedResponseAsserter<R,C>> {

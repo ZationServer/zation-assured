@@ -43,7 +43,7 @@
     "chai": "^4.3.3",
     "path": "0.12.7",
     "zation-client": "^3.0.0-dev.3",
-    "forint": "^0.2.1"
+    "queric": "^2.0.0"
   },
   "devDependencies": {
     "gulp": "4.0.0",

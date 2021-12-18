@@ -93,7 +93,7 @@ export default class StandaloneResponseAsserter<R extends Response<any>> {
      * @description
      * Asserts that the response has specific errors with a raw filter.
      * @param filter
-     * Forint filter to filter for specific errors.
+     * Queric filter to filter for specific errors.
      */
     hasError(filter: BackErrorFilter): StandaloneResponseAsserter<R>
     hasError(filter?: BackErrorFilter): StandaloneResponseAsserter<R> | BackErrorsFilterBuilder<StandaloneResponseAsserter<R>> {

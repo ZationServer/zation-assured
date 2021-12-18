@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Ing. Luca Gian Scaringella
  */
 
-import forint, {ForintQuery} from "forint";
+import queric, {Query} from "queric";
 import {assert as cAssert} from 'chai';
 
 type AddTest = (test: (value: any, target: string) => void) => void;
@@ -161,24 +161,24 @@ export abstract class AbstractValueAsserter<V,T> {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Asserts that the value matches with a forint query.
+     * Asserts that the value matches with a queric query.
      */
-    matches(query: ForintQuery<V> | ForintQuery<Record<any,any>>): T {
+    matches(query: Query<V> | Query<Record<any,any>>): T {
         this.addTest(async (inAny, target) => {
-            await cAssert(forint(query)(inAny),
-                `${target} should match with the forint query.`);
+            await cAssert(queric(query)(inAny),
+                `${target} should match with the queric query.`);
         });
         return this.self();
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Asserts that the value not matches with a forint query.
+     * Asserts that the value not matches with a queric query.
      */
-    notMatches(query: ForintQuery<V> | ForintQuery<Record<any,any>>): T {
+    notMatches(query: Query<V> | Query<Record<any,any>>): T {
         this.addTest(async (inAny, target) => {
-            await cAssert(!forint(query)(inAny),
-                `${target} should not match with the forint query.`);
+            await cAssert(!queric(query)(inAny),
+                `${target} should not match with the queric query.`);
         });
         return this.self();
     }
