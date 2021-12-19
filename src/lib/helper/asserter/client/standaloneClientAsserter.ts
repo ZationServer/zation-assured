@@ -34,7 +34,7 @@ export class StandaloneClientAsserter<C extends Client<any, any>>
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Run the test.
+     * Runs the test.
      */
     async test(): Promise<void> {
         return this._test.execute();

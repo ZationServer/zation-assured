@@ -35,7 +35,7 @@ export class StandaloneDataboxAsserter<D extends Databox<any, any, any, any>>
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Run the test.
+     * Runs the test.
      */
     async test(): Promise<void> {
         return this._test.execute();
