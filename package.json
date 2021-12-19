@@ -7,8 +7,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "gulp compile",
-    "test": "nyc --reporter=html mocha -- ./test/**/*.test.js"
+    "build": "gulp compile"
   },
   "repository": {
     "type": "git",
