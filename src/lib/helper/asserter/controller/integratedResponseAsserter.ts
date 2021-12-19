@@ -28,7 +28,12 @@ export class IntegratedResponseAsserter<R extends Response<any>,C extends Client
     }
 
     protected async _executeAction(): Promise<void> {
-        const resp = await this.sendRequest();
+        let resp: R;
+        try {resp = await this.sendRequest();}
+        catch (err: any) {
+            if(err instanceof Response) resp = err as R;
+            else throw err;
+        }
         for(let i = 0; i < this.responseAsserters.length; i++)
             await this.responseAsserters[i](resp);
     }
