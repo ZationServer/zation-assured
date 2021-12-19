@@ -14,11 +14,11 @@ const assert = require('assert');
 
 export default class StandaloneResponseAsserter<R extends Response<any>> {
 
-    private readonly test: Test;
+    private readonly _test: Test;
     private readonly responses: R[];
 
     constructor(response: R | R[], description?: string) {
-        this.test = new Test(description);
+        this._test = new Test(description);
         this.responses = Array.isArray(response) ? response : [response];
     }
 
@@ -38,7 +38,7 @@ export default class StandaloneResponseAsserter<R extends Response<any>> {
      * Asserts that the response is successful.
      */
     isSuccessful(): StandaloneResponseAsserter<R> {
-        this.test.test(() => this._forEachResponse(async (resp,i) => {
+        this._test.test(() => this._forEachResponse(async (resp,i) => {
             assert(resp.successful,`Response: ${i} should be successful.` + this._respInfo(resp));
         }));
         return this;
@@ -50,7 +50,7 @@ export default class StandaloneResponseAsserter<R extends Response<any>> {
      * Asserts that the response is not successful.
      */
     isNotSuccessful(): StandaloneResponseAsserter<R> {
-        this.test.test(() => this._forEachResponse(async (resp,i) => {
+        this._test.test(() => this._forEachResponse(async (resp,i) => {
             assert(!resp.successful,`Response: ${i} should be not successful.` + this._respInfo(resp));
         }));
         return this;
@@ -62,7 +62,7 @@ export default class StandaloneResponseAsserter<R extends Response<any>> {
      * Asserts that the response has a result.
      */
     hasResult(): StandaloneResponseAsserter<R> {
-        this.test.test(() => this._forEachResponse(async (resp,i) => {
+        this._test.test(() => this._forEachResponse(async (resp,i) => {
             assert(resp.result != null, `Response: ${i} should have a result.`
                 + this._respInfo(resp));
         }));
@@ -76,7 +76,7 @@ export default class StandaloneResponseAsserter<R extends Response<any>> {
      */
     result(): ValueAsserter<ResponseData<R>,StandaloneResponseAsserter<R>> {
         return new ValueAsserter<ResponseData<R>,StandaloneResponseAsserter<R>>(this,(test) => {
-            this.test.test(() => this._forEachResponse(async (resp,i) => {
+            this._test.test(() => this._forEachResponse(async (resp,i) => {
                 test(resp.result,`response: ${i} result`);
             }));
         });
@@ -98,7 +98,7 @@ export default class StandaloneResponseAsserter<R extends Response<any>> {
     hasError(filter: BackErrorFilter): StandaloneResponseAsserter<R>
     hasError(filter?: BackErrorFilter): StandaloneResponseAsserter<R> | BackErrorsFilterBuilder<StandaloneResponseAsserter<R>> {
         if (filter !== undefined) {
-            this.test.test(() => this._forEachResponse(async (resp,i) => {
+            this._test.test(() => this._forEachResponse(async (resp,i) => {
                 assert(resp.filter(filter).length > 0,
                     `Response: ${i} should have at least one back error that matches the filter: ${JSON.stringify(filter)}.`
                     + this._respInfo(resp));
@@ -116,10 +116,19 @@ export default class StandaloneResponseAsserter<R extends Response<any>> {
      * @param assert
      */
     assert(assert: (resp: R) => void | Promise<void>): StandaloneResponseAsserter<R> {
-        this.test.test(() => this._forEachResponse(async resp => {
+        this._test.test(() => this._forEachResponse(async resp => {
             await assert(resp);
         }))
         return this;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Runs the test.
+     */
+    async test(): Promise<void> {
+        return this._test.execute();
     }
 
 }
