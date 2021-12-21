@@ -26,8 +26,8 @@ export class WhenBuilder<C extends Client<any,any>> {
         this._test = test;
     }
 
-    static when<C extends Client<any,any>>(client: C, itShould?: string): WhenBuilder<C> {
-        return new WhenBuilder(client, new Test(itShould));
+    static when<C extends Client<any,any>>(client: C, it?: string): WhenBuilder<C> {
+        return new WhenBuilder(client, new Test(it));
     }
 
     // noinspection JSUnusedGlobalSymbols

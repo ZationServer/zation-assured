@@ -12,10 +12,10 @@ export class Test {
 
     private readonly _subTests: SubTest[] = [];
     private currentSubTest: SubTest;
-    private readonly _description?: string;
+    private readonly _it?: string;
 
-    constructor(description?: string) {
-        this._description = description;
+    constructor(it?: string) {
+        this._it = it;
         this.newSubTest();
     }
 
@@ -50,10 +50,10 @@ export class Test {
     }
 
     async execute() {
-        if (this._description != null) {
+        if (this._it != null) {
             if(global['it'] == null) throw new Error("Please install a test runner like mocha or jest.");
             return new Promise<void>((resolve, reject) => {
-                global['it'](this._description!, async () => {
+                global['it'](this._it!, async () => {
                     try {
                         await this._run();
                         resolve();
