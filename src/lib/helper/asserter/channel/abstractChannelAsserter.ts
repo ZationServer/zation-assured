@@ -1,36 +1,33 @@
 /*
-Author: Luca Scaringella
+Author: Ing. Luca Gian Scaringella
 GitHub: LucaCode
-©Copyright by Luca Scaringella
+Copyright(c) Ing. Luca Gian Scaringella
  */
 
 import {Test} from "../../test/test";
 
-import {Channel} from 'zation-client';
+import {Channel, DataType} from 'zation-client';
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
 import ActionUtils from "../../utils/actionUtils";
 import {DataEventAsserter} from "../event/dataEventAsserter";
 import {ValueAsserter} from "../value/valueAsserter";
-import {CodeDataEventAsserter} from "../event/codeDataEventAsserter";
+import {CodeMetadataEventAsserter} from "../event/codeMetadataEventAsserter";
+import {ChannelEvents, ChannelMember} from "../../utils/types";
 
-export abstract class AbstractChannelAsserter<T> {
+export abstract class AbstractChannelAsserter<T, C extends Channel<any,any>> {
 
     protected _test: Test;
-    protected channels: Channel[];
+    protected channels: C[];
 
     protected abstract self(): T;
 
-    protected constructor(channels: Channel[], test: Test) {
+    protected constructor(channels: C[], test: Test) {
         this._test = test;
         this.channels = channels;
     }
 
-    protected async _forEachChannel(func: (channel: Channel, i: number) => Promise<void>) {
-        let promises: Promise<void>[] = [];
-        this.channels.forEach((c, i) => {
-            promises.push(func(c, i));
-        });
-        await Promise.all(promises);
+    protected async _forEachChannel(func: (channel: C, i: number) => Promise<void>) {
+        await Promise.all(this.channels.map((ch, i) => func(ch, i)));
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -38,19 +35,19 @@ export abstract class AbstractChannelAsserter<T> {
      * @description
      * Asserts that the channel is subscribed.
      * @param timeout
-     * With this parameter, you can set a time limit in that the assertion must be successful.
+     * Sets a time limit in that the assertion must be successful.
      */
     isSubscribed(timeout: number = 0): T {
-        this._test.test(async () => {
-            await this._forEachChannel(async (ch, i) => {
+        this._test.test(() =>
+            this._forEachChannel(async (ch, i) => {
                 if (ch.isSubscribed(false)) return;
                 const toa = new TimeoutAssert(`Channel: ${i} should be subscribed.`, timeout);
                 ch.onceSubscribe(() => {
                     toa.resolve()
                 });
                 await toa.set();
-            });
-        });
+            })
+        );
         return this.self();
     }
 
@@ -59,19 +56,19 @@ export abstract class AbstractChannelAsserter<T> {
      * @description
      * Asserts that the channel is unsubscribed.
      * @param timeout
-     * With this parameter, you can set a time limit in that the assertion must be successful.
+     * Sets a time limit in that the assertion must be successful.
      */
     isUnsubscribed(timeout: number = 0): T {
-        this._test.test(async () => {
-            await this._forEachChannel(async (ch, i) => {
+        this._test.test(() =>
+            this._forEachChannel(async (ch, i) => {
                 if (!ch.isSubscribed(false)) return;
                 const toa = new TimeoutAssert(`Channel: ${i} should be unsubscribed.`, timeout);
                 ch.onceUnsubscribe(() => {
                     toa.resolve()
                 });
                 await toa.set();
-            });
-        });
+            })
+        );
         return this.self();
     }
 
@@ -79,47 +76,29 @@ export abstract class AbstractChannelAsserter<T> {
     /**
      * Asserts the current member of the channel.
      */
-    member(): ValueAsserter<T> {
-        return new ValueAsserter<T>(this.self(), 'Channel', (test) => {
-            this._test.test(async () => {
-                await this._forEachChannel(async (ch, i) => {
-                    test(ch.member, ` ${i} channel:`);
+    member(): ValueAsserter<ChannelMember<C>,T> {
+        return new ValueAsserter<ChannelMember<C>,T>(this.self(),(test) => {
+            this._test.test(() =>
+                this._forEachChannel(async (ch, i) => {
+                    test(ch.member, `Channel: ${i} member:`);
                 })
-            })
+            )
         });
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * This function lets you do extra actions on each channel and asserts that no error is thrown.
-     * When an error throws, it lets the test fail with the provided message or the concrete error.
+     * Runs a extra test action and asserts that no error will be thrown.
+     * AssertionErrors will be rethrown, and all other errors will fail
+     * the test with the provided message or the concrete error.
      * @param action
-     * @param message if not provided it throws the specific error.
+     * @param failMsg If not provided, the concrete error is used.
      */
-    action(action: (channel: Channel, index: number) => void | Promise<void>, message?: string): T {
-        this.channels.forEach((channel,index) => {
-            ActionUtils.action(this._test, () => action(channel,index), message);
-        })
-        this._test.pushSyncWait();
-        return this.self();
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * This function lets you do extra actions on each channel and
-     * asserts that an error or an error instance of a specific class is thrown.
-     * When no error is thrown, or the error does not match with the given classes
-     * (only if at least one class is given), it lets the test fail with the provided message.
-     * @param action
-     * @param message
-     * @param validErrorClasses
-     */
-    actionShouldThrow(action: (channel: Channel, index: number) => void | Promise<void>, message: string, ...validErrorClasses: any[]): T {
-        this.channels.forEach((channel,index) => {
-            ActionUtils.actionShouldThrow(this._test, () => action(channel,index), message, ...validErrorClasses);
-        });
+    action(action: (channel: C, index: number) => void | Promise<void>, failMsg?: string): T {
+        this._test.test(() => this._forEachChannel((channel, index) =>
+            ActionUtils.runAction(() =>
+                action(channel,index), failMsg)));
         this._test.pushSyncWait();
         return this.self();
     }
@@ -129,43 +108,31 @@ export abstract class AbstractChannelAsserter<T> {
      * @description
      * Asserts that the channel should get a publish.
      */
-    getsPublish(event: string): DataEventAsserter<T> {
-        return new DataEventAsserter<T>(this.channels.map(ch => {
-            return (listener) => {
-                ch.oncePublish(event,(data) => {
-                    listener(data);
-                });
-            }
-        }), "Channel", `Publish - ${event}`, this._test, this.self());
+    getsPublish<E extends keyof ChannelEvents<C>>(event: E): DataEventAsserter<T,[ChannelEvents<C>[E],DataType],0> {
+        return new DataEventAsserter<T,[ChannelEvents<C>[E],DataType],0>(this.channels.map(ch => {
+            return (listener) => ch.oncePublish(event,listener);
+        }), "channel", `publish - ${event}`, this._test, this.self(), 0);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Asserts that the channel should trigger an Close event.
+     * Asserts that the channel should trigger an close event.
      */
-    closeTriggers(): CodeDataEventAsserter<T> {
-        return new CodeDataEventAsserter<T>(this.channels.map(ch => {
-            return (listener) => {
-                ch.onceClose((code, data) => {
-                    listener(data,code);
-                });
-            }
-        }), "Channel", "Close", this._test, this.self());
+    closeTriggers(): CodeMetadataEventAsserter<T, [number | string | undefined, any], 0, 1> {
+        return new CodeMetadataEventAsserter<T, [number | string | undefined, any], 0, 1>(this.channels.map(ch => {
+            return (listener) => ch.onceClose(listener);
+        }), "Channel", "close", this._test, this.self(), 0, 1);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Asserts that the channel should trigger an KickOut event.
+     * Asserts that the channel should trigger an kick out event.
      */
-    kickOutTriggers(): CodeDataEventAsserter<T> {
-        return new CodeDataEventAsserter<T>(this.channels.map(ch => {
-            return (listener) => {
-                ch.onceKickOut((code, data) => {
-                    listener(data,code);
-                });
-            }
-        }), "Channel", "KickOut", this._test, this.self());
+    kickOutTriggers(): CodeMetadataEventAsserter<T, [number | string | undefined, any], 0, 1> {
+        return new CodeMetadataEventAsserter<T, [number | string | undefined, any], 0, 1>(this.channels.map(ch => {
+            return (listener) => ch.onceKickOut(listener);
+        }), "Channel", "kick out", this._test, this.self(), 0, 1);
     }
 }

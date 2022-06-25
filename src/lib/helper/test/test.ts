@@ -1,7 +1,7 @@
 /*
-Author: Luca Scaringella
+Author: Ing. Luca Gian Scaringella
 GitHub: LucaCode
-©Copyright by Luca Scaringella
+Copyright(c) Ing. Luca Gian Scaringella
  */
 
 const waitSymbol = Symbol();
@@ -12,10 +12,10 @@ export class Test {
 
     private readonly _subTests: SubTest[] = [];
     private currentSubTest: SubTest;
-    private readonly _testItDescription?: string;
+    private readonly _it?: string;
 
-    constructor(testItDescription?: string) {
-        this._testItDescription = testItDescription;
+    constructor(it?: string) {
+        this._it = it;
         this.newSubTest();
     }
 
@@ -50,9 +50,10 @@ export class Test {
     }
 
     async execute() {
-        if (this._testItDescription != null) {
+        if (this._it != null) {
+            if(global['it'] == null) throw new Error("Please install a test runner like mocha or jest.");
             return new Promise<void>((resolve, reject) => {
-                it(this._testItDescription!, async () => {
+                global['it'](this._it!, async () => {
                     try {
                         await this._run();
                         resolve();

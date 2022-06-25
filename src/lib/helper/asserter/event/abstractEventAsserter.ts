@@ -1,11 +1,12 @@
 /*
-Author: Luca Scaringella
+Author: Ing. Luca Gian Scaringella
 GitHub: LucaCode
-©Copyright by Luca Scaringella
+Copyright(c) Ing. Luca Gian Scaringella
  */
 
 import {Test} from "../../test/test";
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
+import {ValueAsserter} from "../value/valueAsserter";
 
 const assert = require('assert');
 
@@ -25,8 +26,10 @@ export abstract class AbstractEventAsserter<T,S,A extends any[] = [any]> {
     private _timeout: number = 200;
     private _not: boolean = false;
 
-    constructor(eventOnceListenerAdder: EventOnceListenerAdder<A>[], target: string, event: string,
-                test: Test, source: S, private messagePostfix: string = '') {
+    protected readonly _argsAsserter: ((args: A, target: string) => void)[] = [];
+
+    protected constructor(eventOnceListenerAdder: EventOnceListenerAdder<A>[], target: string, event: string,
+                          test: Test, source: S, private messagePostfix: string = '') {
         this._eventOnceListenerAdder = eventOnceListenerAdder;
         this._target = target;
         this._event = event;
@@ -38,7 +41,7 @@ export abstract class AbstractEventAsserter<T,S,A extends any[] = [any]> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * With this function, you can set a time limit in milliseconds in that the event should occur.
+     * Sets a time limit in milliseconds in that the event should occur.
      * @default
      * The default value is 200ms.
      */
@@ -50,7 +53,7 @@ export abstract class AbstractEventAsserter<T,S,A extends any[] = [any]> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * With this function, you set that the event should not occur.
+     * Sets that the event should not occur.
      * @default
      * The default value is false.
      */
@@ -59,7 +62,24 @@ export abstract class AbstractEventAsserter<T,S,A extends any[] = [any]> {
         return this.self();
     }
 
-    protected _onEventArgs(args: A, index: number) {}
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Asserts an argument value of the event.
+     * Notice that the argument will not be checked in (get not) mode.
+     */
+    withArgument<AI extends number>(argIndex: AI): ValueAsserter<A[AI],T> {
+        return new ValueAsserter<A[AI],T>(this.self(), (test) => {
+            this._argsAsserter.push((args,target) => {
+                test(args[argIndex],target + `argument: ${argIndex}`);
+            });
+        });
+    }
+
+    private _assertEventArgs(args: A, index: number) {
+        this._argsAsserter.forEach(asserter => asserter(args,
+            `${this._target}: ${index} event: ${this._event} -> `));
+    }
 
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -68,9 +88,7 @@ export abstract class AbstractEventAsserter<T,S,A extends any[] = [any]> {
      */
     end(): S {
         this._eventOnceListenerAdder.forEach((addListener, i) => {
-            let receivedEmit = false;
-            let listenerArgs;
-            let resolve: () => void;
+            let receivedEmit = false, listenerArgs, resolve: () => void;
             this._test.beforeTest(() => {
                 addListener((...args) => {
                     listenerArgs = args;
@@ -84,10 +102,10 @@ export abstract class AbstractEventAsserter<T,S,A extends any[] = [any]> {
                     const toa = new TimeoutAssert(failMsg, this._timeout, this._not);
                     resolve = () => toa.resolve();
                     await toa.set();
-                    if(!this._not) this._onEventArgs(listenerArgs,i)
+                    if(!this._not) this._assertEventArgs(listenerArgs,i)
                 } else {
                     if (this._not) assert.fail(failMsg);
-                    else this._onEventArgs(listenerArgs,i);
+                    else this._assertEventArgs(listenerArgs,i);
                 }
             });
         });

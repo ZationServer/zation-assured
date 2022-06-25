@@ -1,26 +1,25 @@
 {
   "name": "zation-assured",
-  "version": "0.6.3",
+  "version": "3.0.0-pre-alpha.3",
   "license": "MIT",
   "description": "Library For Testing Zation Servers",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "gulp compile",
-    "test": "nyc --reporter=html mocha -- ./test/**/*.test.js"
+    "build": "gulp compile"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/ZationServer/zation-assured.git"
   },
   "author": {
-    "name": "Luca Scaringella",
-    "email": "lucacode1@gmail.com",
-    "url": "https://luca.scaringella.de"
+    "name": "Ing. Luca Gian Scaringella",
+    "email": "lucacode1@gmail.com"
   },
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "!.DS_Store"
   ],
   "keywords": [
     "esay",
@@ -39,17 +38,14 @@
     "intergrationTests"
   ],
   "dependencies": {
-    "@types/mocha": "^5.2.6",
     "@types/node": "^12.7.2",
     "chai": "^4.3.3",
-    "mocha": "^6.1.4",
-    "path": "0.12.7",
-    "zation-client": "^1.6.3",
-    "forint": "^0.2.1"
+    "zation-client": "^3.0.0-pre-alpha.3",
+    "queric": "^2.0.0"
   },
   "devDependencies": {
     "gulp": "4.0.0",
     "gulp-typescript": "5.0.1",
-    "typescript": "^4.2.3"
+    "typescript": "^4.5.2"
   }
 }

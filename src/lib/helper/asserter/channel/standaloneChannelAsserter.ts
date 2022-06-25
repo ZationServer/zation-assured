@@ -1,7 +1,7 @@
 /*
-Author: Luca Scaringella
+Author: Ing. Luca Gian Scaringella
 GitHub: LucaCode
-©Copyright by Luca Scaringella
+Copyright(c) Ing. Luca Gian Scaringella
  */
 
 import {Channel} from 'zation-client';
@@ -9,22 +9,23 @@ import {Test} from "../../test/test";
 import {AbstractChannelAsserter} from "./abstractChannelAsserter";
 import {assert as cAssert} from "chai";
 
-export class StandaloneChannelAsserter extends AbstractChannelAsserter<StandaloneChannelAsserter> {
+export class StandaloneChannelAsserter<C extends Channel<any,any>>
+    extends AbstractChannelAsserter<StandaloneChannelAsserter<C>,C> {
 
-    constructor(channel: Channel | Channel[], itTestDescription?: string) {
-        super(Array.isArray(channel) ? channel : [channel], new Test(itTestDescription));
+    constructor(channel: C | C[], description?: string) {
+        super(Array.isArray(channel) ? channel : [channel], new Test(description));
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Will subscribe all channels (before the test).
+     * Subscribes all channels (before the test).
      */
-    subscribe(member?: any): StandaloneChannelAsserter {
+    subscribe(member?: any): StandaloneChannelAsserter<C> {
         this._test.beforeTest(async () => {
             await Promise.all(this.channels.map(async (channel, index) => {
                 try {await channel.subscribe(member);}
-                catch (err) {cAssert.fail(`Cannot subscribe to the channel ${index}. Error -> ` + err.stack);}
+                catch (err: any) {cAssert.fail(`Cannot subscribe to the channel ${index}. Error -> ` + err);}
             }));
         })
         return this;
@@ -33,13 +34,13 @@ export class StandaloneChannelAsserter extends AbstractChannelAsserter<Standalon
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Run the test.
+     * Runs the test.
      */
     async test(): Promise<void> {
         return this._test.execute();
     }
 
-    protected self(): StandaloneChannelAsserter {
+    protected self(): StandaloneChannelAsserter<C> {
         return this;
     }
 }

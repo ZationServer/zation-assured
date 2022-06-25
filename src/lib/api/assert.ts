@@ -1,16 +1,17 @@
 /*
-Author: Luca Scaringella
+Author: Ing. Luca Gian Scaringella
 GitHub: LucaCode
-©Copyright by Luca Scaringella
+Copyright(c) Ing. Luca Gian Scaringella
  */
 
 import assertFunc = require('assert');
 import {StandaloneClientAsserter} from "../helper/asserter/client/standaloneClientAsserter";
-import {Channel, Databox, Client} from "zation-client";
-import forint, {ForintQuery} from "forint";
+import {Channel, Databox, Client, Response} from "zation-client";
+import queric, {Query} from "queric";
 import {StandaloneDataboxAsserter} from "../helper/asserter/databox/standaloneDataboxAsserter";
 import {StandaloneChannelAsserter} from "../helper/asserter/channel/standaloneChannelAsserter";
 import {StandaloneValueAsserter} from "../helper/asserter/value/standaloneValueAsserter";
+import StandaloneResponseAsserter from "../helper/asserter/controller/standaloneResponseAsserter";
 
 export const assert: {
     /**
@@ -22,44 +23,50 @@ export const assert: {
     /**
      * Start value assertions.
      * @param client
-     * @param itTestDescription
+     * @param description
      */
-    value: (value: any, itTestDescription?: string) => StandaloneValueAsserter,
+    value: <V>(value: V, description?: string) => StandaloneValueAsserter<V>,
+    /**
+     * Start response assertions.
+     * @param response
+     * @param description
+     */
+    response: <R extends Response<any>>(response: R | R[], description?: string) => StandaloneResponseAsserter<R>,
     /**
      * Start client assertions.
      * Notice that this method will not automatically connect the clients.
      * @param client
-     * @param itTestDescription
+     * @param description
      */
-    client: (client: Client | Client[], itTestDescription?: string) => StandaloneClientAsserter,
+    client: <C extends Client<any,any>>(client: C | C[], description?: string) => StandaloneClientAsserter<C>,
     /**
      * Start databox assertions.
      * Notice that this method will not automatically connect the databoxes.
      * @param databox
-     * @param itTestDescription
+     * @param description
      */
-    databox: (databox: Databox | Databox[], itTestDescription?: string) => StandaloneDataboxAsserter,
+    databox: <D extends Databox<any,any,any,any>>(databox: D | D[], description?: string) => StandaloneDataboxAsserter<D>,
     /**
      * Start channel assertions.
      * Notice that this method will not automatically subscribe to the channels.
      * @param channel
-     * @param itTestDescription
+     * @param description
      */
-    channel: (channel: Channel | Channel[], itTestDescription?: string) => StandaloneChannelAsserter,
+    channel: <C extends Channel<any,any>>(channel: C | C[], description?: string) => StandaloneChannelAsserter<C>,
     /**
-     * Asserts that the promise rejects an error that matches with the forint query.
+     * Asserts that the promise rejects an error that matches with the queric query.
      * @param promise
      * @param query
      * @param message
      */
-    rejects: (promise: Promise<any>, query: ForintQuery, message?: string | Error) => Promise<void>,
+    rejects: (promise: Promise<any>, query: Query, message?: string | Error) => Promise<void>,
     /**
-     * Asserts that the promise resolves with a result that matches with the forint query.
+     * Asserts that the promise resolves with a result that matches with the queric query.
      * @param promise
      * @param query
      * @param message
      */
-    resolves: (promise: Promise<any>, query: ForintQuery, message?: string | Error) => Promise<void>
+    resolves: (promise: Promise<any>, query: Query, message?: string | Error) => Promise<void>
     /**
      * Lets the test failing.
      * @param message
@@ -69,17 +76,20 @@ export const assert: {
     assertFunc(value, message);
 }) as any;
 
-assert.value = (value, itTestDescription) => {
-    return new StandaloneValueAsserter(value, itTestDescription);
+assert.value = (value, description) => {
+    return new StandaloneValueAsserter(value, description);
 }
-assert.client = (client, itTestDescription) => {
-    return new StandaloneClientAsserter(client, itTestDescription);
+assert.response = (response, description) => {
+    return new StandaloneResponseAsserter(response, description);
 }
-assert.databox = (databox, itTestDescription) => {
-    return new StandaloneDataboxAsserter(databox, itTestDescription);
+assert.client = (client, description) => {
+    return new StandaloneClientAsserter(client, description);
 }
-assert.channel = (channel, itTestDescription) => {
-    return new StandaloneChannelAsserter(channel, itTestDescription);
+assert.databox = (databox, description) => {
+    return new StandaloneDataboxAsserter(databox, description);
+}
+assert.channel = (channel, description) => {
+    return new StandaloneChannelAsserter(channel, description);
 }
 assert.rejects = (promise, query, message) => {
     return new Promise<void>(r => {
@@ -87,7 +97,7 @@ assert.rejects = (promise, query, message) => {
             assertFunc.fail(message);
             r();
         }, (err) => {
-            assert(forint(query)(err), message);
+            assert(queric(query)(err), message);
             r();
         })
     })
@@ -95,7 +105,7 @@ assert.rejects = (promise, query, message) => {
 assert.resolves = (promise, query, message) => {
     return new Promise<void>(r => {
         promise.then((res) => {
-            assert(forint(query)(res), message);
+            assert(queric(query)(res), message);
             r();
         }, () => {
             assertFunc.fail(message);

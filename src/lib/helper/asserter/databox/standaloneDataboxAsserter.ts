@@ -1,30 +1,32 @@
 /*
-Author: Luca Scaringella
+Author: Ing. Luca Gian Scaringella
 GitHub: LucaCode
-©Copyright by Luca Scaringella
+Copyright(c) Ing. Luca Gian Scaringella
  */
 
 import {Databox} from 'zation-client';
 import {Test} from "../../test/test";
 import {AbstractDataboxAsserter} from "./abstractDataboxAsserter";
 import {assert as cAssert} from "chai";
+import {DataboxMember} from "../../utils/types";
 
-export class StandaloneDataboxAsserter extends AbstractDataboxAsserter<StandaloneDataboxAsserter> {
+export class StandaloneDataboxAsserter<D extends Databox<any, any, any, any>>
+    extends AbstractDataboxAsserter<StandaloneDataboxAsserter<D>,D> {
 
-    constructor(databox: Databox | Databox[], itTestDescription?: string) {
-        super(Array.isArray(databox) ? databox : [databox], new Test(itTestDescription));
+    constructor(databox: D | D[], description?: string) {
+        super(Array.isArray(databox) ? databox : [databox], new Test(description));
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Will connect all databoxes (before the test).
+     * Connects all databoxes (before the test).
      */
-    connect(member?: any): StandaloneDataboxAsserter {
+    connect(member?: DataboxMember<D>): StandaloneDataboxAsserter<D> {
         this._test.beforeTest(async () => {
             await Promise.all(this.databoxes.map(async (databox, index) => {
                 try {await databox.connect(member);}
-                catch (err) {cAssert.fail(`Cannot connect the databox ${index}. Error -> ` + err.stack);}
+                catch (err: any) {cAssert.fail(`Cannot connect the databox ${index}. Error -> ` + err);}
             }));
         })
         return this;
@@ -33,13 +35,13 @@ export class StandaloneDataboxAsserter extends AbstractDataboxAsserter<Standalon
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Run the test.
+     * Runs the test.
      */
     async test(): Promise<void> {
         return this._test.execute();
     }
 
-    protected self(): StandaloneDataboxAsserter {
+    protected self(): StandaloneDataboxAsserter<D> {
         return this;
     }
 }
