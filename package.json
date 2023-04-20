@@ -40,7 +40,7 @@
   "dependencies": {
     "@types/node": "^12.7.2",
     "chai": "^4.3.3",
-    "zation-client": "^3.0.0-pre-alpha.8",
+    "zation-client": "^3.0.0-pre-alpha.15",
     "queric": "^2.0.0"
   },
   "devDependencies": {
