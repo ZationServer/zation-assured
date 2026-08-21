@@ -4,17 +4,27 @@ GitHub: LucaCode
 Copyright(c) Ing. Luca Gian Scaringella
  */
 
-import {ValidationCheckPair, Client, AUTH_CONTROLLER, ChecksContent, Response} from 'zation-client';
+import {
+    ValidationCheckPair,
+    Client,
+    AUTH_CONTROLLER,
+    ChecksContent,
+    Response,
+    FilterAPIDefinition, AnyControllerDef, ReceiverDef
+} from 'zation-client';
 import {Test} from "../helper/test/test";
 import {
-    ResolveControllerInputType,
-    ResolveControllerResultType
+    ExtractControllerDefInput,
+    ExtractControllerDefOutput,
+    ExtractAuthControllerDef
 } from "zation-client";
 import TransmitOptions, {RequestOptions,ValidationRequestOptions} from "../helper/definitions/optionTypes";
 import AssertStarter from "../helper/asserter/assertStarter";
 import {IntegratedResponseAsserter} from "../helper/asserter/controller/integratedResponseAsserter";
 import {IntegratedTransmitAsserter} from "../helper/asserter/receiver/integratedTransmitAsserter";
 import {ClientAPI} from "../helper/utils/types";
+import {SystemController} from "zation-client/dist/lib/main/definitions/systemController";
+import {ExtractAuthControllerDef} from "zation-client/dist/lib/main/definitions/apiDefinition";
 
 export class WhenBuilder<C extends Client<any,any>> {
 
@@ -42,13 +52,14 @@ export class WhenBuilder<C extends Client<any,any>> {
      * @param data
      * @param options
      */
-    request<CN extends keyof ClientAPI<C>['controllers'] | typeof AUTH_CONTROLLER>
+    request<CN extends keyof FilterAPIDefinition<ClientAPI<C>,AnyControllerDef> | typeof AUTH_CONTROLLER | SystemController>
     (controller: CN,
-     data?: ResolveControllerInputType<ClientAPI<C>,CN>,
+     data?: CN extends typeof AUTH_CONTROLLER ? ExtractControllerDefInput<ExtractAuthControllerDef<ClientAPI<C>>> :
+         ExtractControllerDefInput<FilterAPIDefinition<ClientAPI<C>,CN>>,
      options: RequestOptions = {}
-    ): AssertStarter<IntegratedResponseAsserter<Response<ResolveControllerResultType<ClientAPI<C>,CN>>,C>> {
-        return new AssertStarter(new IntegratedResponseAsserter<Response<ResolveControllerResultType<ClientAPI<C>,CN>>,C>(() =>
-            this._client.request(controller,data,{...options,unwrapResult: false}),this._test,this._client));
+    ): AssertStarter<IntegratedResponseAsserter<Response<ExtractControllerDefOutput<FilterAPIDefinition<ClientAPI<C>,CN>>>,C>> {
+        return new AssertStarter(new IntegratedResponseAsserter<Response<ExtractControllerDefOutput<FilterAPIDefinition<ClientAPI<C>,CN>>>,C>(() =>
+            this._client.request(controller as any,data,{...options,unwrapResult: false}),this._test,this._client));
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -75,12 +86,14 @@ export class WhenBuilder<C extends Client<any,any>> {
      * @param checks
      * @param options
      */
-    requestValidation<CN extends keyof ClientAPI<C>['controllers'] | typeof AUTH_CONTROLLER>
+    requestValidation<CN extends keyof FilterAPIDefinition<ClientAPI<C>,AnyControllerDef> | typeof AUTH_CONTROLLER>
     (controller: CN,
-     checks: ValidationCheckPair[] | ((structure: ChecksContent<ResolveControllerInputType<ClientAPI<C>,CN>>) => void),
+     checks: ValidationCheckPair[] |
+         ((structure: ChecksContent<CN extends typeof AUTH_CONTROLLER ? ExtractControllerDefInput<ExtractAuthControllerDef<ClientAPI<C>>> :
+             ExtractControllerDefInput<FilterAPIDefinition<ClientAPI<C>,CN>>>) => void),
      options: ValidationRequestOptions = {}): AssertStarter<IntegratedResponseAsserter<Response<void>,C>> {
         return new AssertStarter(new IntegratedResponseAsserter<Response<void>,C>(() =>
-            this._client.requestValidation(controller,checks,options),this._test,this._client));
+            this._client.requestValidation(controller as any,checks as any,options),this._test,this._client));
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -95,13 +108,13 @@ export class WhenBuilder<C extends Client<any,any>> {
      * @param data
      * @param options
      */
-    transmit<RN extends keyof ClientAPI<C>['receivers']>(
+    transmit<RN extends keyof FilterAPIDefinition<ClientAPI<C>,ReceiverDef>>(
         receiver: RN,
         data?: ClientAPI<C>['receivers'][RN],
         options: TransmitOptions = {}
     ): AssertStarter<IntegratedTransmitAsserter<C>> {
         return new AssertStarter(new IntegratedTransmitAsserter<C>(() =>
-            this._client.transmit(receiver,data,options),this._test,this._client));
+            this._client.transmit(receiver as any,data,options),this._test,this._client));
     }
 }
 

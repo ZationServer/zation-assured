@@ -7,7 +7,7 @@ Copyright(c) Ing. Luca Gian Scaringella
 import {Test} from "../../test/test";
 
 const assert = require('assert');
-import {DataboxOptions, Client, Databox, Channel} from 'zation-client';
+import {DataboxOptions, Client, Databox, Channel, FilterAPIDefinition, AnyDataboxDef} from 'zation-client';
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
 import ActionUtils from "../../utils/actionUtils";
 import {DataboxAsserter} from "../databox/databoxAsserter";
@@ -207,7 +207,7 @@ export abstract class AbstractClientAsserter<T, C extends Client<any, any>> {
      * Create assertions on a databox of the client.
      * Will automatically connect (before the test) and disconnect (after the test) the databox.
      */
-    databox<DN extends keyof ClientAPI<C>['databoxes']>(identifier: DN,
+    databox<DN extends keyof FilterAPIDefinition<API,AnyDataboxDef>>(identifier: DN,
                                                         member?: Default<ClientAPI<C>['databoxes'][DN]['member'], string>,
                                                         options: DataboxOptions<ClientAPI<C>['databoxes'][DN]['options'],
                                                             ClientAPI<C>['databoxes'][DN]['fetchInput']> = {}):
