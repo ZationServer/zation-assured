@@ -111,7 +111,7 @@ export abstract class AbstractChannelAsserter<T, C extends Channel<any,any>> {
     getsPublish<E extends keyof ChannelEvents<C>>(event: E): DataEventAsserter<T,[ChannelEvents<C>[E],DataType],0> {
         return new DataEventAsserter<T,[ChannelEvents<C>[E],DataType],0>(this.channels.map(ch => {
             return (listener) => ch.oncePublish(event,listener);
-        }), "channel", `publish - ${event}`, this._test, this.self(), 0);
+        }), "channel", `publish - ${String(event)}`, this._test, this.self(), 0);
     }
 
     // noinspection JSUnusedGlobalSymbols
