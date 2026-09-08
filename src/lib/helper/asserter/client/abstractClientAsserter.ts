@@ -7,13 +7,17 @@ Copyright(c) Ing. Luca Gian Scaringella
 import {Test} from "../../test/test";
 
 const assert = require('assert');
-import {DataboxOptions, Client, Databox, Channel, FilterAPIDefinition, AnyDataboxDef} from 'zation-client';
+import {
+    DataboxOptions, Client, Databox, Channel, FilterAPIDefinition, AnyDataboxDef, AnyChannelDef,
+    ExtractDataboxDefContent, ExtractDataboxDefMember, ExtractDataboxDefRemoteOptions, ExtractDataboxDefFetchInput,
+    ExtractChannelDefMember, ExtractChannelDefPublishes
+} from 'zation-client';
 import {TimeoutAssert} from "../../timeout/timeoutAssert";
 import ActionUtils from "../../utils/actionUtils";
 import {DataboxAsserter} from "../databox/databoxAsserter";
 import {ChannelAsserter} from "../channel/channelAsserter";
 import {ValueAsserter} from "../value/valueAsserter";
-import {ClientAPI, ClientTokenPayload, Default} from "../../utils/types";
+import {ClientAPI, ClientTokenPayload} from "../../utils/types";
 
 export abstract class AbstractClientAsserter<T, C extends Client<any, any>> {
 
@@ -207,14 +211,16 @@ export abstract class AbstractClientAsserter<T, C extends Client<any, any>> {
      * Create assertions on a databox of the client.
      * Will automatically connect (before the test) and disconnect (after the test) the databox.
      */
-    databox<DN extends keyof FilterAPIDefinition<API,AnyDataboxDef>>(identifier: DN,
-                                                        member?: Default<ClientAPI<C>['databoxes'][DN]['member'], string>,
-                                                        options: DataboxOptions<ClientAPI<C>['databoxes'][DN]['options'],
-                                                            ClientAPI<C>['databoxes'][DN]['fetchInput']> = {}):
-        DataboxAsserter<T, Databox<ClientAPI<C>['databoxes'][DN]['content'], Default<ClientAPI<C>['databoxes'][DN]['member'], string>,
-            ClientAPI<C>['databoxes'][DN]['options'], ClientAPI<C>['databoxes'][DN]['fetchInput']>> {
+    databox<DN extends keyof FilterAPIDefinition<ClientAPI<C>,AnyDataboxDef>>(identifier: DN,
+                                                        member?: ExtractDataboxDefMember<FilterAPIDefinition<ClientAPI<C>,DN>>,
+                                                        options: DataboxOptions<ExtractDataboxDefRemoteOptions<FilterAPIDefinition<ClientAPI<C>,DN>>,
+                                                            ExtractDataboxDefFetchInput<FilterAPIDefinition<ClientAPI<C>,DN>>> = {}):
+        DataboxAsserter<T, Databox<ExtractDataboxDefContent<FilterAPIDefinition<ClientAPI<C>,DN>>,
+            ExtractDataboxDefMember<FilterAPIDefinition<ClientAPI<C>,DN>>,
+            ExtractDataboxDefRemoteOptions<FilterAPIDefinition<ClientAPI<C>,DN>>,
+            ExtractDataboxDefFetchInput<FilterAPIDefinition<ClientAPI<C>,DN>>>> {
         const databoxes = this.clients.map(client => {
-            const db = client.databox(identifier, options);
+            const db = client.databox(identifier as any, options as any);
             this._test.beforeTest(async () => {
                 try {await db.connect(member);}
                 catch (err: any) {assert.fail("Cannot connect the databox. Error -> " + err);}
@@ -231,12 +237,12 @@ export abstract class AbstractClientAsserter<T, C extends Client<any, any>> {
      * Create assertions on a channel of the client.
      * Will automatically subscribe (before the test) and unsubscribe (after the test) the channel.
      */
-    channel<CN extends keyof ClientAPI<C>['channels']>(identifier: CN,
-                                                       member?: Default<ClientAPI<C>['channels'][CN]['member'],string>):
-        ChannelAsserter<T,Channel<Default<ClientAPI<C>['channels'][CN]['member'],string>,
-            Default<ClientAPI<C>['channels'][CN]['publishes'], Record<string,any>>>> {
+    channel<CN extends keyof FilterAPIDefinition<ClientAPI<C>,AnyChannelDef>>(identifier: CN,
+                                                       member?: ExtractChannelDefMember<FilterAPIDefinition<ClientAPI<C>,CN>>):
+        ChannelAsserter<T,Channel<ExtractChannelDefMember<FilterAPIDefinition<ClientAPI<C>,CN>>,
+            ExtractChannelDefPublishes<FilterAPIDefinition<ClientAPI<C>,CN>>>> {
         const channels = this.clients.map(client => {
-            const channel = client.channel(identifier);
+            const channel = client.channel(identifier as any);
             this._test.beforeTest(async () => {
                 try {await channel.subscribe(member);}
                 catch (err: any) {assert.fail("Cannot subscribe to the channel. Error -> " + err);}

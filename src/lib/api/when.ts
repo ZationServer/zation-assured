@@ -24,7 +24,6 @@ import {IntegratedResponseAsserter} from "../helper/asserter/controller/integrat
 import {IntegratedTransmitAsserter} from "../helper/asserter/receiver/integratedTransmitAsserter";
 import {ClientAPI} from "../helper/utils/types";
 import {SystemController} from "zation-client/dist/lib/main/definitions/systemController";
-import {ExtractAuthControllerDef} from "zation-client/dist/lib/main/definitions/apiDefinition";
 
 export class WhenBuilder<C extends Client<any,any>> {
 
