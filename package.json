@@ -1,6 +1,6 @@
 {
   "name": "zation-assured",
-  "version": "3.0.0-beta.4",
+  "version": "3.0.0-beta.5",
   "license": "MIT",
   "description": "Library For Testing Zation Servers",
   "main": "dist/index.js",
@@ -40,7 +40,7 @@
   "dependencies": {
     "@types/node": "^12.7.2",
     "chai": "^4.3.3",
-    "zation-client": "3.0.0-beta.4",
+    "zation-client": "3.0.0-beta.5",
     "queric": "^2.0.0"
   },
   "devDependencies": {
